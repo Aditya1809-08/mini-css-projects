@@ -3,187 +3,112 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mini CSS Projects — Aditya Srivastav</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <title>Terminal — Aditya Srivastav</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    :root {
-      --forest: #1a2e1a;
-      --forest-mid: #243d24;
-      --grass: #4a7c3f;
-      --grass-light: #6aaf5a;
-      --wood: #8B6340;
-      --wood-light: #b8845a;
-      --stone: #6b7280;
-      --stone-light: #9ca3af;
-      --gold: #f59e0b;
-      --glow: #fef08a;
-      --lantern: #fcd34d;
-      --white: #ffffff;
-      --cream: #fefce8;
-      --text: #f0fdf4;
-      --muted: #86efac;
-      --card-bg: rgba(26,46,26,0.85);
-      --border: rgba(106,175,90,0.2);
-    }
-
     body {
-      font-family: 'Inter', sans-serif;
-      background: var(--forest);
-      color: var(--text);
+      font-family: 'Fira Code', monospace;
+      background: url('69ca072219a69bcf0ad1c006f52c28ae.jpg') center/cover no-repeat fixed;
       min-height: 100vh;
-      overflow-x: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
 
-    /* BG IMAGE */
-    .bg-image {
-      position: fixed;
-      inset: 0;
-      background-image: url('69ca072219a69bcf0ad1c006f52c28ae.jpg');
-      background-size: cover;
-      background-position: center;
-      z-index: 0;
-      filter: brightness(0.35) saturate(1.2);
-    }
-
-    /* OVERLAY GRADIENT */
-    .bg-overlay {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(
-        180deg,
-        rgba(10,20,10,0.7) 0%,
-        rgba(15,25,15,0.5) 40%,
-        rgba(10,20,10,0.85) 100%
-      );
-      z-index: 1;
-    }
-
-    /* FLOATING PARTICLES */
-    .particles {
-      position: fixed;
-      inset: 0;
-      z-index: 2;
-      pointer-events: none;
+    /* TERMINAL WINDOW */
+    .terminal {
+      width: 100%;
+      max-width: 680px;
+      background: #1a1a1a;
+      border-radius: 12px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05);
       overflow: hidden;
     }
 
-    .particle {
-      position: absolute;
-      width: 4px; height: 4px;
-      background: var(--glow);
-      border-radius: 0;
-      animation: floatUp linear infinite;
-      image-rendering: pixelated;
-      opacity: 0;
-    }
-
-    @keyframes floatUp {
-      0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
-      10%  { opacity: 0.6; }
-      90%  { opacity: 0.3; }
-      100% { transform: translateY(-20px) translateX(20px); opacity: 0; }
-    }
-
-    /* NAV */
-    nav {
-      position: relative;
-      z-index: 100;
-      padding: 0 40px;
-      height: 64px;
+    /* TITLE BAR */
+    .titlebar {
+      background: #2a2a2a;
+      padding: 12px 16px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(10,20,10,0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(106,175,90,0.15);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.5);
-    }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-
-    .logo-pixel {
-      width: 36px; height: 36px;
-      background: var(--grass);
-      border-radius: 4px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      overflow: hidden;
-      image-rendering: pixelated;
-    }
-
-    .logo-pixel div:nth-child(1) { background: var(--grass-light); }
-    .logo-pixel div:nth-child(2) { background: var(--grass); }
-    .logo-pixel div:nth-child(3) { background: var(--wood); }
-    .logo-pixel div:nth-child(4) { background: var(--wood-light); }
-
-    .logo-name {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 10px;
-      color: var(--text);
-      text-shadow: 0 0 10px rgba(106,175,90,0.5);
-      line-height: 1.6;
-    }
-
-    .nav-right { display: flex; align-items: center; gap: 16px; }
-
-    .nav-link {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .nav-link:hover { color: var(--text); }
-
-    .nav-cta {
-      background: var(--grass);
-      color: white;
-      padding: 8px 20px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      border: 1px solid var(--grass-light);
-      transition: all 0.2s;
-      box-shadow: 0 0 12px rgba(106,175,90,0.2);
-    }
-    .nav-cta:hover { background: var(--grass-light); box-shadow: 0 0 20px rgba(106,175,90,0.4); }
-
-    /* HERO */
-    .hero {
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      padding: 80px 40px 48px;
-    }
-
-    .hero-badge {
-      display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(106,175,90,0.1);
-      border: 1px solid rgba(106,175,90,0.25);
-      border-radius: 99px;
-      padding: 8px 18px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-      margin-bottom: 24px;
-      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
-    .hero-badge .dot {
-      width: 6px; height: 6px;
-      background: var(--grass-light);
-      border-radius: 0;
-      animation: blink 2s step-end infinite;
+    .dot {
+      width: 13px; height: 13px;
+      border-radius: 50%;
+    }
+
+    .dot-red   { background: #ff5f57; }
+    .dot-yellow{ background: #febc2e; }
+    .dot-green { background: #28c840; }
+
+    .titlebar-text {
+      flex: 1;
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      margin-left: -45px;
+    }
+
+    /* TERMINAL BODY */
+    .terminal-body {
+      padding: 24px;
+      min-height: 380px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .terminal-body::-webkit-scrollbar { width: 4px; }
+    .terminal-body::-webkit-scrollbar-track { background: transparent; }
+    .terminal-body::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+    /* LINES */
+    .line {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0;
+      animation: fadeIn 0.1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .prompt {
+      color: #28c840;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .prompt-path { color: #58a6ff; }
+    .prompt-symbol { color: #a78bfa; }
+
+    .text { color: #e2e8f0; flex: 1; }
+    .text.command { color: #fbbf24; }
+    .text.output  { color: #94a3b8; }
+    .text.success { color: #28c840; }
+    .text.error   { color: #ff5f57; }
+    .text.info    { color: #58a6ff; }
+    .text.highlight { color: #f97316; }
+
+    /* CURSOR */
+    .cursor {
+      display: inline-block;
+      width: 9px;
+      height: 16px;
+      background: #28c840;
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
     }
 
     @keyframes blink {
@@ -191,468 +116,138 @@
       50% { opacity: 0; }
     }
 
-    h1 {
-      font-family: 'Press Start 2P', monospace;
-      font-size: clamp(20px, 3.5vw, 38px);
-      line-height: 1.4;
-      margin-bottom: 16px;
-      color: var(--text);
-      text-shadow:
-        0 0 40px rgba(106,175,90,0.4),
-        0 0 80px rgba(106,175,90,0.2),
-        2px 2px 0 rgba(0,0,0,0.8);
-    }
-
-    h1 .green { color: var(--grass-light); }
-    h1 .gold  { color: var(--gold); text-shadow: 0 0 20px rgba(245,158,11,0.5), 2px 2px 0 rgba(0,0,0,0.8); }
-
-    .hero-sub {
-      font-size: 16px;
-      color: rgba(134,239,172,0.7);
-      margin-bottom: 36px;
-      line-height: 1.6;
-    }
-
-    /* XP BAR */
-    .xp-wrap {
-      display: inline-block;
-      margin-bottom: 40px;
-    }
-
-    .xp-label {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 9px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      text-align: left;
-    }
-
-    .xp-bar {
-      width: 280px;
-      height: 14px;
-      background: rgba(0,0,0,0.6);
-      border: 1px solid rgba(106,175,90,0.3);
-      border-radius: 2px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(106,175,90,0.1);
-    }
-
-    .xp-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--grass), var(--grass-light));
-      width: 0;
-      animation: xpFill 1.5s ease forwards 0.5s;
-      box-shadow: 0 0 8px rgba(106,175,90,0.6);
-    }
-
-    @keyframes xpFill {
-      to { width: 35%; }
-    }
-
-    /* LANTERN DIVIDER */
-    .divider {
-      position: relative;
-      z-index: 10;
+    /* INPUT LINE */
+    .input-line {
       display: flex;
       align-items: center;
-      gap: 0;
-      margin: 0;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.05);
     }
 
-    .divider-line {
+    .input-line input {
       flex: 1;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(252,211,77,0.3), transparent);
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      color: #fbbf24;
+      caret-color: #28c840;
     }
 
-    .divider-lantern {
-      font-size: 20px;
-      filter: drop-shadow(0 0 8px rgba(252,211,77,0.8));
-    }
+    .input-line input::placeholder { color: rgba(255,255,255,0.2); }
 
-    /* SECTION */
-    .section {
-      position: relative;
-      z-index: 10;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 48px 40px 80px;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .section-tag {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 9px;
-      color: var(--grass-light);
-      letter-spacing: 0.1em;
-      margin-bottom: 12px;
-      display: block;
-    }
-
-    .section-title {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.01em;
-    }
-
-    /* CARDS */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: rgba(15,30,15,0.75);
-      border: 1px solid rgba(106,175,90,0.2);
-      border-radius: 12px;
-      overflow: hidden;
-      text-decoration: none;
-      display: block;
-      backdrop-filter: blur(16px);
-      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
-      position: relative;
-    }
-
-    .card::before {
-      content: '';
+    /* RESTART BTN */
+    .restart-btn {
       position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(106,175,90,0.05), transparent 50%);
-      pointer-events: none;
-    }
-
-    .card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(106,175,90,0.5);
-      box-shadow:
-        0 20px 40px rgba(0,0,0,0.5),
-        0 0 20px rgba(106,175,90,0.1);
-    }
-
-    .card-preview {
-      height: 150px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 52px;
-      position: relative;
-      border-bottom: 1px solid rgba(106,175,90,0.1);
-    }
-
-    .card-preview::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(transparent 40%, rgba(15,30,15,0.8));
-    }
-
-    /* LANTERN GLOW */
-    .card-preview .lantern-glow {
-      position: absolute;
-      top: 10px; right: 14px;
-      font-size: 18px;
-      filter: drop-shadow(0 0 6px rgba(252,211,77,0.9));
-      z-index: 2;
-      animation: flicker 3s ease-in-out infinite;
-    }
-
-    @keyframes flicker {
-      0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px rgba(252,211,77,0.9)); }
-      50% { opacity: 0.8; filter: drop-shadow(0 0 10px rgba(252,211,77,1)); }
-    }
-
-    .card-body { padding: 18px 20px 22px; }
-
-    .card-rarity {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 8px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .rarity-rare     { color: #60a5fa; }
-    .rarity-common   { color: #9ca3af; }
-    .rarity-uncommon { color: var(--grass-light); }
-
-    .card-title {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 8px;
-      letter-spacing: -0.01em;
-    }
-
-    .card-desc {
-      font-size: 13px;
-      color: rgba(134,239,172,0.6);
-      line-height: 1.55;
-      margin-bottom: 16px;
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .pills { display: flex; gap: 5px; flex-wrap: wrap; }
-
-    .pill {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 7px;
-      padding: 4px 7px;
-      background: rgba(106,175,90,0.08);
-      color: var(--muted);
-      border: 1px solid rgba(106,175,90,0.15);
-      border-radius: 3px;
-    }
-
-    .open-btn {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 8px;
-      padding: 8px 14px;
-      background: var(--grass);
-      color: white;
-      text-decoration: none;
-      border-radius: 4px;
-      border: 1px solid var(--grass-light);
-      transition: all 0.2s;
-      white-space: nowrap;
-      box-shadow: 0 0 10px rgba(106,175,90,0.2);
-    }
-
-    .open-btn:hover {
-      background: var(--grass-light);
-      box-shadow: 0 0 16px rgba(106,175,90,0.4);
-    }
-
-    /* COMING SOON */
-    .card-soon {
-      background: rgba(10,20,10,0.5);
-      border: 1px dashed rgba(106,175,90,0.15);
-      min-height: 280px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      border-radius: 12px;
-      backdrop-filter: blur(8px);
-    }
-
-    .card-soon:hover {
-      transform: none;
-      box-shadow: none;
-      border-color: rgba(106,175,90,0.25);
-    }
-
-    .card-soon p {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 9px;
-      color: rgba(134,239,172,0.4);
-      text-align: center;
-      line-height: 2;
-    }
-
-    /* FOOTER */
-    footer {
-      position: relative;
-      z-index: 10;
-      background: rgba(5,10,5,0.9);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(106,175,90,0.1);
-      padding: 28px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    footer p {
-      font-size: 13px;
-      color: rgba(134,239,172,0.5);
-    }
-
-    footer a { color: var(--gold); text-decoration: none; transition: color 0.2s; }
-    footer a:hover { color: var(--glow); }
-
-    /* HOTBAR */
-    .hotbar {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 200;
-      display: flex;
-      gap: 4px;
-      background: rgba(5,10,5,0.85);
-      backdrop-filter: blur(12px);
-      padding: 6px;
-      border: 1px solid rgba(106,175,90,0.2);
-      border-radius: 8px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    }
-
-    .hslot {
-      width: 46px; height: 46px;
-      background: rgba(26,46,26,0.8);
-      border: 1px solid rgba(106,175,90,0.15);
+      top: 12px;
+      right: 16px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
+      padding: 4px 10px;
+      font-family: 'Fira Code', monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
       cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s;
+      transition: background 0.2s;
     }
 
-    .hslot:hover, .hslot.active {
-      background: rgba(106,175,90,0.15);
-      border-color: rgba(106,175,90,0.4);
-      box-shadow: 0 0 10px rgba(106,175,90,0.2);
+    .restart-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.7);
     }
 
-    @media (max-width: 600px) {
-      nav { padding: 0 16px; }
-      .nav-right { gap: 8px; }
-      .nav-link { display: none; }
-      .section { padding: 32px 20px 80px; }
-      h1 { font-size: 16px; }
-      .hotbar { bottom: 12px; }
-    }
+    .titlebar { position: relative; }
   </style>
 </head>
 <body>
 
-  <div class="bg-image"></div>
-  <div class="bg-overlay"></div>
-
-  <!-- PARTICLES -->
-  <div class="particles" id="particles"></div>
-
-  <!-- NAV -->
-  <nav>
-    <a href="https://github.com/Aditya1809-08" class="nav-logo">
-      <div class="logo-pixel">
-        <div></div><div></div><div></div><div></div>
-      </div>
-      <span class="logo-name">Aditya<br/>Srivastav</span>
-    </a>
-    <div class="nav-right">
-      <a href="https://github.com/Aditya1809-08" class="nav-link">GitHub</a>
-      <a href="https://www.linkedin.com/in/aditya-srivastav-0a247634b/" class="nav-link">LinkedIn</a>
-      <a href="https://x.com/ASrivastav77092" class="nav-cta">Follow →</a>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-badge"><div class="dot"></div> Building in Public — Survival Mode 🌿</div>
-    <h1><span class="green">Mini</span> <span class="gold">CSS</span><br/>Projects</h1>
-    <p class="hero-sub">HTML & CSS experiments — crafted while learning from scratch</p>
-    <div class="xp-wrap">
-      <div class="xp-label">── Learning XP ── Level 1 ──</div>
-      <div class="xp-bar"><div class="xp-fill"></div></div>
-    </div>
-  </div>
-
-  <!-- SECTION -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-tag">// inventory</span>
-      <h2 class="section-title">All Projects 🏮</h2>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot dot-red"></div>
+      <div class="dot dot-yellow"></div>
+      <div class="dot dot-green"></div>
+      <div class="titlebar-text">aditya@portfolio ~ bash</div>
+      <button class="restart-btn" onclick="restart()">↺ restart</button>
     </div>
 
-    <div class="cards">
-
-      <!-- TERMINAL -->
-      <a class="card" href="./terminal/">
-        <div class="card-preview" style="background: linear-gradient(135deg, #050510 0%, #0d1a10 100%);">
-          🖥️
-          <span class="lantern-glow">🏮</span>
-        </div>
-        <div class="card-body">
-          <div class="card-rarity rarity-rare">◆ RARE &nbsp;·&nbsp; 01</div>
-          <div class="card-title">Animated Terminal</div>
-          <div class="card-desc">A typing terminal that auto-introduces me like a real CLI. Commands, outputs & restart button.</div>
-          <div class="card-footer">
-            <div class="pills">
-              <span class="pill">HTML</span>
-              <span class="pill">CSS</span>
-              <span class="pill">JS</span>
-            </div>
-            <span class="open-btn">[ Open ]</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- HELLO WORLD -->
-      <a class="card" href="https://aditya1809-08.github.io/Hello-World/" target="_blank">
-        <div class="card-preview" style="background: linear-gradient(135deg, #0a0010 0%, #1a1030 100%);">
-          🌍
-          <span class="lantern-glow">🏮</span>
-        </div>
-        <div class="card-body">
-          <div class="card-rarity rarity-uncommon">◆ UNCOMMON &nbsp;·&nbsp; 02</div>
-          <div class="card-title">Hello World</div>
-          <div class="card-desc">My very first HTML page — where it all began. World map background, live on the internet.</div>
-          <div class="card-footer">
-            <div class="pills">
-              <span class="pill">HTML</span>
-              <span class="pill">CSS</span>
-            </div>
-            <span class="open-btn">[ Open ]</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- COMING SOON -->
-      <div class="card card-soon">
-        <span style="font-size:36px;filter:drop-shadow(0 0 10px rgba(252,211,77,0.5))">❓</span>
-        <p>??? UNKNOWN<br/>More coming<br/>soon...</p>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>Crafted by <a href="https://github.com/Aditya1809-08">Aditya Srivastav</a> — 12th grader 🌿</p>
-    <p><a href="https://github.com/Aditya1809-08/mini-css-projects">View Source →</a></p>
-  </footer>
-
-  <!-- HOTBAR -->
-  <div class="hotbar">
-    <a class="hslot active" href="#" title="Home">🏠</a>
-    <a class="hslot" href="./terminal/" title="Terminal">🖥️</a>
-    <a class="hslot" href="https://aditya1809-08.github.io/Hello-World/" title="Hello World">🌍</a>
-    <a class="hslot" href="https://github.com/Aditya1809-08" title="GitHub">💻</a>
-    <a class="hslot" href="https://www.linkedin.com/in/aditya-srivastav-0a247634b/" title="LinkedIn">🔗</a>
+    <div class="terminal-body" id="body"></div>
   </div>
 
   <script>
-    // Generate floating particles
-    const container = document.getElementById('particles');
-    for(let i = 0; i < 25; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      p.style.left = Math.random() * 100 + 'vw';
-      p.style.animationDuration = (8 + Math.random() * 12) + 's';
-      p.style.animationDelay = (Math.random() * 10) + 's';
-      p.style.width = p.style.height = (Math.random() > 0.5 ? '4px' : '6px');
-      p.style.background = Math.random() > 0.5 ? '#fef08a' : '#6aaf5a';
-      container.appendChild(p);
+    const lines = [
+      { delay: 300,  prompt: true,  text: "whoami",             cls: "command" },
+      { delay: 800,  prompt: false, text: "→ Aditya Srivastav", cls: "success" },
+      { delay: 1400, prompt: true,  text: "cat about.txt",      cls: "command" },
+      { delay: 1900, prompt: false, text: "12th grader from Gorakhpur, UP 🇮🇳", cls: "output" },
+      { delay: 2100, prompt: false, text: "Exploring tech & web development 🚀", cls: "output" },
+      { delay: 2300, prompt: false, text: "Learning HTML, CSS — one commit at a time ✨", cls: "output" },
+      { delay: 2900, prompt: true,  text: "ls projects/",       cls: "command" },
+      { delay: 3400, prompt: false, text: "📁 Hello-World       📁 Portfolio        📁 mini-css-projects", cls: "info" },
+      { delay: 4000, prompt: true,  text: "cat skills.json",    cls: "command" },
+      { delay: 4500, prompt: false, text: '{ "languages": ["HTML", "CSS"],',  cls: "output" },
+      { delay: 4700, prompt: false, text: '  "tools": ["GitHub", "VS Code"],', cls: "output" },
+      { delay: 4900, prompt: false, text: '  "learning": ["JavaScript", "Python"] }', cls: "output" },
+      { delay: 5500, prompt: true,  text: "open github.com/Aditya1809-08", cls: "command" },
+      { delay: 6000, prompt: false, text: "✅ Opening GitHub profile...", cls: "success" },
+      { delay: 6600, prompt: true,  text: "echo $goal",         cls: "command" },
+      { delay: 7100, prompt: false, text: "→ B.Tech AI/ML @ Chandigarh University 🎯", cls: "highlight" },
+      { delay: 7700, prompt: true,  text: "",                   cls: "command", cursor: true },
+    ];
+
+    let timeouts = [];
+
+    function buildLine(line) {
+      const body = document.getElementById('body');
+      const div = document.createElement('div');
+      div.className = 'line';
+
+      if (line.prompt) {
+        div.innerHTML = `
+          <span class="prompt">
+            <span class="prompt-path">~/aditya</span>
+            <span class="prompt-symbol"> ❯ </span>
+          </span>
+          <span class="text ${line.cls}">${line.text}${line.cursor ? '<span class="cursor"></span>' : ''}</span>`;
+      } else {
+        div.innerHTML = `<span class="text ${line.cls}" style="padding-left:80px;">${line.text}</span>`;
+      }
+
+      body.appendChild(div);
+      body.scrollTop = body.scrollHeight;
     }
+
+    function start() {
+      const body = document.getElementById('body');
+      body.innerHTML = '';
+      timeouts.forEach(clearTimeout);
+      timeouts = [];
+
+      // Welcome line
+      const welcome = document.createElement('div');
+      welcome.className = 'line';
+      welcome.style.opacity = '1';
+      welcome.innerHTML = `<span class="text info">Welcome to Aditya's Terminal Portfolio v1.0 🖥️</span>`;
+      body.appendChild(welcome);
+
+      const sep = document.createElement('div');
+      sep.className = 'line';
+      sep.style.opacity = '1';
+      sep.innerHTML = `<span class="text output">─────────────────────────────────────────</span>`;
+      body.appendChild(sep);
+
+      lines.forEach(line => {
+        const t = setTimeout(() => buildLine(line), line.delay);
+        timeouts.push(t);
+      });
+    }
+
+    function restart() { start(); }
+
+    start();
   </script>
 
 </body>
