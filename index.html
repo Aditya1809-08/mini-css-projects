@@ -11,7 +11,6 @@
     :root {
       --grass: #4a7c3f;
       --grass-light: #6aaf5a;
-      --wood: #8B6340;
       --gold: #f59e0b;
       --glow: #fef08a;
       --text: #f0fdf4;
@@ -28,8 +27,7 @@
     }
 
     .bg-image {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background-image: url('8d169005389a6a17d38e8e059f24644c.jpg');
       background-size: cover;
       background-position: center;
@@ -38,20 +36,15 @@
     }
 
     .bg-overlay {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: linear-gradient(180deg, rgba(10,20,10,0.7) 0%, rgba(15,25,15,0.5) 40%, rgba(10,20,10,0.85) 100%);
       z-index: 1;
     }
 
-    /* PARTICLES */
     .particles { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
     .particle {
-      position: absolute;
-      width: 4px; height: 4px;
-      border-radius: 0;
-      animation: floatUp linear infinite;
-      opacity: 0;
+      position: absolute; width: 4px; height: 4px;
+      animation: floatUp linear infinite; opacity: 0;
     }
     @keyframes floatUp {
       0%   { transform: translateY(100vh); opacity: 0; }
@@ -62,383 +55,201 @@
 
     /* NAV */
     nav {
-      position: relative;
-      z-index: 100;
-      padding: 0 40px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      position: relative; z-index: 100;
+      padding: 0 40px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
       background: rgba(10,20,10,0.8);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(106,175,90,0.15);
     }
 
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .logo-pixel {
-      width: 36px; height: 36px;
-      border-radius: 4px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      overflow: hidden;
+      width: 36px; height: 36px; border-radius: 4px;
+      display: grid; grid-template-columns: 1fr 1fr; overflow: hidden;
     }
     .logo-pixel div:nth-child(1) { background: #6aaf5a; }
     .logo-pixel div:nth-child(2) { background: #4a7c3f; }
     .logo-pixel div:nth-child(3) { background: #8B6340; }
     .logo-pixel div:nth-child(4) { background: #b8845a; }
-
-    .logo-name {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 9px;
-      color: var(--text);
-      text-shadow: 0 0 10px rgba(106,175,90,0.5);
-      line-height: 1.8;
-    }
+    .logo-name { font-family: 'Press Start 2P', monospace; font-size: 9px; color: var(--text); text-shadow: 0 0 10px rgba(106,175,90,0.5); line-height: 1.8; }
 
     .nav-right { display: flex; align-items: center; gap: 16px; }
     .nav-link { font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.2s; }
     .nav-link:hover { color: var(--text); }
     .nav-cta {
-      background: var(--grass);
-      color: white;
-      padding: 8px 20px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      border: 1px solid var(--grass-light);
-      transition: all 0.2s;
-      box-shadow: 0 0 12px rgba(106,175,90,0.2);
+      background: var(--grass); color: white; padding: 8px 20px;
+      border-radius: 6px; font-size: 13px; font-weight: 600;
+      text-decoration: none; border: 1px solid var(--grass-light);
+      transition: all 0.2s; box-shadow: 0 0 12px rgba(106,175,90,0.2);
     }
     .nav-cta:hover { background: var(--grass-light); }
 
     /* HERO */
-    .hero {
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      padding: 52px 40px 32px;
-    }
+    .hero { position: relative; z-index: 10; text-align: center; padding: 52px 40px 28px; }
 
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(106,175,90,0.1);
-      border: 1px solid rgba(106,175,90,0.25);
-      border-radius: 99px;
-      padding: 7px 16px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-      margin-bottom: 20px;
-      backdrop-filter: blur(8px);
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(106,175,90,0.1); border: 1px solid rgba(106,175,90,0.25);
+      border-radius: 99px; padding: 7px 16px; font-size: 13px; font-weight: 500;
+      color: var(--muted); margin-bottom: 20px; backdrop-filter: blur(8px);
     }
-
-    .hero-badge .dot {
-      width: 6px; height: 6px;
-      background: var(--grass-light);
-      border-radius: 0;
-      animation: blink 2s step-end infinite;
-    }
-
+    .hero-badge .dot { width: 6px; height: 6px; background: var(--grass-light); border-radius: 0; animation: blink 2s step-end infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
     h1 {
       font-family: 'Press Start 2P', monospace;
       font-size: clamp(18px, 3vw, 34px);
-      line-height: 1.4;
-      margin-bottom: 12px;
-      color: var(--text);
+      line-height: 1.4; margin-bottom: 12px; color: var(--text);
       text-shadow: 0 0 40px rgba(106,175,90,0.4), 2px 2px 0 rgba(0,0,0,0.8);
     }
-
     h1 .green { color: var(--grass-light); }
-    h1 .gold  { color: var(--gold); text-shadow: 0 0 20px rgba(245,158,11,0.5), 2px 2px 0 rgba(0,0,0,0.8); }
+    h1 .gold { color: var(--gold); text-shadow: 0 0 20px rgba(245,158,11,0.5), 2px 2px 0 rgba(0,0,0,0.8); }
 
-    .hero-sub {
-      font-size: 15px;
-      color: rgba(134,239,172,0.7);
-      margin-bottom: 24px;
-    }
+    .hero-sub { font-size: 15px; color: rgba(134,239,172,0.7); margin-bottom: 20px; }
 
-    /* XP BAR */
-    .xp-wrap { display: inline-block; margin-bottom: 32px; }
+    .xp-wrap { display: inline-block; margin-bottom: 28px; }
     .xp-label { font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--muted); margin-bottom: 6px; text-align: left; }
     .xp-bar { width: 260px; height: 12px; background: rgba(0,0,0,0.6); border: 1px solid rgba(106,175,90,0.3); border-radius: 2px; overflow: hidden; }
     .xp-fill { height: 100%; background: linear-gradient(90deg, var(--grass), var(--grass-light)); width: 0; animation: xpFill 1.5s ease forwards 0.5s; box-shadow: 0 0 8px rgba(106,175,90,0.6); }
     @keyframes xpFill { to { width: 35%; } }
 
     /* SECTION */
-    .section {
-      position: relative;
-      z-index: 10;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 32px 100px;
-    }
+    .section { position: relative; z-index: 10; max-width: 100%; padding: 0 20px 80px; }
 
-    .section-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
+    .section-header { text-align: center; margin-bottom: 20px; }
+    .section-tag { font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--grass-light); letter-spacing: 0.1em; margin-bottom: 8px; display: block; }
+    .section-title { font-size: 26px; font-weight: 800; color: var(--text); }
 
-    .section-tag {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 8px;
-      color: var(--grass-light);
-      letter-spacing: 0.1em;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .section-title {
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--text);
-    }
-
-    /* CARDS ROW */
+    /* CARDS GRID — 3 columns full width */
     .cards {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      gap: 14px;
     }
 
-    /* SWITZERLAND-STYLE CARD */
+    /* CARD — split layout */
     .card {
       background: rgba(15,30,15,0.6);
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 20px;
       overflow: hidden;
       text-decoration: none;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 180px;
+      grid-template-columns: 55% 45%;
+      min-height: 200px;
       backdrop-filter: blur(20px);
       transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
       position: relative;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
     .card:hover {
-      transform: translateY(-6px) scale(1.01);
-      border-color: rgba(106,175,90,0.4);
-      box-shadow: 0 20px 48px rgba(0,0,0,0.5), 0 0 20px rgba(106,175,90,0.1), inset 0 1px 0 rgba(255,255,255,0.1);
+      transform: translateY(-5px) scale(1.01);
+      border-color: rgba(106,175,90,0.45);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.5), 0 0 24px rgba(106,175,90,0.12);
     }
 
-    /* LEFT TEXT SIDE */
+    /* LEFT */
     .card-left {
-      padding: 20px 16px 20px 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      padding: 22px 16px 22px 22px;
+      display: flex; flex-direction: column; justify-content: space-between;
     }
 
-    .card-rarity {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 7px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
+    .card-rarity { font-family: 'Press Start 2P', monospace; font-size: 7px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
     .rarity-rare     { color: #60a5fa; }
     .rarity-uncommon { color: var(--grass-light); }
     .rarity-unknown  { color: #6b7280; }
 
-    .card-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 6px;
-      line-height: 1.3;
-      letter-spacing: -0.01em;
-    }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 7px; line-height: 1.3; letter-spacing: -0.01em; }
+    .card-desc { font-size: 12px; color: rgba(134,239,172,0.55); line-height: 1.5; margin-bottom: 14px; flex: 1; }
 
-    .card-desc {
-      font-size: 12px;
-      color: rgba(134,239,172,0.55);
-      line-height: 1.5;
-      margin-bottom: 12px;
-      flex: 1;
-    }
-
-    .card-bottom {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
+    .card-bottom { display: flex; flex-direction: column; gap: 8px; }
     .pills { display: flex; gap: 4px; flex-wrap: wrap; }
     .pill {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 6px;
-      padding: 3px 6px;
-      background: rgba(106,175,90,0.08);
-      color: var(--muted);
-      border: 1px solid rgba(106,175,90,0.15);
-      border-radius: 3px;
+      font-family: 'Press Start 2P', monospace; font-size: 6px;
+      padding: 3px 6px; background: rgba(106,175,90,0.08);
+      color: var(--muted); border: 1px solid rgba(106,175,90,0.15); border-radius: 3px;
     }
 
     .open-btn {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 7px;
-      padding: 7px 12px;
-      background: var(--grass);
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      border: 1px solid var(--grass-light);
-      transition: all 0.2s;
-      display: inline-block;
-      text-align: center;
+      font-family: 'Press Start 2P', monospace; font-size: 7px;
+      padding: 8px 12px; background: var(--grass); color: white;
+      text-decoration: none; border-radius: 8px; border: 1px solid var(--grass-light);
+      transition: all 0.2s; display: inline-block; text-align: center;
       box-shadow: 0 0 10px rgba(106,175,90,0.2);
     }
-
     .open-btn:hover { background: var(--grass-light); box-shadow: 0 0 16px rgba(106,175,90,0.4); }
 
     /* RIGHT IMAGE SIDE */
+    /* To add your own image, replace the background-image url inside each .card-right */
     .card-right {
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
       border-radius: 0 18px 18px 0;
     }
 
-    .card-right img, .card-right .card-emoji {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    /* Default bg — override per card below */
+    .card-right {
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Fade from left into image */
+    .card-right::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(15,30,15,0.92) 0%, rgba(15,30,15,0.3) 60%, transparent 100%);
+      z-index: 2; pointer-events: none;
     }
 
     .card-emoji {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 52px;
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px; z-index: 1;
     }
 
-    /* FADE from left */
-    .card-right::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, rgba(15,30,15,0.9) 0%, transparent 50%);
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    /* LANTERN GLOW */
     .lantern {
-      position: absolute;
-      top: 10px; right: 10px;
-      font-size: 16px;
-      z-index: 3;
+      position: absolute; top: 10px; right: 10px;
+      font-size: 18px; z-index: 3;
       filter: drop-shadow(0 0 6px rgba(252,211,77,0.9));
       animation: flicker 3s ease-in-out infinite;
     }
-
     @keyframes flicker {
       0%,100%{opacity:1;filter:drop-shadow(0 0 6px rgba(252,211,77,0.9))}
       50%{opacity:0.8;filter:drop-shadow(0 0 12px rgba(252,211,77,1))}
     }
 
-    /* COMING SOON CARD */
+    /* COMING SOON */
     .card-soon {
       background: rgba(10,20,10,0.4);
       border: 1px dashed rgba(106,175,90,0.15);
-      min-height: 180px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      border-radius: 20px;
-      backdrop-filter: blur(8px);
+      min-height: 200px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+      border-radius: 20px; backdrop-filter: blur(8px);
     }
-
     .card-soon:hover { transform: none; box-shadow: none; border-color: rgba(106,175,90,0.25); }
-
-    .card-soon p {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 8px;
-      color: rgba(134,239,172,0.35);
-      text-align: center;
-      line-height: 2;
-    }
+    .card-soon p { font-family: 'Press Start 2P', monospace; font-size: 8px; color: rgba(134,239,172,0.35); text-align: center; line-height: 2; }
 
     /* FOOTER */
     footer {
-      position: relative;
-      z-index: 10;
-      background: rgba(5,10,5,0.9);
-      backdrop-filter: blur(12px);
+      position: relative; z-index: 10;
+      background: rgba(5,10,5,0.9); backdrop-filter: blur(12px);
       border-top: 1px solid rgba(106,175,90,0.1);
       padding: 24px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
     }
-
     footer p { font-size: 13px; color: rgba(134,239,172,0.5); }
     footer a { color: var(--gold); text-decoration: none; }
     footer a:hover { color: var(--glow); }
 
-    /* HOTBAR */
-    .hotbar {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 200;
-      display: flex;
-      gap: 4px;
-      background: rgba(5,10,5,0.85);
-      backdrop-filter: blur(12px);
-      padding: 6px;
-      border: 1px solid rgba(106,175,90,0.2);
-      border-radius: 8px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    }
-
-    .hslot {
-      width: 46px; height: 46px;
-      background: rgba(26,46,26,0.8);
-      border: 1px solid rgba(106,175,90,0.15);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
-    .hslot:hover, .hslot.active {
-      background: rgba(106,175,90,0.15);
-      border-color: rgba(106,175,90,0.4);
-      box-shadow: 0 0 10px rgba(106,175,90,0.2);
-    }
-
     @media (max-width: 900px) {
       .cards { grid-template-columns: 1fr; }
       .card { grid-template-columns: 1fr; }
-      .card-right { height: 120px; border-radius: 0 0 18px 18px; }
+      .card-right { height: 130px; border-radius: 0 0 18px 18px; }
       nav { padding: 0 16px; }
       .nav-link { display: none; }
-      .section { padding: 0 16px 100px; }
+      .section { padding: 0 12px 80px; }
     }
   </style>
 </head>
@@ -448,7 +259,6 @@
   <div class="bg-overlay"></div>
   <div class="particles" id="particles"></div>
 
-  <!-- NAV -->
   <nav>
     <a href="https://github.com/Aditya1809-08" class="nav-logo">
       <div class="logo-pixel"><div></div><div></div><div></div><div></div></div>
@@ -461,7 +271,6 @@
     </div>
   </nav>
 
-  <!-- HERO -->
   <div class="hero">
     <div class="hero-badge"><div class="dot"></div> Building in Public — Survival Mode 🌿</div>
     <h1><span class="green">Mini</span> <span class="gold">CSS</span><br/>Projects</h1>
@@ -472,7 +281,6 @@
     </div>
   </div>
 
-  <!-- SECTION -->
   <div class="section">
     <div class="section-header">
       <span class="section-tag">// inventory</span>
@@ -481,7 +289,10 @@
 
     <div class="cards">
 
-      <!-- TERMINAL -->
+      <!-- =====================================================
+           CARD 1 — TERMINAL
+           To add a bg image: change style="background-image: url('YOUR-IMAGE.jpg')"
+           ===================================================== -->
       <a class="card" href="./terminal/">
         <div class="card-left">
           <div>
@@ -498,13 +309,17 @@
             <span class="open-btn">[ Open ]</span>
           </div>
         </div>
-        <div class="card-right">
-          <div class="card-emoji" style="background: linear-gradient(135deg,#050510,#0d1a10);">🖥️</div>
+        <div class="card-right" style="background-image: url('YOUR-IMAGE-1.jpg'); background-color: #050510;">
+          <!-- Remove the card-emoji div below once you add a real bg image -->
+          <div class="card-emoji">🖥️</div>
           <span class="lantern">🏮</span>
         </div>
       </a>
 
-      <!-- HELLO WORLD -->
+      <!-- =====================================================
+           CARD 2 — HELLO WORLD
+           To add a bg image: change style="background-image: url('YOUR-IMAGE.jpg')"
+           ===================================================== -->
       <a class="card" href="https://aditya1809-08.github.io/Hello-World/" target="_blank">
         <div class="card-left">
           <div>
@@ -520,8 +335,9 @@
             <span class="open-btn">[ Open ]</span>
           </div>
         </div>
-        <div class="card-right">
-          <div class="card-emoji" style="background: linear-gradient(135deg,#0a0010,#200030);">🌍</div>
+        <div class="card-right" style="background-image: url('YOUR-IMAGE-2.jpg'); background-color: #0a0010;">
+          <!-- Remove the card-emoji div below once you add a real bg image -->
+          <div class="card-emoji">🌍</div>
           <span class="lantern">🏮</span>
         </div>
       </a>
@@ -535,7 +351,6 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
   <footer>
     <p>Crafted by <a href="https://github.com/Aditya1809-08">Aditya Srivastav</a> — 12th grader 🌿</p>
     <p><a href="https://github.com/Aditya1809-08/mini-css-projects">View Source →</a></p>
