@@ -4,301 +4,190 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calculator — Aditya Srivastav</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Press Start 2P', monospace;
-      background: #1a2e1a;
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      image-rendering: pixelated;
+      overflow: hidden;
     }
 
-    /* BG */
-    .bg {
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(40,80,40,0.15) 2px, transparent 2px),
-        linear-gradient(90deg, rgba(40,80,40,0.15) 2px, transparent 2px);
-      background-size: 32px 32px;
-      z-index: 0;
+    /* VIDEO BG */
+    .video-bg {
+      position: fixed; inset: 0; z-index: 0;
+      object-fit: cover; width: 100%; height: 100%;
     }
 
-    /* WRAPPER */
-    .wrapper {
+    /* DARK OVERLAY */
+    .overlay {
+      position: fixed; inset: 0; z-index: 1;
+      background: rgba(0,0,0,0.25);
+      backdrop-filter: blur(2px);
+    }
+
+    /* CALC WRAPPER */
+    .calc-wrap {
       position: relative; z-index: 10;
       display: flex; flex-direction: column; align-items: center; gap: 16px;
     }
 
-    /* TITLE */
-    .title {
-      font-size: 11px;
-      color: #6aaf5a;
-      text-shadow: 2px 2px 0 #1a2e1a;
-      letter-spacing: 0.1em;
-    }
-
-    /* CALCULATOR BODY */
+    /* CALCULATOR */
     .calc {
-      background: #2a2a2a;
-      border-top: 4px solid #555;
-      border-left: 4px solid #555;
-      border-bottom: 4px solid #111;
-      border-right: 4px solid #111;
-      padding: 16px;
+      background: #f5f0e8;
+      border-radius: 28px;
       width: 320px;
+      box-shadow: 6px 6px 0 #2a2a2a, 0 20px 60px rgba(0,0,0,0.3);
+      border: 2.5px solid #2a2a2a;
+      overflow: hidden;
     }
 
     /* DISPLAY */
     .display {
-      background: #1a1f1a;
-      border-top: 3px solid #111;
-      border-left: 3px solid #111;
-      border-bottom: 3px solid #555;
-      border-right: 3px solid #555;
-      padding: 12px 14px;
-      margin-bottom: 14px;
-      min-height: 80px;
+      background: #faf7f2;
+      padding: 28px 24px 20px;
+      min-height: 120px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: flex-end;
+      border-bottom: 2px solid #2a2a2a;
     }
 
     .display-expr {
-      font-size: 9px;
-      color: #4a7c3f;
-      min-height: 14px;
-      word-break: break-all;
-      text-align: right;
+      font-size: 14px;
+      color: #999;
+      font-weight: 400;
+      min-height: 20px;
+      margin-bottom: 4px;
     }
 
     .display-main {
-      font-size: 22px;
-      color: #6aaf5a;
-      text-shadow: 0 0 10px rgba(106,175,90,0.4);
+      font-size: 52px;
+      font-weight: 800;
+      color: #1a1a1a;
+      line-height: 1;
       word-break: break-all;
       text-align: right;
-      line-height: 1.3;
     }
 
-    /* BUTTON GRID */
-    .btn-grid {
+    /* KEYPAD */
+    .keypad {
+      background: #a8ddd0;
+      padding: 16px;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
+      gap: 10px;
     }
 
-    /* BASE BUTTON */
+    /* BUTTON */
     .btn {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 11px;
-      padding: 14px 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 18px 8px;
+      background: #f5f0e8;
+      border: 2px solid #2a2a2a;
+      border-radius: 14px;
       cursor: pointer;
-      text-align: center;
+      color: #1a1a1a;
+      box-shadow: 3px 3px 0 #2a2a2a;
+      transition: transform 0.08s, box-shadow 0.08s;
       user-select: none;
-      transition: none;
       line-height: 1;
-      border: none;
-      outline: none;
     }
 
-    /* PIXEL PRESS EFFECT */
-    .btn:active { transform: translate(2px, 2px); }
+    .btn:hover { background: #eeeae0; }
+    .btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #2a2a2a; }
 
-    /* NUMBER BUTTONS — stone */
-    .btn-num {
-      background: #7f7f7f;
-      color: #fff;
-      border-top: 3px solid #aaa;
-      border-left: 3px solid #aaa;
-      border-bottom: 3px solid #333;
-      border-right: 3px solid #333;
-      text-shadow: 1px 1px 0 #000;
-    }
-    .btn-num:hover { background: #8f8f8f; }
-    .btn-num:active {
-      border-top: 3px solid #333;
-      border-left: 3px solid #333;
-      border-bottom: 3px solid #aaa;
-      border-right: 3px solid #aaa;
-    }
-
-    /* OPERATOR BUTTONS — wood */
-    .btn-op {
-      background: #9c7a3c;
-      color: #fff3d0;
-      border-top: 3px solid #c49a4e;
-      border-left: 3px solid #c49a4e;
-      border-bottom: 3px solid #5a3e10;
-      border-right: 3px solid #5a3e10;
-      text-shadow: 1px 1px 0 #000;
-    }
-    .btn-op:hover { background: #b08040; }
-    .btn-op:active {
-      border-top: 3px solid #5a3e10;
-      border-left: 3px solid #5a3e10;
-      border-bottom: 3px solid #c49a4e;
-      border-right: 3px solid #c49a4e;
-    }
-
-    /* EQUALS BUTTON — grass */
-    .btn-eq {
-      background: #4a7c3f;
-      color: #d4f5c0;
-      border-top: 3px solid #6aaf5a;
-      border-left: 3px solid #6aaf5a;
-      border-bottom: 3px solid #1f4018;
-      border-right: 3px solid #1f4018;
-      text-shadow: 1px 1px 0 #000;
-      grid-column: span 2;
-    }
-    .btn-eq:hover { background: #5a9a4f; }
-    .btn-eq:active {
-      border-top: 3px solid #1f4018;
-      border-left: 3px solid #1f4018;
-      border-bottom: 3px solid #6aaf5a;
-      border-right: 3px solid #6aaf5a;
-    }
-
-    /* CLEAR BUTTON — redstone */
     .btn-clear {
-      background: #8b1a1a;
-      color: #ffaaaa;
-      border-top: 3px solid #c42020;
-      border-left: 3px solid #c42020;
-      border-bottom: 3px solid #3a0a0a;
-      border-right: 3px solid #3a0a0a;
-      text-shadow: 1px 1px 0 #000;
+      background: #ffb3b3;
+      color: #8b0000;
+      border-color: #8b0000;
+      box-shadow: 3px 3px 0 #8b0000;
     }
-    .btn-clear:hover { background: #a02020; }
-    .btn-clear:active {
-      border-top: 3px solid #3a0a0a;
-      border-left: 3px solid #3a0a0a;
-      border-bottom: 3px solid #c42020;
-      border-right: 3px solid #c42020;
-    }
+    .btn-clear:hover { background: #ffa0a0; }
+    .btn-clear:active { box-shadow: 1px 1px 0 #8b0000; }
 
-    /* DELETE BUTTON — dirt */
-    .btn-del {
-      background: #6b4423;
-      color: #e8c9a0;
-      border-top: 3px solid #8B5E3C;
-      border-left: 3px solid #8B5E3C;
-      border-bottom: 3px solid #3a1f0a;
-      border-right: 3px solid #3a1f0a;
-      text-shadow: 1px 1px 0 #000;
-    }
-    .btn-del:hover { background: #7a5030; }
-    .btn-del:active {
-      border-top: 3px solid #3a1f0a;
-      border-left: 3px solid #3a1f0a;
-      border-bottom: 3px solid #8B5E3C;
-      border-right: 3px solid #8B5E3C;
-    }
-
-    /* SPECIAL — diamond */
-    .btn-special {
-      background: #1a6b8a;
-      color: #a0e8f0;
-      border-top: 3px solid #2a9fcc;
-      border-left: 3px solid #2a9fcc;
-      border-bottom: 3px solid #0a3040;
-      border-right: 3px solid #0a3040;
-      text-shadow: 1px 1px 0 #000;
-    }
-    .btn-special:hover { background: #207a9a; }
-    .btn-special:active {
-      border-top: 3px solid #0a3040;
-      border-left: 3px solid #0a3040;
-      border-bottom: 3px solid #2a9fcc;
-      border-right: 3px solid #2a9fcc;
-    }
-
-    /* ZERO — span 2 */
-    .btn-zero { grid-column: span 2; }
-
-    /* FOOTER */
-    .footer {
-      font-size: 8px;
-      color: #4a7c3f;
-      text-align: center;
-      text-shadow: 1px 1px 0 #111;
+    .btn-eq {
+      background: #2a2a2a;
+      color: #f5f0e8;
+      grid-column: span 2;
+      font-size: 13px;
       letter-spacing: 0.05em;
+      box-shadow: 3px 3px 0 #555;
     }
+    .btn-eq:hover { background: #3a3a3a; }
+    .btn-eq:active { box-shadow: 1px 1px 0 #555; transform: translate(2px,2px); }
 
-    /* LEGEND */
-    .legend {
-      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
-      font-size: 7px; color: #555;
+    /* BACK LINK */
+    .back-link {
+      font-size: 12px; font-weight: 600;
+      color: white;
+      text-decoration: none;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 16px;
+      border-radius: 99px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: background 0.2s;
     }
-    .legend-item { display: flex; align-items: center; gap: 5px; }
-    .legend-dot { width: 10px; height: 10px; }
+    .back-link:hover { background: rgba(0,0,0,0.5); }
   </style>
 </head>
 <body>
 
-  <div class="bg"></div>
+  <!-- =============================================
+       REPLACE "YOUR-VIDEO.mp4" WITH YOUR FILENAME
+       Upload your video to the calculator/ folder
+       ============================================= -->
+  <video class="video-bg" autoplay muted loop playsinline>
+    <source src="Grace-led devotional ideas for people who love beauty for thoughtful sharing for peaceful hearts 🙏 - Pin-23362491813660369.mp4" type="video/mp4">
+  </video>
 
-  <div class="wrapper">
-    <div class="title">[ CRAFTING TABLE — CALC v1.0 ]</div>
+  <div class="overlay"></div>
+
+  <div class="calc-wrap">
 
     <div class="calc">
-      <!-- DISPLAY -->
       <div class="display">
         <div class="display-expr" id="expr"></div>
         <div class="display-main" id="display">0</div>
       </div>
 
-      <!-- BUTTONS -->
-      <div class="btn-grid">
-        <!-- Row 1 -->
+      <div class="keypad">
         <button class="btn btn-clear" onclick="clearAll()">AC</button>
-        <button class="btn btn-del" onclick="deleteLast()">DEL</button>
-        <button class="btn btn-special" onclick="appendToDisplay('%')">%</button>
-        <button class="btn btn-op" onclick="appendToDisplay('/')">÷</button>
+        <button class="btn" onclick="deleteLast()">DEL</button>
+        <button class="btn" onclick="appendToDisplay('%')">%</button>
+        <button class="btn" onclick="appendToDisplay('/')">÷</button>
 
-        <!-- Row 2 -->
-        <button class="btn btn-num" onclick="appendToDisplay('7')">7</button>
-        <button class="btn btn-num" onclick="appendToDisplay('8')">8</button>
-        <button class="btn btn-num" onclick="appendToDisplay('9')">9</button>
-        <button class="btn btn-op" onclick="appendToDisplay('*')">×</button>
+        <button class="btn" onclick="appendToDisplay('1')">1</button>
+        <button class="btn" onclick="appendToDisplay('2')">2</button>
+        <button class="btn" onclick="appendToDisplay('3')">3</button>
+        <button class="btn" onclick="appendToDisplay('*')">×</button>
 
-        <!-- Row 3 -->
-        <button class="btn btn-num" onclick="appendToDisplay('4')">4</button>
-        <button class="btn btn-num" onclick="appendToDisplay('5')">5</button>
-        <button class="btn btn-num" onclick="appendToDisplay('6')">6</button>
-        <button class="btn btn-op" onclick="appendToDisplay('-')">−</button>
+        <button class="btn" onclick="appendToDisplay('4')">4</button>
+        <button class="btn" onclick="appendToDisplay('5')">5</button>
+        <button class="btn" onclick="appendToDisplay('6')">6</button>
+        <button class="btn" onclick="appendToDisplay('+')">+</button>
 
-        <!-- Row 4 -->
-        <button class="btn btn-num" onclick="appendToDisplay('1')">1</button>
-        <button class="btn btn-num" onclick="appendToDisplay('2')">2</button>
-        <button class="btn btn-num" onclick="appendToDisplay('3')">3</button>
-        <button class="btn btn-op" onclick="appendToDisplay('+')">+</button>
+        <button class="btn" onclick="appendToDisplay('7')">7</button>
+        <button class="btn" onclick="appendToDisplay('8')">8</button>
+        <button class="btn" onclick="appendToDisplay('9')">9</button>
+        <button class="btn" onclick="appendToDisplay('-')">−</button>
 
-        <!-- Row 5 -->
-        <button class="btn btn-special" onclick="toggleSign()">+/-</button>
-        <button class="btn btn-num btn-zero" onclick="appendToDisplay('0')">0</button>
-        <button class="btn btn-num" onclick="appendToDisplay('.')">.</button>
-
-        <!-- Row 6 — equals spans full -->
-        <button class="btn btn-eq btn-zero" onclick="calculate()">=</button>
+        <button class="btn btn-eq" onclick="calculate()">RESULT</button>
+        <button class="btn" onclick="appendToDisplay('0')">0</button>
+        <button class="btn" onclick="appendToDisplay('.')">.</button>
       </div>
     </div>
 
-    <!-- LEGEND -->
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#7f7f7f"></div>Stone = Numbers</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#9c7a3c"></div>Wood = Operators</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#4a7c3f"></div>Grass = Equals</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#8b1a1a"></div>Redstone = Clear</div>
-    </div>
+    <a href="../" class="back-link">← Back to Projects</a>
 
-    <div class="footer">crafted by aditya srivastav 🌿</div>
   </div>
 
   <script>
@@ -309,13 +198,10 @@
     const display = document.getElementById('display');
     const exprEl = document.getElementById('expr');
 
-    function updateDisplay(val) {
-      display.textContent = val || '0';
-    }
+    function updateDisplay(val) { display.textContent = val || '0'; }
 
     function appendToDisplay(val) {
       const ops = ['+', '-', '*', '/'];
-
       if (justCalculated) {
         if (ops.includes(val)) {
           expression = currentInput + val;
@@ -330,8 +216,6 @@
         updateDisplay(currentInput || val);
         return;
       }
-
-      // Prevent double operators
       if (ops.includes(val) && ops.includes(currentInput.slice(-1))) {
         currentInput = currentInput.slice(0, -1) + val;
         expression = currentInput;
@@ -339,22 +223,16 @@
         updateDisplay(val);
         return;
       }
-
-      // Prevent double decimal
       if (val === '.') {
         const parts = currentInput.split(/[\+\-\*\/]/);
-        const lastPart = parts[parts.length - 1];
-        if (lastPart.includes('.')) return;
+        if (parts[parts.length - 1].includes('.')) return;
       }
-
       currentInput += val;
-
       if (ops.includes(val)) {
         expression = currentInput;
         exprEl.textContent = expression;
         updateDisplay(val);
       } else {
-        // Show only the current number being typed
         const parts = currentInput.split(/(?<=[\+\-\*\/])/);
         updateDisplay(parts[parts.length - 1] || '0');
         exprEl.textContent = expression;
@@ -362,35 +240,15 @@
     }
 
     function clearAll() {
-      currentInput = '';
-      expression = '';
-      justCalculated = false;
-      updateDisplay('0');
-      exprEl.textContent = '';
+      currentInput = ''; expression = ''; justCalculated = false;
+      updateDisplay('0'); exprEl.textContent = '';
     }
 
     function deleteLast() {
       if (justCalculated) { clearAll(); return; }
       currentInput = currentInput.slice(0, -1);
-      const ops = ['+', '-', '*', '/'];
       const parts = currentInput.split(/(?<=[\+\-\*\/])/);
       updateDisplay(parts[parts.length - 1] || '0');
-    }
-
-    function toggleSign() {
-      if (!currentInput) return;
-      const ops = ['+', '-', '*', '/'];
-      const parts = currentInput.split(/(?<=[\+\-\*\/])/);
-      let lastNum = parts[parts.length - 1];
-      if (!lastNum || ops.includes(lastNum)) return;
-      if (lastNum.startsWith('-')) {
-        lastNum = lastNum.slice(1);
-      } else {
-        lastNum = '-' + lastNum;
-      }
-      parts[parts.length - 1] = lastNum;
-      currentInput = parts.join('');
-      updateDisplay(lastNum);
     }
 
     function calculate() {
@@ -401,23 +259,17 @@
         let result = Function('"use strict"; return (' + currentInput.replace(/%/g, '/100') + ')')();
         result = parseFloat(result.toFixed(10));
         if (isNaN(result) || !isFinite(result)) {
-          updateDisplay('ERROR');
-          currentInput = '';
+          updateDisplay('ERROR'); currentInput = '';
         } else {
-          updateDisplay(result);
-          currentInput = String(result);
+          updateDisplay(result); currentInput = String(result);
         }
         justCalculated = true;
       } catch {
-        updateDisplay('ERROR');
-        currentInput = '';
-        expression = '';
-        exprEl.textContent = 'SYNTAX ERROR';
-        justCalculated = true;
+        updateDisplay('ERROR'); currentInput = '';
+        exprEl.textContent = 'SYNTAX ERROR'; justCalculated = true;
       }
     }
 
-    // Keyboard support
     document.addEventListener('keydown', (e) => {
       if (e.key >= '0' && e.key <= '9') appendToDisplay(e.key);
       else if (e.key === '+') appendToDisplay('+');
