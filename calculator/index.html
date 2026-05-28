@@ -17,16 +17,19 @@
       overflow: hidden;
     }
 
-    /* VIDEO BG */
+    /* =============================================
+       VIDEO BACKGROUND
+       Replace YOUR-VIDEO.mp4 with your video file
+       ============================================= */
     .video-bg {
       position: fixed; inset: 0; z-index: 0;
       object-fit: cover; width: 100%; height: 100%;
     }
 
-    /* DARK OVERLAY */
-    .overlay {
+    /* Dark overlay on top of video */
+    .video-overlay {
       position: fixed; inset: 0; z-index: 1;
-      background: rgba(0,0,0,0.25);
+      background: rgba(0,0,0,0.35);
       backdrop-filter: blur(2px);
     }
 
@@ -51,28 +54,20 @@
       background: #faf7f2;
       padding: 28px 24px 20px;
       min-height: 120px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-items: flex-end;
+      display: flex; flex-direction: column;
+      justify-content: flex-end; align-items: flex-end;
       border-bottom: 2px solid #2a2a2a;
     }
 
     .display-expr {
-      font-size: 14px;
-      color: #999;
-      font-weight: 400;
-      min-height: 20px;
-      margin-bottom: 4px;
+      font-size: 14px; color: #999;
+      font-weight: 400; min-height: 20px; margin-bottom: 4px;
     }
 
     .display-main {
-      font-size: 52px;
-      font-weight: 800;
-      color: #1a1a1a;
-      line-height: 1;
-      word-break: break-all;
-      text-align: right;
+      font-size: 52px; font-weight: 800;
+      color: #1a1a1a; line-height: 1;
+      word-break: break-all; text-align: right;
     }
 
     /* KEYPAD */
@@ -87,69 +82,54 @@
     /* BUTTON */
     .btn {
       font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 15px; font-weight: 600;
       padding: 18px 8px;
       background: #f5f0e8;
       border: 2px solid #2a2a2a;
       border-radius: 14px;
-      cursor: pointer;
-      color: #1a1a1a;
+      cursor: pointer; color: #1a1a1a;
       box-shadow: 3px 3px 0 #2a2a2a;
       transition: transform 0.08s, box-shadow 0.08s;
-      user-select: none;
-      line-height: 1;
+      user-select: none; line-height: 1;
     }
 
     .btn:hover { background: #eeeae0; }
-    .btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #2a2a2a; }
+    .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #2a2a2a; }
 
     .btn-clear {
-      background: #ffb3b3;
-      color: #8b0000;
-      border-color: #8b0000;
-      box-shadow: 3px 3px 0 #8b0000;
+      background: #ffb3b3; color: #8b0000;
+      border-color: #8b0000; box-shadow: 3px 3px 0 #8b0000;
     }
     .btn-clear:hover { background: #ffa0a0; }
     .btn-clear:active { box-shadow: 1px 1px 0 #8b0000; }
 
     .btn-eq {
-      background: #2a2a2a;
-      color: #f5f0e8;
-      grid-column: span 2;
-      font-size: 13px;
+      background: #2a2a2a; color: #f5f0e8;
+      grid-column: span 2; font-size: 13px;
       letter-spacing: 0.05em;
       box-shadow: 3px 3px 0 #555;
     }
     .btn-eq:hover { background: #3a3a3a; }
-    .btn-eq:active { box-shadow: 1px 1px 0 #555; transform: translate(2px,2px); }
+    .btn-eq:active { box-shadow: 1px 1px 0 #555; transform: translate(2px, 2px); }
 
     /* BACK LINK */
     .back-link {
-      font-size: 12px; font-weight: 600;
-      color: white;
+      font-size: 12px; font-weight: 500;
+      color: rgba(255,255,255,0.7);
       text-decoration: none;
-      background: rgba(0,0,0,0.3);
-      padding: 8px 16px;
-      border-radius: 99px;
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.2);
-      transition: background 0.2s;
+      display: flex; align-items: center; gap: 6px;
+      transition: color 0.2s;
     }
-    .back-link:hover { background: rgba(0,0,0,0.5); }
+    .back-link:hover { color: white; }
   </style>
 </head>
 <body>
 
-  <!-- =============================================
-       REPLACE "YOUR-VIDEO.mp4" WITH YOUR FILENAME
-       Upload your video to the calculator/ folder
-       ============================================= -->
+  <!-- VIDEO BACKGROUND — replace YOUR-VIDEO.mp4 with your filename -->
   <video class="video-bg" autoplay muted loop playsinline>
     <source src="Grace-led devotional ideas for people who love beauty for thoughtful sharing for peaceful hearts 🙏 - Pin-23362491813660369.mp4" type="video/mp4">
   </video>
-
-  <div class="overlay"></div>
+  <div class="video-overlay"></div>
 
   <div class="calc-wrap">
 
