@@ -43,42 +43,44 @@
       gap: 16px;
     }
 
-    .calc {
-      background: #f5f0e8;
-      border-radius: 28px;
-      width: 320px;
-      box-shadow: 6px 6px 0 #2a2a2a, 0 20px 60px rgba(0,0,0,0.3);
-      border: 2.5px solid #2a2a2a;
-      overflow: hidden;
-    }
+   .calc {
+  background: rgba(245,240,232,0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 28px;
+  width: 320px;
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.5), 0 20px 60px rgba(0,0,0,0.3);
+  border: 2px solid rgba(255,255,255,0.25);
+  overflow: hidden;
+}
 
     .display {
-      background: #faf7f2;
-      padding: 28px 24px 20px;
-      min-height: 120px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-items: flex-end;
-      border-bottom: 2px solid #2a2a2a;
-    }
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  padding: 20px 24px 16px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  border-bottom: 2px solid rgba(255,255,255,0.3);
+}
 
-    .display-expr {
-      font-size: 14px;
-      color: #999;
-      font-weight: 400;
-      min-height: 20px;
-      margin-bottom: 4px;
-    }
+   .display-expr {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 400;
+  min-height: 20px;
+  margin-bottom: 4px;
+}
 
     .display-main {
-      font-size: 52px;
-      font-weight: 800;
-      color: #1a1a1a;
-      line-height: 1;
-      word-break: break-all;
-      text-align: right;
-    }
+  font-size: 52px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  word-break: break-all;
+  text-align: right;
+}
 
     .keypad {
       background: #a8ddd0;
