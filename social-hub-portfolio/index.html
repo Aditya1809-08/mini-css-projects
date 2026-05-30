@@ -1,1 +1,438 @@
+import React, { useState } from 'react';
 
+// =========================================================================
+//  EDIT HERE: PASTE YOUR REAL FOLLOWERS, FOLLOWING, PROFILE ICONS, AND BANNERS!
+// =========================================================================
+const SOCIAL_PROFILES_CONFIG = {
+  celsior: {
+    id: 'celsior',
+    name: 'celsior',
+    handle: '@celsiorluxe',
+    bio: 'Celsior Luxe is a streetwear brand where fashion levels up like an overpowered anime protagonist and the blockchain is just another playground for digital warriors.',
+    
+    following: 500,       // <-- Enter your real Celsior / General following count here
+    followers: 22200,     // <-- Enter your real Celsior / General followers count here
+    
+    // PROFILE ICON: The circular overlapping badge on the left (defaults to the white "SI" monogram if empty)
+    profileIconUrl: "",   // <-- Paste your custom Logo/Avatar image URL here (e.g. "https://example.com/avatar.png")
+    
+    // BANNER PANEL: The large background image occupying the top half of the card
+    bannerUrl: "",        // <-- Paste your custom Banner image URL here (or leave empty "" for fallback background)
+  },
+  instagram: {
+    id: 'instagram',
+    name: 'celsior.luxe',
+    handle: '@celsiorluxe',
+    bio: 'Streetwear & high-fidelity drops. Elevating aesthetics through digital-physical fashion concepts. Check out our latest lookbooks in the feed.',
+    
+    following: 421,       // <-- Enter your real Instagram following count here
+    followers: 89400,     // <-- Enter your real Instagram followers count here
+    
+    profileIconUrl: "",   // <-- Paste your custom Instagram profile icon/picture here
+    bannerUrl: "",        // <-- Paste your custom Instagram Banner panel image here
+  },
+  linkedin: {
+    id: 'linkedin',
+    name: 'Samson Akintunde',
+    handle: 'linkedin.com/in/celsior',
+    bio: 'Founder & Creative Director at Celsior Luxe. Crafting hybrid physical-digital apparel systems & tutoring emerging brand designers on digital architecture.',
+    
+    following: 812,       // <-- Enter your real LinkedIn connections/following here
+    followers: 12400,     // <-- Enter your real LinkedIn followers here
+    
+    profileIconUrl: "",   // <-- Paste your custom LinkedIn profile icon/picture here
+    bannerUrl: "",        // <-- Paste your custom LinkedIn Banner panel image here
+  },
+  github: {
+    id: 'github',
+    name: 'celsior-digital',
+    handle: 'github.com/celsior-luxe',
+    bio: 'Open source tailor systems, procedural streetwear meshes, and React-based design configurations for digital storefront warriors.',
+    
+    following: 34,        // <-- Enter your real GitHub following count here
+    followers: 4600,      // <-- Enter your real GitHub followers count here
+    
+    profileIconUrl: "",   // <-- Paste your custom GitHub profile icon/avatar here
+    bannerUrl: "",        // <-- Paste your custom GitHub Banner panel image here
+  }
+};
+
+const Icons = {
+  Instagram: ({ className = "w-5 h-5" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+    </svg>
+  ),
+  LinkedIn: ({ className = "w-5 h-5" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+      <rect x="2" y="9" width="4" height="12"></rect>
+      <circle cx="4" cy="4" r="2"></circle>
+    </svg>
+  ),
+  GitHub: ({ className = "w-5 h-5" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+    </svg>
+  ),
+  Twitter: ({ className = "w-4 h-4" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+    </svg>
+  ),
+  Facebook: ({ className = "w-4 h-4" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+    </svg>
+  ),
+  Verified: () => (
+    <svg className="w-5 h-5 text-blue-500 fill-current" viewBox="0 0 24 24">
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="white"/>
+      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+    </svg>
+  ),
+  ExternalLink: () => (
+    <svg className="w-4 h-4 text-zinc-400 group-hover:text-zinc-900 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+      <polyline points="15 3 21 3 21 9"></polyline>
+      <line x1="10" y1="14" x2="21" y2="3"></line>
+    </svg>
+  )
+};
+
+export default function App() {
+  const [activePlatform, setActivePlatform] = useState('celsior'); 
+  const [followingStatus, setFollowingStatus] = useState({
+    celsior: false,
+    instagram: false,
+    linkedin: false,
+    github: false
+  });
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const triggerToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 2500);
+  };
+
+  const toggleFollow = (platformId) => {
+    setFollowingStatus(prev => {
+      const updated = !prev[platformId];
+      triggerToast(updated ? `Following ${platformId}!` : `Unfollowed ${platformId}`);
+      return { ...prev, [platformId]: updated };
+    });
+  };
+
+  const getBannerStyle = (platformId, customUrl) => {
+    if (customUrl) {
+      return { backgroundImage: `url(${customUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' };
+    }
+
+    // High fidelity beautiful background fallbacks matching original Celsior look
+    switch (platformId) {
+      case 'instagram':
+        return { background: 'linear-gradient(135deg, #f59e0b, #ec4899, #8b5cf6)' };
+      case 'linkedin':
+        return { background: 'linear-gradient(to right, #1e3a8a, #172554)' };
+      case 'github':
+        return { background: 'linear-gradient(to bottom, #18181b, #09090b)' };
+      default:
+        return { background: '#141414' };
+    }
+  };
+
+  const currentProfile = SOCIAL_PROFILES_CONFIG[activePlatform];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-[#E0E0E0] via-[#EDEDED] to-[#F5F5F5] font-sans flex flex-col justify-between p-6 md:p-12 text-zinc-800 selection:bg-black selection:text-white relative overflow-x-hidden">
+      
+      {/* Toast notifications */}
+      {toastMessage && (
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 bg-black/95 text-white text-xs tracking-wider uppercase py-2.5 px-6 rounded-full shadow-lg border border-white/10 backdrop-blur-md animate-fade-in">
+          {toastMessage}
+        </div>
+      )}
+
+      {/* Presentation Header matching image_666da8.jpg */}
+      <header className="max-w-6xl w-full mx-auto flex justify-between items-center text-[10px] md:text-xs tracking-widest text-zinc-500 uppercase select-none pb-4">
+        <div>Logo & Visual Design</div>
+        <div className="font-semibold text-zinc-800">CELSIOR LUXE</div>
+        <div className="lowercase hover:text-zinc-800 transition-colors">samsonakintunde00@gmail.com</div>
+      </header>
+
+      {/* Main Grid container containing mockup card and directory deck */}
+      <main className="max-w-5xl w-full mx-auto my-auto grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 items-center py-8">
+        
+        {/* ==============================================
+            LEFT COLUMN: THE INTERACTIVE MOCKUP CARD
+            ============================================== */}
+        <div className="flex justify-center md:justify-end">
+          <div className="w-full max-w-[380px] rounded-[48px] overflow-hidden bg-white shadow-[0_24px_50px_rgba(0,0,0,0.06)] border border-white/60 relative transition-all duration-500">
+            
+            {/* Top Half Banner Panel */}
+            <div 
+              className="h-64 relative flex flex-col justify-end items-center p-6 select-none overflow-hidden transition-all duration-500"
+              style={getBannerStyle(currentProfile.id, currentProfile.bannerUrl)}
+            >
+              <div className="absolute inset-0 bg-black/10 mix-blend-multiply"></div>
+              
+              {/* Dynamic banner content & social links overlay */}
+              <div className="relative z-10 w-full h-full flex flex-col justify-end items-end transition-all duration-300">
+                <div className="absolute bottom-3 right-4 flex gap-2.5 text-white/70 z-10">
+                  <Icons.Instagram className="w-3.5 h-3.5 hover:text-white transition-colors cursor-pointer" />
+                  <Icons.Twitter className="w-3.5 h-3.5 hover:text-white transition-colors cursor-pointer" />
+                  <Icons.Facebook className="w-3.5 h-3.5 hover:text-white transition-colors cursor-pointer" />
+                </div>
+              </div>
+            </div>
+
+            {/* Overlap Position Row (Zero height structure layout) */}
+            <div className="relative px-8 h-0 z-20">
+              
+              {/* Overlapping Avatar Profile Circle (profileIconUrl gets loaded here) */}
+              <div className="absolute left-8 -top-10 w-20 h-20 rounded-full border-[6px] border-white bg-black flex items-center justify-center shadow-md select-none transition-all duration-500 transform hover:scale-105 overflow-hidden">
+                {currentProfile.profileIconUrl ? (
+                  <img src={currentProfile.profileIconUrl} alt={`${currentProfile.name} profile icon`} className="w-full h-full object-cover" />
+                ) : (
+                  // Default elegant monogram fallback matching 'image_666da8.jpg'
+                  <span className="text-white font-black text-2xl tracking-tighter">SI</span>
+                )}
+              </div>
+
+              {/* Follow button aligned right of the overlap line */}
+              <button
+                onClick={() => toggleFollow(currentProfile.id)}
+                className={`absolute right-8 -top-5 px-6 py-2.5 rounded-full text-[11px] font-bold tracking-wide transition-all duration-200 active:scale-95 shadow-sm ${
+                  followingStatus[currentProfile.id]
+                    ? 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800' 
+                    : 'bg-black text-white hover:bg-zinc-850'
+                }`}
+              >
+                {followingStatus[currentProfile.id] ? 'Following' : 'Follow'}
+              </button>
+
+            </div>
+
+            {/* Bottom Content Area */}
+            <div className="bg-white px-8 pt-16 pb-8">
+              
+              {/* Profile Meta Info */}
+              <div className="mb-4">
+                <div className="flex items-center gap-1.5 mt-1">
+                  <h2 className="text-xl font-bold tracking-tight text-zinc-900 lowercase transition-all">{currentProfile.name}</h2>
+                  <Icons.Verified />
+                </div>
+                <p className="text-xs text-zinc-400 font-medium">{currentProfile.handle}</p>
+              </div>
+
+              {/* Biography Section */}
+              <p className="text-[11px] text-zinc-500 leading-relaxed mb-6 font-normal min-h-[50px] transition-all duration-300">
+                {currentProfile.bio}
+              </p>
+
+              {/* Followers Status Metrics Row */}
+              <div className="flex items-center gap-4 pt-5 border-t border-zinc-100/80">
+                <div className="flex items-baseline gap-1 text-[13px]">
+                  <span className="font-bold text-zinc-800">{currentProfile.following}</span>
+                  <span className="text-zinc-400 text-xs font-normal">Following</span>
+                </div>
+                <div className="flex items-baseline gap-1 text-[13px]">
+                  <span className="font-bold text-zinc-800">
+                    {((currentProfile.followers + (followingStatus[currentProfile.id] ? 1 : 0)) / 1000).toFixed(1)}K
+                  </span>
+                  <span className="text-zinc-400 text-xs font-normal">Followers</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* ==============================================
+            RIGHT COLUMN: SCROLLABLE SOCIAL HANDLES
+            ============================================== */}
+        <div className="flex flex-col justify-center h-full">
+          <div className="mb-4 px-1">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400">Connect Directory</h3>
+            <p className="text-[11px] text-zinc-500 mt-0.5">Click any platform to swap the main card's layout preview</p>
+          </div>
+
+          {/* Interactive Scroll Deck of Social Media Handles */}
+          <div className="max-h-[380px] overflow-y-auto pr-2 space-y-3 scrollbar-thin scrollbar-thumb-zinc-300 scrollbar-track-transparent">
+            
+            {/* General Profile Card */}
+            <div
+              onClick={() => {
+                setActivePlatform('celsior');
+                triggerToast("Swapped mockup to Celsior Luxe general view!");
+              }}
+              className={`group block border rounded-3xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md cursor-pointer ${
+                activePlatform === 'celsior' 
+                  ? 'bg-zinc-900 text-white border-zinc-800 shadow-md' 
+                  : 'bg-white/60 hover:bg-white border-white/80 hover:border-zinc-300'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm transition-transform group-hover:scale-105 ${
+                    activePlatform === 'celsior' ? 'bg-zinc-850 border-zinc-700' : 'bg-zinc-50 border-zinc-100'
+                  }`}>
+                    {currentProfile.profileIconUrl && activePlatform === 'celsior' ? (
+                      <img src={currentProfile.profileIconUrl} alt="celsior icon" className="w-full h-full object-cover rounded-2xl" />
+                    ) : (
+                      <span className={`font-black text-sm ${activePlatform === 'celsior' ? 'text-white' : 'text-zinc-900'}`}>SI</span>
+                    )}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm tracking-tight">General Profile</h4>
+                    <p className={`text-xs font-mono mt-0.5 ${activePlatform === 'celsior' ? 'text-zinc-400' : 'text-zinc-400'}`}>@celsiorluxe</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                    activePlatform === 'celsior' ? 'bg-white text-zinc-900' : 'bg-zinc-100 text-zinc-500 group-hover:bg-zinc-950 group-hover:text-white'
+                  }`}>
+                    Active
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Instagram Card */}
+            <div
+              onClick={() => {
+                setActivePlatform('instagram');
+                triggerToast("Swapped mockup to Instagram card view!");
+              }}
+              className={`group block border rounded-3xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md cursor-pointer ${
+                activePlatform === 'instagram' 
+                  ? 'bg-gradient-to-r from-pink-500/10 via-rose-500/10 to-transparent border-pink-500/30 shadow-md' 
+                  : 'bg-white/60 hover:bg-white border-white/80 hover:border-pink-500/20'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-500 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform overflow-hidden">
+                    {SOCIAL_PROFILES_CONFIG.instagram.profileIconUrl ? (
+                      <img src={SOCIAL_PROFILES_CONFIG.instagram.profileIconUrl} alt="instagram icon" className="w-full h-full object-cover" />
+                    ) : (
+                      <Icons.Instagram className="w-6 h-6" />
+                    )}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-zinc-800 text-sm tracking-tight">Instagram</h4>
+                    <p className="text-xs text-zinc-400 font-mono mt-0.5">@celsior.luxe</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                    activePlatform === 'instagram' ? 'bg-pink-600 text-white' : 'bg-zinc-100 text-zinc-500 group-hover:bg-pink-600 group-hover:text-white'
+                  }`}>
+                    Instagram
+                  </span>
+                  <Icons.ExternalLink />
+                </div>
+              </div>
+            </div>
+
+            {/* LinkedIn Card */}
+            <div
+              onClick={() => {
+                setActivePlatform('linkedin');
+                triggerToast("Swapped mockup to LinkedIn card view!");
+              }}
+              className={`group block border rounded-3xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md cursor-pointer ${
+                activePlatform === 'linkedin' 
+                  ? 'bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-transparent border-blue-500/30 shadow-md' 
+                  : 'bg-white/60 hover:bg-white border-white/80 hover:border-blue-500/20'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#0077B5] text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform overflow-hidden">
+                    {SOCIAL_PROFILES_CONFIG.linkedin.profileIconUrl ? (
+                      <img src={SOCIAL_PROFILES_CONFIG.linkedin.profileIconUrl} alt="linkedin icon" className="w-full h-full object-cover" />
+                    ) : (
+                      <Icons.LinkedIn className="w-6 h-6" />
+                    )}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-zinc-800 text-sm tracking-tight">LinkedIn</h4>
+                    <p className="text-xs text-zinc-400 font-mono mt-0.5">linkedin.com/in/celsior</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                    activePlatform === 'linkedin' ? 'bg-[#0077B5] text-white' : 'bg-zinc-100 text-zinc-500 group-hover:bg-[#0077B5] group-hover:text-white'
+                  }`}>
+                    LinkedIn
+                  </span>
+                  <Icons.ExternalLink />
+                </div>
+              </div>
+            </div>
+
+            {/* GitHub Card */}
+            <div
+              onClick={() => {
+                setActivePlatform('github');
+                triggerToast("Swapped mockup to GitHub card view!");
+              }}
+              className={`group block border rounded-3xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md cursor-pointer ${
+                activePlatform === 'github' 
+                  ? 'bg-gradient-to-r from-zinc-800/10 via-zinc-900/10 to-transparent border-zinc-800/30 shadow-md' 
+                  : 'bg-white/60 hover:bg-white border-white/80 hover:border-zinc-800/20'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-zinc-900 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform overflow-hidden">
+                    {SOCIAL_PROFILES_CONFIG.github.profileIconUrl ? (
+                      <img src={SOCIAL_PROFILES_CONFIG.github.profileIconUrl} alt="github icon" className="w-full h-full object-cover" />
+                    ) : (
+                      <Icons.GitHub className="w-6 h-6" />
+                    )}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-zinc-800 text-sm tracking-tight font-sans">GitHub</h4>
+                    <p className="text-xs text-zinc-400 font-mono mt-0.5">github.com/celsior-luxe</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                    activePlatform === 'github' ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-500 group-hover:bg-zinc-900 group-hover:text-white'
+                  }`}>
+                    GitHub
+                  </span>
+                  <Icons.ExternalLink />
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Scroll Indicators */}
+          <div className="flex items-center justify-between mt-4 px-1 text-[10px] text-zinc-400 font-medium tracking-wide select-none">
+            <span>Scroll for more platforms</span>
+            <span className="flex gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-zinc-200"></span>
+            </span>
+          </div>
+        </div>
+
+      </main>
+
+      {/* Presentation Footer matching image_666da8.jpg */}
+      <footer className="max-w-6xl w-full mx-auto flex justify-between items-center text-[10px] md:text-xs tracking-widest text-zinc-400 uppercase select-none pt-4 border-t border-zinc-200/50">
+        <div>Logo & Visual Design</div>
+        <div className="font-semibold text-zinc-400">CELSIOR LUXE</div>
+        <div className="lowercase">samsonakintunde00@gmail.com</div>
+      </footer>
+
+    </div>
+  );
+}
