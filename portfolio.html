@@ -1,1 +1,538 @@
-h
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aditya Srivastav — Digital Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F0F0EF;
+      --card-bg: #ffffff;
+      --text: #1a1a1a;
+      --muted: #71717a;
+      --border: rgba(255,255,255,0.7);
+      --shadow: 0 24px 50px rgba(0,0,0,0.07);
+      --radius-card: 48px;
+      --radius-row: 24px;
+      --transition: 0.35s cubic-bezier(.4,0,.2,1);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      <div className="min-h-screen" style={{backgroundImage: 'url(328126fe7db38cef7ffee10d840b752e.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}
+      min-height: 100vh;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+    }
+
+    ::selection { background: #000; color: #fff; }
+
+    /* ── HEADER / FOOTER ── */
+    .site-header, .site-footer {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 8px 0;
+    }
+    .site-header { padding-bottom: 16px; }
+    .site-footer { border-top: 1px solid rgba(0,0,0,0.07); padding-top: 16px; margin-top: 8px; }
+    .site-header .brand, .site-footer .brand { font-weight: 700; color: var(--text); }
+
+    /* ── MAIN GRID ── */
+    main {
+      max-width: 980px;
+      width: 100%;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      padding: 24px 0;
+    }
+    @media (max-width: 720px) {
+      main { grid-template-columns: 1fr; gap: 32px; }
+    }
+
+    /* ── PROFILE CARD ── */
+    .card-wrap { display: flex; justify-content: flex-end; }
+    @media (max-width: 720px) { .card-wrap { justify-content: center; } }
+
+    .profile-card {
+      width: 100%;
+      max-width: 370px;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: transform var(--transition);
+    }
+
+    .card-banner {
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+      transition: background var(--transition);
+    }
+    .card-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.10);
+      mix-blend-mode: multiply;
+    }
+
+    .card-avatar-row {
+      position: relative;
+      padding: 0 32px;
+      height: 0;
+    }
+    .card-avatar {
+      position: absolute;
+      left: 32px;
+      top: -44px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 6px solid #fff;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10;
+      transition: var(--transition);
+    }
+    .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .card-avatar-initials {
+      color: #fff;
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: -.03em;
+    }
+    .follow-btn {
+      position: absolute;
+      right: 32px;
+      top: -24px;
+      padding: 10px 24px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+    .follow-btn.not-following { background: #000; color: #fff; }
+    .follow-btn.following     { background: #f4f4f5; color: #18181b; }
+    .follow-btn:active        { transform: scale(.95); }
+
+    .card-body {
+      padding: 56px 32px 32px;
+      background: #fff;
+    }
+    .card-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+    .card-name { font-size: 20px; font-weight: 800; color: #18181b; letter-spacing: -.02em; }
+    .verified-icon { flex-shrink: 0; color: #3b82f6; }
+    .card-handle { font-size: 12px; color: #a1a1aa; font-weight: 500; font-family: 'DM Mono', monospace; }
+    .card-bio {
+      font-size: 11.5px;
+      color: #71717a;
+      line-height: 1.65;
+      margin: 16px 0 24px;
+      min-height: 50px;
+    }
+    .card-stats {
+      display: flex;
+      gap: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #f4f4f5;
+    }
+    .stat { display: flex; align-items: baseline; gap: 4px; }
+    .stat-num { font-size: 14px; font-weight: 700; color: #18181b; }
+    .stat-label { font-size: 11px; color: #a1a1aa; }
+
+    /* ── DIRECTORY ── */
+    .directory { display: flex; flex-direction: column; height: 100%; }
+    .dir-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: #a1a1aa;
+      margin-bottom: 2px;
+    }
+    .dir-sub { font-size: 11px; color: #a1a1aa; margin-bottom: 20px; }
+
+    .platform-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .platform-row {
+      border-radius: var(--radius-row);
+      padding: 18px 20px;
+      border: 1px solid rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.55);
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .platform-row:hover {
+      background: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    .platform-row.active {
+      background: #18181b;
+      border-color: #18181b;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+
+    .row-left { display: flex; align-items: center; gap: 16px; }
+    .platform-icon {
+      width: 48px; height: 48px;
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .platform-icon svg { width: 24px; height: 24px; }
+
+    .row-name { font-size: 14px; font-weight: 700; color: #18181b; }
+    .platform-row.active .row-name { color: #fff; }
+    .row-handle { font-size: 11px; font-family: 'DM Mono', monospace; color: #a1a1aa; margin-top: 2px; }
+
+    .row-right { display: flex; align-items: center; gap: 8px; }
+    .platform-badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f4f4f5;
+      color: #71717a;
+      transition: all var(--transition);
+    }
+    .platform-row:hover:not(.active) .platform-badge { background: #18181b; color: #fff; }
+    .platform-row.active .platform-badge { background: #fff; color: #18181b; }
+
+    .ext-icon { transition: opacity var(--transition); }
+    .platform-row.active .ext-icon { display: none; }
+
+    /* ── PLATFORM COLORS ── */
+    .icon-github    { background: #18181b; color: #fff; }
+    .icon-x         { background: #000; color: #fff; }
+    .icon-linkedin  { background: #0A66C2; color: #fff; }
+    .icon-instagram {
+      background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: #fff;
+    }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(0,0,0,0.92);
+      color: #fff;
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity .25s, transform .25s;
+      pointer-events: none;
+      z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── VERIFIED SVG INLINE ── */
+    .verified-svg { display: inline-block; vertical-align: middle; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div>Digital Portfolio</div>
+    <div class="brand">Aditya Srivastav</div>
+    <div style="text-transform:lowercase">aditya.123.22.111@gmail.com</div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- PROFILE CARD -->
+    <div class="card-wrap">
+      <div class="profile-card">
+        <div class="card-banner" id="card-banner"></div>
+
+        <div class="card-avatar-row">
+          <div class="card-avatar" id="card-avatar">
+            <span class="card-avatar-initials">AS</span>
+          </div>
+          <button class="follow-btn not-following" id="follow-btn" onclick="toggleFollow()">Follow</button>
+        </div>
+
+        <div class="card-body">
+          <div class="card-name-row">
+            <span class="card-name" id="card-name"></span>
+            <svg class="verified-svg" width="20" height="20" viewBox="0 0 24 24" fill="#3b82f6">
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+          <div class="card-handle" id="card-handle"></div>
+          <div class="card-bio" id="card-bio"></div>
+          <div class="card-stats">
+            <div class="stat">
+              <span class="stat-num" id="stat-following"></span>
+              <span class="stat-label">Following</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num" id="stat-followers"></span>
+              <span class="stat-label">Followers</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIRECTORY -->
+    <div class="directory">
+      <div>
+        <div class="dir-title">Connect Directory</div>
+        <div class="dir-sub">Click any platform to preview the profile card</div>
+      </div>
+      <div class="platform-list" id="platform-list"></div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div>Digital Portfolio</div>
+    <div class="brand">Aditya Srivastav</div>
+    <div style="text-transform:lowercase">github.com/Aditya1809-08</div>
+  </footer>
+
+  <!-- TOAST -->
+  <div id="toast"></div>
+
+  <script>
+    // ── DATA ──────────────────────────────────────────────────────────────
+    const PROFILES = {
+      github: {
+        id: 'github',
+        name: 'Aditya Srivastav',
+        handle: '@Aditya1809-08',
+        bio: 'Future dev in the making 🖥️ | 12th grader | Learning HTML & CSS in public | Building one commit at a time 🚀',
+        following: 7,
+        followers: 0,
+        profileIconUrl: '275049728.png',
+        bannerUrl: 'dc163b42fb863411d390c6dfba7ebf73.jpg',
+      },
+      x: {
+        id: 'x',
+        name: 'Aditya Srivastav',
+        handle: '@ASrivastav77092',
+        bio: '12th grader exploring tech & dev 🚀 | Learning HTML & CSS in public | From Gorakhpur 🇮🇳 | Building my digital presence one commit at a time ✨',
+        following: 5,
+        followers: 0,
+        profileIconUrl: '275049728.png',
+        bannerUrl: '1500x500.jpeg',
+      },
+      linkedin: {
+        id: 'linkedin',
+        name: 'Aditya Srivastav',
+        handle: 'linkedin.com/in/aditya-srivastav-0a247634b',
+        bio: '12th Grade Student | Aspiring Web Developer | Learning HTML & CSS | Building in Public 🚀 | Gorakhpur, Uttar Pradesh, India',
+        following: 8,
+        followers: 8,
+        profileIconUrl: '275049728.png',
+        bannerUrl: '1778961582983.jpeg',
+      },
+      instagram: {
+        id: 'instagram',
+        name: 'Aditya Srivastav',
+        handle: '@aditya.srivastav._18',
+        bio: "Ambivert⭐ | I've fallen, I've failed — but His grace kept pulling me back. Everything I am becoming is by His will, not the world's applause",
+        following: 71,
+        followers: 46,
+        profileIconUrl: '275049728.png',
+        bannerUrl: '328126fe7db38cef7ffee10d840b752e.jpg',
+      }
+    };
+
+    const PLATFORM_CONFIG = {
+      github:    { label: 'GitHub',    bannerGrad: 'linear-gradient(135deg,#1a2e1a,#4a7c3f)', iconClass: 'icon-github',    icon: githubSVG()    },
+      x:         { label: 'X',         bannerGrad: 'linear-gradient(135deg,#000,#222)',        iconClass: 'icon-x',         icon: xSVG()         },
+      linkedin:  { label: 'LinkedIn',  bannerGrad: 'linear-gradient(135deg,#0A66C2,#004182)', iconClass: 'icon-linkedin',  icon: linkedinSVG()  },
+      instagram: { label: 'Instagram', bannerGrad: 'linear-gradient(135deg,#f09433,#dc2743,#bc1888)', iconClass: 'icon-instagram', icon: instagramSVG() },
+    };
+
+    // ── STATE ─────────────────────────────────────────────────────────────
+    let activePlatform = 'github';
+    const followingStatus = { github: false, x: false, linkedin: false, instagram: false };
+
+    // ── SVG HELPERS ───────────────────────────────────────────────────────
+    function githubSVG() {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+      </svg>`;
+    }
+    function xSVG() {
+      return `<svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>`;
+    }
+    function linkedinSVG() {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+        <rect x="2" y="9" width="4" height="12"/>
+        <circle cx="4" cy="4" r="2"/>
+      </svg>`;
+    }
+    function instagramSVG() {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+      </svg>`;
+    }
+    function externalLinkSVG() {
+      return `<svg class="ext-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+        <polyline points="15 3 21 3 21 9"/>
+        <line x1="10" y1="14" x2="21" y2="3"/>
+      </svg>`;
+    }
+
+    // ── TOAST ─────────────────────────────────────────────────────────────
+    let toastTimer;
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ── CARD UPDATE ───────────────────────────────────────────────────────
+    function updateCard(platformId) {
+      const p = PROFILES[platformId];
+      const plt = PLATFORM_CONFIG[platformId];
+      const banner = document.getElementById('card-banner');
+      const avatar = document.getElementById('card-avatar');
+      const followBtn = document.getElementById('follow-btn');
+
+      // Banner
+      if (p.bannerUrl) {
+        banner.style.backgroundImage = `url(${p.bannerUrl})`;
+        banner.style.backgroundSize = 'cover';
+        banner.style.backgroundPosition = 'center';
+        banner.style.background = '';
+      } else {
+        banner.style.backgroundImage = '';
+        banner.style.background = plt.bannerGrad;
+      }
+
+      // Avatar
+      if (p.profileIconUrl) {
+        avatar.innerHTML = `<img src="${p.profileIconUrl}" alt="profile">`;
+      } else {
+        avatar.innerHTML = `<span class="card-avatar-initials">AS</span>`;
+      }
+
+      // Text
+      document.getElementById('card-name').textContent = p.name;
+      document.getElementById('card-handle').textContent = p.handle;
+      document.getElementById('card-bio').textContent = p.bio;
+      document.getElementById('stat-following').textContent = p.following;
+      const followerCount = p.followers + (followingStatus[platformId] ? 1 : 0);
+      document.getElementById('stat-followers').textContent = followerCount;
+
+      // Follow button
+      if (followingStatus[platformId]) {
+        followBtn.textContent = 'Following';
+        followBtn.className = 'follow-btn following';
+      } else {
+        followBtn.textContent = 'Follow';
+        followBtn.className = 'follow-btn not-following';
+      }
+    }
+
+    // ── FOLLOW TOGGLE ─────────────────────────────────────────────────────
+    function toggleFollow() {
+      followingStatus[activePlatform] = !followingStatus[activePlatform];
+      const msg = followingStatus[activePlatform]
+        ? `Following ${activePlatform}!`
+        : `Unfollowed ${activePlatform}`;
+      showToast(msg);
+      updateCard(activePlatform);
+    }
+
+    // ── PLATFORM LIST ─────────────────────────────────────────────────────
+    function buildPlatformList() {
+      const list = document.getElementById('platform-list');
+      list.innerHTML = '';
+      Object.entries(PROFILES).forEach(([id, profile]) => {
+        const plt = PLATFORM_CONFIG[id];
+        const isActive = id === activePlatform;
+        const row = document.createElement('div');
+        row.className = 'platform-row' + (isActive ? ' active' : '');
+        row.id = `row-${id}`;
+        row.innerHTML = `
+          <div class="row-left">
+            <div class="platform-icon ${plt.iconClass}">${plt.icon}</div>
+            <div>
+              <div class="row-name">${plt.label}</div>
+              <div class="row-handle">${profile.handle}</div>
+            </div>
+          </div>
+          <div class="row-right">
+            <span class="platform-badge">${plt.label}</span>
+            ${isActive ? '' : externalLinkSVG()}
+          </div>
+        `;
+        row.addEventListener('click', () => {
+          activePlatform = id;
+          showToast(`Viewing ${plt.label} profile`);
+          buildPlatformList();
+          updateCard(id);
+        });
+        list.appendChild(row);
+      });
+    }
+
+    // ── INIT ──────────────────────────────────────────────────────────────
+    buildPlatformList();
+    updateCard(activePlatform);
+  </script>
+</body>
+</html>
