@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aditya Srivastav — Connect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(160deg, #e0e0e0, #ededed, #f5f5f5);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      color: #1a1a1a;
+    }
+
+    /* HEADER */
+    .site-header {
+      max-width: 1100px; width: 100%; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: #888; padding-bottom: 16px;
+    }
+
+    .site-header strong { color: #1a1a1a; font-weight: 700; }
+
+    /* MAIN */
+    main {
+      max-width: 1100px; width: 100%; margin: auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; align-items: center; padding: 32px 0;
+    }
+
+    /* PROFILE CARD */
+    .profile-card {
+      width: 100%; max-width: 380px;
+      margin-left: auto;
+      border-radius: 48px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 24px 50px rgba(0,0,0,0.06);
+      border: 1px solid rgba(255,255,255,0.6);
+      position: relative;
+      transition: all 0.4s;
+    }
+
+    .banner {
+      height: 200px;
+      position: relative;
+      transition: background 0.4s;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .banner-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.1); }
+
+    .overlap-row {
+      position: relative; height: 0; padding: 0 32px; z-index: 20;
+    }
+
+    .avatar {
+      position: absolute; left: 32px; top: -40px;
+      width: 80px; height: 80px;
+      border-radius: 50%; border: 6px solid white;
+      background: #111; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 800; color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.3s;
+    }
+
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .follow-btn {
+      position: absolute; right: 32px; top: -22px;
+      padding: 10px 24px; border-radius: 99px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.03em;
+      cursor: pointer; border: none;
+      background: #111; color: white;
+      transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .follow-btn:hover { background: #333; }
+    .follow-btn.following { background: #f0f0f0; color: #1a1a1a; }
+    .follow-btn:active { transform: scale(0.97); }
+
+    .card-body { background: white; padding: 56px 32px 32px; }
+
+    .card-name {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 20px; font-weight: 800; color: #111;
+      margin-bottom: 2px;
+    }
+
+    .verified {
+      width: 20px; height: 20px;
+      background: #1d9bf0; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .verified svg { width: 12px; height: 12px; fill: white; }
+
+    .card-handle { font-size: 12px; color: #888; margin-bottom: 12px; font-family: monospace; }
+
+    .card-bio {
+      font-size: 12px; color: #555; line-height: 1.6;
+      margin-bottom: 20px; min-height: 58px;
+    }
+
+    .card-stats {
+      display: flex; gap: 20px;
+      border-top: 1px solid #f0f0f0; padding-top: 16px;
+    }
+
+    .stat-num { font-size: 15px; font-weight: 700; color: #111; }
+    .stat-lbl { font-size: 11px; color: #999; }
+
+    /* DIRECTORY */
+    .directory { display: flex; flex-direction: column; }
+
+    .dir-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; color: #aaa; margin-bottom: 4px;
+    }
+
+    .dir-sub { font-size: 11px; color: #888; margin-bottom: 20px; }
+
+    .platform-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .platform-card {
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 24px; padding: 18px 20px;
+      cursor: pointer; background: rgba(255,255,255,0.6);
+      display: flex; align-items: center; justify-content: space-between;
+      transition: all 0.25s;
+    }
+
+    .platform-card:hover { background: white; box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-1px); }
+
+    .platform-card.active { background: #111; border-color: #111; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+
+    .platform-left { display: flex; align-items: center; gap: 16px; }
+
+    .platform-icon {
+      width: 48px; height: 48px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; overflow: hidden;
+    }
+
+    .platform-icon svg { width: 24px; height: 24px; }
+
+    .platform-name { font-size: 14px; font-weight: 700; }
+    .platform-handle { font-size: 11px; font-family: monospace; margin-top: 2px; }
+
+    .platform-card.active .platform-name { color: white; }
+    .platform-card.active .platform-handle { color: #888; }
+    .platform-card:not(.active) .platform-name { color: #1a1a1a; }
+    .platform-card:not(.active) .platform-handle { color: #999; }
+
+    .platform-badge {
+      font-size: 9px; font-weight: 700; padding: 5px 12px;
+      border-radius: 99px; text-transform: uppercase; letter-spacing: 0.08em;
+      transition: all 0.2s; white-space: nowrap;
+    }
+
+    .platform-card.active .platform-badge { background: white; color: #111; }
+    .platform-card:not(.active) .platform-badge { background: #f0f0f0; color: #666; }
+    .platform-card:not(.active):hover .platform-badge { background: #111; color: white; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9); color: white;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 10px 24px;
+      border-radius: 99px; z-index: 100;
+      pointer-events: none;
+      opacity: 0; transition: opacity 0.3s;
+    }
+
+    /* FOOTER */
+    .site-footer {
+      max-width: 1100px; width: 100%; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: #aaa; padding-top: 16px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    @media (max-width: 768px) {
+      main { grid-template-columns: 1fr; gap: 32px; }
+      .profile-card { margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <span>Digital Portfolio</span>
+    <strong>ADITYA SRIVASTAV</strong>
+    <span>github.com/Aditya1809-08</span>
+  </header>
+
+  <main>
+    <!-- PROFILE CARD -->
+    <div style="display:flex;justify-content:flex-end;">
+      <div class="profile-card">
+        <div class="banner" id="banner">
+          <div class="banner-overlay"></div>
+        </div>
+        <div class="overlap-row">
+          <div class="avatar" id="avatar">AS</div>
+          <button class="follow-btn" id="followBtn" onclick="toggleFollow()">Follow</button>
+        </div>
+        <div class="card-body">
+          <div class="card-name">
+            <span id="cardName">Aditya Srivastav</span>
+            <span class="verified">
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+            </span>
+          </div>
+          <div class="card-handle" id="cardHandle">@Aditya1809-08</div>
+          <div class="card-bio" id="cardBio">Future dev in the making 🖥️ | 12th grader | Learning HTML & CSS in public | Building one commit at a time 🚀</div>
+          <div class="card-stats">
+            <div><div class="stat-num" id="cardFollowing">7</div><div class="stat-lbl">Following</div></div>
+            <div><div class="stat-num" id="cardFollowers">0</div><div class="stat-lbl">Followers</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIRECTORY -->
+    <div class="directory">
+      <div class="dir-label">Connect Directory</div>
+      <div class="dir-sub">Click any platform to preview the profile card</div>
+      <div class="platform-list" id="platformList"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span>Digital Portfolio</span>
+    <span style="font-weight:700;color:#555;">ADITYA SRIVASTAV</span>
+    <span>aditya.123.22.111@gmail.com</span>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // =====================================================
+    // YOUR DATA — update follower counts & add image URLs
+    // =====================================================
+    const profiles = {
+      github: {
+        name: 'Aditya Srivastav',
+        handle: '@Aditya1809-08',
+        bio: 'Future dev in the making 🖥️ | 12th grader | Learning HTML & CSS in public | Building one commit at a time 🚀',
+        following: 7, followers: 0,
+        avatarUrl: '275049728.png',   // paste GitHub avatar URL
+        bannerUrl: 'dc163b42fb863411d390c6dfba7ebf73.jpg',
+        bannerColor: 'linear-gradient(135deg,#1a2e1a,#4a7c3f)',
+        label: 'GitHub',
+        iconColor: '#1a1a1a',
+        iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>`
+      },
+      x: {
+        name: 'Aditya Srivastav',
+        handle: '@ASrivastav77092',
+        bio: '12th grader exploring tech & dev 🚀 | Learning HTML & CSS in public | From Gorakhpur 🇮🇳 | Building my digital presence one commit at a time ✨',
+        following: 5, followers: 0,
+        avatarUrl: '275049728.png',
+        bannerUrl: '1500x500.jpeg',   // paste your X "Ready to Hustle" banner URL
+        bannerColor: 'linear-gradient(135deg,#000,#222)',
+        label: 'X',
+        iconColor: '#000',
+        iconSvg: `<svg viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`
+      },
+      linkedin: {
+        name: 'Aditya srivastav',
+        handle: 'linkedin.com/in/aditya-srivastav',
+        bio: '12th Grade Student | Aspiring Web Developer | Learning HTML & CSS | Building in Public 🚀 | Gorakhpur, Uttar Pradesh, India',
+        following: 8, followers: 8,
+        avatarUrl: '275049728.png',
+        bannerUrl: '1778961582983.jpeg',   // paste your LinkedIn "Stay Hungry" banner URL
+        bannerColor: 'linear-gradient(135deg,#0A66C2,#004182)',
+        label: 'LinkedIn',
+        iconColor: '#0A66C2',
+        iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>`
+      },
+      instagram: {
+        name: 'Aditya srivastav',
+        handle: '@aditya.srivastav._18',
+        bio: "Ambivert⭐ | I've fallen, I've failed — but His grace kept pulling me back. Everything I am becoming is by His will, not the world's applause",
+        following: 71, followers: 46,
+        avatarUrl: '275049728.png',
+        bannerUrl: '328126fe7db38cef7ffee10d840b752e.jpg',
+        bannerColor: 'linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)',
+        label: 'Instagram',
+        iconColor: '#e1306c',
+        iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>`
+      }
+    };
+
+    let current = 'github';
+    let following = { github:false, x:false, linkedin:false, instagram:false };
+
+    function buildPlatformList() {
+      const list = document.getElementById('platformList');
+      list.innerHTML = Object.entries(profiles).map(([id, p]) => `
+        <div class="platform-card ${id === current ? 'active' : ''}" id="pcard-${id}" onclick="switchTo('${id}')">
+          <div class="platform-left">
+            <div class="platform-icon" style="background:${p.iconColor}">${p.iconSvg}</div>
+            <div>
+              <div class="platform-name">${p.label}</div>
+              <div class="platform-handle">${p.handle}</div>
+            </div>
+          </div>
+          <span class="platform-badge">${p.label}</span>
+        </div>
+      `).join('');
+    }
+
+    function updateCard() {
+      const p = profiles[current];
+      document.getElementById('cardName').textContent = p.name;
+      document.getElementById('cardHandle').textContent = p.handle;
+      document.getElementById('cardBio').textContent = p.bio;
+      document.getElementById('cardFollowing').textContent = p.following;
+      document.getElementById('cardFollowers').textContent = p.followers + (following[current] ? 1 : 0);
+      const banner = document.getElementById('banner');
+      if (p.bannerUrl) {
+        banner.style.backgroundImage = `url('${p.bannerUrl}')`;
+        banner.style.background = '';
+      } else {
+        banner.style.backgroundImage = '';
+        banner.style.background = p.bannerColor;
+      }
+      const avatar = document.getElementById('avatar');
+      if (p.avatarUrl) {
+        avatar.innerHTML = `<img src="${p.avatarUrl}" alt="avatar"/>`;
+      } else {
+        avatar.textContent = 'AS';
+      }
+      const btn = document.getElementById('followBtn');
+      btn.textContent = following[current] ? 'Following' : 'Follow';
+      btn.className = 'follow-btn' + (following[current] ? ' following' : '');
+    }
+
+    function switchTo(id) {
+      current = id;
+      document.querySelectorAll('.platform-card').forEach(c => c.classList.remove('active'));
+      document.getElementById('pcard-' + id).classList.add('active');
+      updateCard();
+      showToast('Viewing ' + profiles[id].label);
+    }
+
+    function toggleFollow() {
+      following[current] = !following[current];
+      updateCard();
+      showToast(following[current] ? 'Followed!' : 'Unfollowed');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.opacity = '1';
+      clearTimeout(t._t);
+      t._t = setTimeout(() => t.style.opacity = '0', 2000);
+    }
+
+    buildPlatformList();
+    updateCard();
+  </script>
+
+</body>
+</html>
