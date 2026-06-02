@@ -11,7 +11,9 @@
     body {
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
-      background: linear-gradient(160deg, #e0e0e0, #ededed, #f5f5f5);
+      background-image: url('YOUR-BG-IMAGE.jpg');
+background-size: cover;
+background-attachment: fixed;
       display: flex;
       flex-direction: column;
       padding: 24px;
@@ -337,8 +339,7 @@
         banner.style.backgroundImage = `url('${p.bannerUrl}')`;
         banner.style.background = '';
       } else {
-        banner.style.backgroundImage = '';
-        banner.style.background = p.bannerColor;
+        banner.style.cssText = `background-image: url('${p.bannerUrl}'); background-size: cover; background-position: center;`;
       }
       const avatar = document.getElementById('avatar');
       if (p.avatarUrl) {
