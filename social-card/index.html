@@ -335,12 +335,13 @@ background-attachment: fixed;
       document.getElementById('cardFollowing').textContent = p.following;
       document.getElementById('cardFollowers').textContent = p.followers + (following[current] ? 1 : 0);
       const banner = document.getElementById('banner');
-      if (p.bannerUrl) {
-        banner.style.backgroundImage = `url('${p.bannerUrl}')`;
-        banner.style.background = '';
-      } else {
-        banner.style.cssText = `background-image: url('${p.bannerUrl}'); background-size: cover; background-position: center;`;
-      }
+if (p.bannerUrl) {
+  banner.style.backgroundImage = `url('${p.bannerUrl}')`;
+  banner.style.backgroundSize = 'cover';
+  banner.style.backgroundPosition = 'center';
+} else {
+  banner.style.background = p.bannerColor;
+}
       const avatar = document.getElementById('avatar');
       if (p.avatarUrl) {
         avatar.innerHTML = `<img src="${p.avatarUrl}" alt="avatar"/>`;
