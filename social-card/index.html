@@ -8,12 +8,17 @@
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-   body {
-  font-family: 'Inter', sans-serif;
-  min-height: 100vh;
-  background-image: url('1177d28c34952749ba90a273b0f0e975.jpg');
-
-background-size: cover;background-attachment: fixed;display: flex;flex-direction: column;padding: 24px;color: #1a1a1a;}
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background-image: url('1177d28c34952749ba90a273b0f0e975.jpg');
+background-size: cover;
+background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      color: #1a1a1a;
+    }
 
     /* HEADER */
     .site-header {
@@ -25,12 +30,12 @@ background-size: cover;background-attachment: fixed;display: flex;flex-direction
 
     .site-header strong { color: #1a1a1a; font-weight: 700; }
 
-   /* MAIN */
-main {
-  max-width: 1100px; width: 100%; margin: auto;
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 48px; align-items: center; padding: 32px 0;
-}
+    /* MAIN */
+    main {
+      max-width: 1100px; width: 100%; margin: auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; align-items: center; padding: 32px 0;
+    }
 
     /* PROFILE CARD */
     .profile-card {
@@ -213,7 +218,7 @@ main {
         </div>
         <div class="overlap-row">
           <div class="avatar" id="avatar">AS</div>
-          <button class="follow-btn" id="followBtn" onclick="toggleFollow()">Follow</button>
+          <button class="follow-btn" id="visitBtn" onclick="visitProfile()">Visit</button>
         </div>
         <div class="card-body">
           <div class="card-name">
@@ -256,6 +261,7 @@ main {
       github: {
         name: 'Aditya Srivastav',
         handle: '@Aditya1809-08',
+        url: 'https://github.com/Aditya1809-08',
         bio: 'Future dev in the making 🖥️ | 12th grader | Learning HTML & CSS in public | Building one commit at a time 🚀',
         following: 7, followers: 0,
         avatarUrl: 'wz18DY7-_400x400.jpg',   // paste GitHub avatar URL
@@ -268,6 +274,7 @@ main {
       x: {
         name: 'Aditya Srivastav',
         handle: '@ASrivastav77092',
+        url: 'https://x.com/ASrivastav77092',
         bio: '12th grader exploring tech & dev 🚀 | Learning HTML & CSS in public | From Gorakhpur 🇮🇳 | Building my digital presence one commit at a time ✨',
         following: 5, followers: 0,
         avatarUrl: 'wz18DY7-_400x400.jpg',
@@ -280,6 +287,7 @@ main {
       linkedin: {
         name: 'Aditya srivastav',
         handle: 'linkedin.com/in/aditya-srivastav',
+        url: 'https://www.linkedin.com/in/aditya-srivastav-0a247634b/',
         bio: '12th Grade Student | Aspiring Web Developer | Learning HTML & CSS | Building in Public 🚀 | Gorakhpur, Uttar Pradesh, India',
         following: 8, followers: 8,
         avatarUrl: 'wz18DY7-_400x400.jpg',
@@ -292,6 +300,7 @@ main {
       instagram: {
         name: 'Aditya srivastav',
         handle: '@aditya.srivastav._18',
+        url: 'https://www.instagram.com/aditya.srivastav._18/',
         bio: "Ambivert⭐ | I've fallen, I've failed — but His grace kept pulling me back. Everything I am becoming is by His will, not the world's applause",
         following: 71, followers: 46,
         avatarUrl: 'wz18DY7-_400x400.jpg',
@@ -304,7 +313,7 @@ main {
     };
 
     let current = 'github';
-    let following = { github:false, x:false, linkedin:false, instagram:false };
+    
 
     function buildPlatformList() {
       const list = document.getElementById('platformList');
@@ -328,7 +337,7 @@ main {
       document.getElementById('cardHandle').textContent = p.handle;
       document.getElementById('cardBio').textContent = p.bio;
       document.getElementById('cardFollowing').textContent = p.following;
-      document.getElementById('cardFollowers').textContent = p.followers + (following[current] ? 1 : 0);
+      document.getElementById('cardFollowers').textContent = p.followers;
       const banner = document.getElementById('banner');
 if (p.bannerUrl) {
   banner.style.backgroundImage = `url('${p.bannerUrl}')`;
@@ -343,9 +352,9 @@ if (p.bannerUrl) {
       } else {
         avatar.textContent = 'AS';
       }
-      const btn = document.getElementById('followBtn');
-      btn.textContent = following[current] ? 'Following' : 'Follow';
-      btn.className = 'follow-btn' + (following[current] ? ' following' : '');
+      const btn = document.getElementById('visitBtn');
+      btn.textContent = 'Visit';
+      btn.className = 'follow-btn';
     }
 
     function switchTo(id) {
@@ -356,10 +365,13 @@ if (p.bannerUrl) {
       showToast('Viewing ' + profiles[id].label);
     }
 
-    function toggleFollow() {
-      following[current] = !following[current];
-      updateCard();
-      showToast(following[current] ? 'Followed!' : 'Unfollowed');
+    function visitProfile() {
+      const p = profiles[current];
+      if (p.url) {
+        window.open(p.url, '_blank');
+      } else {
+        showToast('URL not added yet');
+      }
     }
 
     function showToast(msg) {
