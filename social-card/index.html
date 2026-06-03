@@ -332,6 +332,14 @@ background-attachment: fixed;
     }
 
     function updateCard() {
+      const card = document.querySelector('.profile-card');
+card.style.opacity = '0';
+card.style.transform = 'translateY(8px)';
+setTimeout(() => {
+  card.style.transition = 'opacity 0.3s, transform 0.3s';
+  card.style.opacity = '1';
+  card.style.transform = 'translateY(0)';
+}, 50);
       const p = profiles[current];
       document.getElementById('cardName').textContent = p.name;
       document.getElementById('cardHandle').textContent = p.handle;
