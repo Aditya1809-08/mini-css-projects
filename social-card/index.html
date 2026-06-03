@@ -229,10 +229,7 @@ background-attachment: fixed;
           </div>
           <div class="card-handle" id="cardHandle">@Aditya1809-08</div>
           <div class="card-bio" id="cardBio">Future dev in the making 🖥️ | 12th grader | Learning HTML & CSS in public | Building one commit at a time 🚀</div>
-          <div class="card-stats">
-            <div><div class="stat-num" id="cardFollowing">7</div><div class="stat-lbl">Following</div></div>
-            <div><div class="stat-num" id="cardFollowers">0</div><div class="stat-lbl">Followers</div></div>
-          </div>
+          <div class="card-stats" id="cardStats"></div>
         </div>
       </div>
     </div>
@@ -354,8 +351,27 @@ setTimeout(() => {
       document.getElementById('cardName').textContent = p.name;
       document.getElementById('cardHandle').textContent = p.handle;
       document.getElementById('cardBio').textContent = p.bio;
-      document.getElementById('cardFollowing').textContent = p.following;
-      document.getElementById('cardFollowers').textContent = p.followers;
+      const stats = document.getElementById('cardStats');
+
+if (current === 'linkedin') {
+  stats.innerHTML = `
+    <div>
+      <div class="stat-num">${p.connections}</div>
+      <div class="stat-lbl">Connections</div>
+    </div>
+  `;
+} else {
+  stats.innerHTML = `
+    <div>
+      <div class="stat-num">${p.following}</div>
+      <div class="stat-lbl">Following</div>
+    </div>
+    <div>
+      <div class="stat-num">${p.followers}</div>
+      <div class="stat-lbl">Followers</div>
+    </div>
+  `;
+}
       const banner = document.getElementById('banner');
 if (p.bannerUrl) {
   banner.style.backgroundImage = `url('${p.bannerUrl}')`;
