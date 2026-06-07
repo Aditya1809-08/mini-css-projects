@@ -1,1 +1,298 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Clock</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* ============================================================
+       BACKGROUND IMAGE — change the URL below to your own image.
+       Options:
+         • Local file:  url('your-photo.jpg')
+         • Web URL:     url('https://example.com/photo.jpg')
+       The overlay keeps the clock readable over any photo.
+    ============================================================ */
+    :root {
+      --bg-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600');
+      --cyan: #00e5ff;
+      --cyan-glow: rgba(0, 229, 255, 0.6);
+      --dark: #0a0f14;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Raleway', sans-serif;
+      background: var(--dark);
+      overflow: hidden;
+    }
+
+    /* Background layer */
+    .bg {
+      position: fixed;
+      inset: 0;
+      background-image: var(--bg-image);
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.45) saturate(0.8);
+      z-index: 0;
+    }
+
+    /* Dot-grid overlay (matches reference) */
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+
+    /* Vignette */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+      z-index: 1;
+    }
+
+    /* Card */
+    .card {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      background: rgba(10, 18, 26, 0.55);
+      border: 1px solid rgba(0,229,255,0.12);
+      border-radius: 20px;
+      padding: 50px 70px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 0 60px rgba(0,0,0,0.5), 0 0 120px rgba(0,229,255,0.04);
+      min-width: 680px;
+    }
+
+    /* ── Date panel ── */
+    .date-panel {
+      text-align: right;
+      color: #fff;
+      min-width: 180px;
+    }
+
+    .day-name {
+      font-size: 1.25rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      opacity: 0.75;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .date-full {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+    }
+
+    .date-year {
+      font-size: 0.9rem;
+      font-weight: 300;
+      opacity: 0.5;
+      margin-top: 6px;
+      letter-spacing: 0.2em;
+    }
+
+    /* ── Clock ring ── */
+    .ring-wrap {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      flex-shrink: 0;
+    }
+
+    .ring-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    /* Static dark ring */
+    .ring-bg {
+      fill: none;
+      stroke: rgba(255,255,255,0.06);
+      stroke-width: 5;
+    }
+
+    /* Minute arc */
+    .ring-min {
+      fill: none;
+      stroke: var(--cyan);
+      stroke-width: 5;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 6px var(--cyan-glow));
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* Second arc (thin inner ring) */
+    .ring-sec {
+      fill: none;
+      stroke: rgba(0,229,255,0.35);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.25s ease;
+    }
+
+    /* Dot on minute arc */
+    .dot {
+      fill: #fff;
+      filter: drop-shadow(0 0 4px var(--cyan));
+    }
+
+    /* Time text inside ring */
+    .time-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .time-hm {
+      font-size: 3.2rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      text-shadow: 0 0 20px rgba(0,229,255,0.3);
+    }
+
+    .time-sec {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--cyan);
+      letter-spacing: 0.2em;
+      margin-top: 6px;
+      opacity: 0.9;
+    }
+
+    .time-ampm {
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.25em;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg"></div>
+  <div class="vignette"></div>
+
+  <div class="card">
+
+    <!-- Date -->
+    <div class="date-panel">
+      <div class="day-name" id="dayName">Sunday</div>
+      <div class="date-full" id="dateFull">June 7</div>
+      <div class="date-year" id="dateYear">2026</div>
+    </div>
+
+    <!-- Ring clock -->
+    <div class="ring-wrap">
+      <svg class="ring-svg" viewBox="0 0 240 240">
+        <!-- Outer minute ring -->
+        <circle class="ring-bg" cx="120" cy="120" r="108"/>
+        <circle class="ring-min" id="minArc" cx="120" cy="120" r="108"
+                stroke-dasharray="678.6" stroke-dashoffset="678.6"/>
+        <!-- Glowing dot on minute arc -->
+        <circle class="dot" id="minDot" cx="228" cy="120" r="5"/>
+
+        <!-- Inner second ring -->
+        <circle class="ring-bg" cx="120" cy="120" r="90" stroke-width="2.5"/>
+        <circle class="ring-sec" id="secArc" cx="120" cy="120" r="90"
+                stroke-dasharray="565.5" stroke-dashoffset="565.5"/>
+        <circle class="dot" id="secDot" cx="210" cy="120" r="3.5"
+                fill="var(--cyan)" filter="drop-shadow(0 0 3px var(--cyan))"/>
+      </svg>
+
+      <div class="time-inner">
+        <div class="time-hm" id="timeHM">12:00</div>
+        <div class="time-sec" id="timeSec">00</div>
+        <div class="time-ampm" id="timeAMPM">AM</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const CIRC_MIN = 2 * Math.PI * 108; // 678.6
+    const CIRC_SEC = 2 * Math.PI * 90;  // 565.5
+    const R_MIN = 108, R_SEC = 90, CX = 120, CY = 120;
+
+    function pad(n) { return String(n).padStart(2,'0'); }
+
+    function angleToCX(r, deg) {
+      const rad = (deg - 90) * Math.PI / 180;
+      return CX + r * Math.cos(rad);
+    }
+    function angleToCY(r, deg) {
+      const rad = (deg - 90) * Math.PI / 180;
+      return CY + r * Math.sin(rad);
+    }
+
+    function tick() {
+      const now = new Date();
+      const h = now.getHours();
+      const m = now.getMinutes();
+      const s = now.getSeconds();
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 || 12;
+
+      // Time display
+      document.getElementById('timeHM').textContent = `${h12}:${pad(m)}`;
+      document.getElementById('timeSec').textContent = pad(s);
+      document.getElementById('timeAMPM').textContent = ampm;
+
+      // Date display
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const months = ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December'];
+      document.getElementById('dayName').textContent = days[now.getDay()];
+      document.getElementById('dateFull').textContent = `${months[now.getMonth()]} ${now.getDate()}`;
+      document.getElementById('dateYear').textContent = now.getFullYear();
+
+      // Minute arc (full rotation = 60 mins)
+      const minFrac = (m + s / 60) / 60;
+      const minOffset = CIRC_MIN * (1 - minFrac);
+      document.getElementById('minArc').style.strokeDashoffset = minOffset;
+      const minDeg = minFrac * 360;
+      document.getElementById('minDot').setAttribute('cx', angleToCX(R_MIN, minDeg));
+      document.getElementById('minDot').setAttribute('cy', angleToCY(R_MIN, minDeg));
+
+      // Second arc (full rotation = 60 secs)
+      const secFrac = s / 60;
+      const secOffset = CIRC_SEC * (1 - secFrac);
+      document.getElementById('secArc').style.strokeDashoffset = secOffset;
+      const secDeg = secFrac * 360;
+      document.getElementById('secDot').setAttribute('cx', angleToCX(R_SEC, secDeg));
+      document.getElementById('secDot').setAttribute('cy', angleToCY(R_SEC, secDeg));
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  </script>
+
+</body>
+</html>
