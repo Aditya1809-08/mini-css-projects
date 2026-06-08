@@ -342,6 +342,61 @@
       padding: 5px 10px; cursor: pointer; transition: background 0.2s;
     }
     .city-btn:hover { background: rgba(0,229,255,0.22); }
+
+    /* ── Portrait Fullscreen mode ── */
+    body.portrait-fs {
+      overflow-y: auto;
+      align-items: flex-start;
+      padding: 16px;
+      height: auto;
+      min-height: 100vh;
+    }
+    body.portrait-fs .card-wrap { max-width: 500px; margin: 0 auto; }
+    body.portrait-fs .card {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      padding: 28px 22px 20px;
+      min-height: unset;
+    }
+    body.portrait-fs .left-panel {
+      grid-column: 1; grid-row: 1;
+      flex-direction: row; flex-wrap: wrap; gap: 14px;
+      padding-right: 0; border-right: none;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 18px;
+    }
+    body.portrait-fs .date-block  { flex: 1 1 130px; }
+    body.portrait-fs .tz-section  { flex: 0 0 auto; align-self: flex-start; margin-top: 4px; }
+    body.portrait-fs .stat-row    { flex: 1 1 100%; }
+    body.portrait-fs .center-panel {
+      grid-column: 1; grid-row: 2;
+      padding: 22px 0 10px; margin-top: 0;
+    }
+    body.portrait-fs .right-panel {
+      grid-column: 1; grid-row: 3;
+      padding-left: 0; border-left: none;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 18px; gap: 14px;
+    }
+    body.portrait-fs .h-rule     { grid-column: 1; }
+    body.portrait-fs .bottom-bar { grid-column: 1; flex-direction: column; align-items: flex-start; gap: 10px; }
+    body.portrait-fs .ring-wrap  { width: 220px; height: 220px; }
+    body.portrait-fs .time-hm    { font-size: 3rem; }
+    body.portrait-fs .corner     { display: none; }
+
+    /* Auto-apply when device is physically in portrait fullscreen */
+    @media (orientation: portrait) and (display-mode: fullscreen) {
+      body { overflow-y: auto; align-items: flex-start; padding: 16px; height: auto; min-height: 100vh; }
+      .card-wrap { max-width: 500px; margin: 0 auto; }
+      .card { grid-template-columns: 1fr; padding: 28px 22px 20px; min-height: unset; }
+      .left-panel  { flex-direction: row; flex-wrap: wrap; gap: 14px; padding-right: 0; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 18px; }
+      .center-panel { padding: 22px 0 10px; }
+      .right-panel { padding-left: 0; border-left: none; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 18px; }
+      .bottom-bar  { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .ring-wrap   { width: 220px; height: 220px; }
+      .time-hm     { font-size: 3rem; }
+      .corner      { display: none; }
+    }
     /* ============================================================
        RESPONSIVE — Tablet & Mobile
     ============================================================ */
@@ -625,6 +680,13 @@
           <div class="sdot gray"></div>
         </div>
         <div class="status-text">ALL SYSTEMS NOMINAL</div>
+        <button class="fs-btn" id="portraitBtn" onclick="togglePortrait()" title="Toggle Portrait Mode">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="7" y="2" width="10" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12" y2="18.5" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <span id="portraitTxt">PORTRAIT</span>
+        </button>
         <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" title="Toggle Fullscreen">
           <svg id="fsIcon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
@@ -711,7 +773,19 @@
       document.getElementById('netBar').style.width=net+'%';
     }
 
-    // ── Fullscreen ──
+    // ── Portrait Mode ──
+    let portraitOn = false;
+    function togglePortrait() {
+      portraitOn = !portraitOn;
+      document.body.classList.toggle('portrait-fs', portraitOn);
+      document.getElementById('portraitTxt').textContent = portraitOn ? 'LANDSCAPE' : 'PORTRAIT';
+      document.getElementById('portraitBtn').style.borderColor = portraitOn ? 'rgba(255,60,172,0.6)' : 'rgba(0,229,255,0.25)';
+      document.getElementById('portraitBtn').style.color = portraitOn ? 'var(--pink)' : 'var(--cyan)';
+      // Also try native screen orientation lock if supported
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock(portraitOn ? 'portrait' : 'landscape').catch(() => {});
+      }
+    }
     const exitSVG = `<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>`;
     const enterSVG = `<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;
 
