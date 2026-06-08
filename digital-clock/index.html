@@ -12,7 +12,7 @@
          • Web URL:     url('https://example.com/photo.jpg')
     ============================================================ */
     :root {
-      --bg-image: url('792778f0a540865c9a695759b2cf224e.jpg');
+      --bg-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600');
       --cyan: #00e5ff;
       --cyan-dim: rgba(0,229,255,0.18);
       --cyan-glow: rgba(0,229,255,0.55);
@@ -24,13 +24,15 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      min-height: 100vh;
+      height: 100vh;
+      width: 100vw;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Raleway', sans-serif;
       background: var(--dark);
       overflow: hidden;
+      padding: 28px;
     }
 
     .bg {
@@ -59,6 +61,8 @@
       background: linear-gradient(135deg,#ff3cac,#ff6b35,#ffe044,#00e5ff,#7b2fff,#ff3cac);
       background-size: 300% 300%;
       animation: borderSpin 5s linear infinite;
+      width: 100%;
+      max-width: 1200px;
     }
     @keyframes borderSpin {
       0%  { background-position: 0% 50%; }
@@ -76,14 +80,15 @@
     .card {
       position: relative;
       display: grid;
-      grid-template-columns: 220px 1fr 220px;
-      grid-template-rows: auto auto auto;
+      grid-template-columns: 260px 1fr 280px;
+      grid-template-rows: 1fr auto;
       gap: 0;
       background: rgba(8, 11, 20, 0.94);
       border-radius: 30px;
-      padding: 36px 40px 32px;
+      padding: 44px 52px 36px;
       backdrop-filter: blur(28px);
-      min-width: 860px;
+      width: 100%;
+      min-height: 420px;
       overflow: hidden;
     }
 
@@ -114,8 +119,8 @@
 
     /* ── LEFT PANEL ── */
     .left-panel {
-      display: flex; flex-direction: column; gap: 18px;
-      padding-right: 28px;
+      display: flex; flex-direction: column; gap: 24px;
+      padding-right: 40px;
       border-right: 1px solid rgba(255,255,255,0.06);
     }
 
@@ -128,17 +133,17 @@
 
     /* Date */
     .date-block .day-name {
-      font-size: 0.72rem; font-weight: 300;
+      font-size: 0.82rem; font-weight: 300;
       letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--cyan); opacity: 0.8; margin-bottom: 3px;
+      color: var(--cyan); opacity: 0.8; margin-bottom: 4px;
     }
     .date-block .date-full {
-      font-size: 1.65rem; font-weight: 700;
+      font-size: 2.2rem; font-weight: 700;
       color: #fff; line-height: 1.1;
     }
     .date-block .date-year {
-      font-size: 0.72rem; font-weight: 300;
-      color: rgba(255,255,255,0.35); letter-spacing: 0.2em; margin-top: 3px;
+      font-size: 0.82rem; font-weight: 300;
+      color: rgba(255,255,255,0.35); letter-spacing: 0.2em; margin-top: 4px;
     }
 
     /* Timezone badge */
@@ -190,7 +195,7 @@
     @keyframes scanMove { from{opacity:0.15} to{opacity:0.5} }
 
     .ring-wrap {
-      position: relative; width: 260px; height: 260px; flex-shrink: 0;
+      position: relative; width: 320px; height: 320px; flex-shrink: 0;
     }
     .ring-svg {
       position: absolute; inset: 0; width: 100%; height: 100%;
@@ -213,12 +218,12 @@
       display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
     .time-hm {
-      font-size: 3.6rem; font-weight: 700; color: #fff;
+      font-size: 4.4rem; font-weight: 700; color: #fff;
       letter-spacing: 0.04em; line-height: 1;
       text-shadow: 0 0 28px rgba(0,229,255,0.35);
     }
     .time-sec {
-      font-size: 1.2rem; font-weight: 300; color: var(--pink);
+      font-size: 1.5rem; font-weight: 300; color: var(--pink);
       letter-spacing: 0.25em; margin-top: 5px;
     }
     .time-ampm {
@@ -234,8 +239,8 @@
 
     /* ── RIGHT PANEL ── */
     .right-panel {
-      display: flex; flex-direction: column; gap: 18px;
-      padding-left: 28px;
+      display: flex; flex-direction: column; gap: 20px;
+      padding-left: 40px;
       border-left: 1px solid rgba(255,255,255,0.06);
     }
 
