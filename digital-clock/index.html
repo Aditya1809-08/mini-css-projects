@@ -310,6 +310,20 @@
     .sdot.gray   { background: rgba(255,255,255,0.2); }
     .status-text { font-size: 0.58rem; color: rgba(255,255,255,0.25); letter-spacing: 0.1em; }
 
+    /* Fullscreen button */
+    .fs-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(0,229,255,0.07);
+      border: 1px solid rgba(0,229,255,0.25);
+      border-radius: 8px; padding: 5px 10px;
+      color: var(--cyan); cursor: pointer;
+      font-size: 0.58rem; font-family: 'Raleway', sans-serif;
+      font-weight: 600; letter-spacing: 0.12em;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .fs-btn:hover { background: rgba(0,229,255,0.16); border-color: rgba(0,229,255,0.5); }
+    .fs-btn:active { transform: scale(0.97); }
+
     /* City search */
     .city-row {
       display: flex; gap: 6px; margin-bottom: 8px; margin-top: 4px;
@@ -506,6 +520,13 @@
           <div class="sdot gray"></div>
         </div>
         <div class="status-text">ALL SYSTEMS NOMINAL</div>
+        <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" title="Toggle Fullscreen">
+          <svg id="fsIcon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+            <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+          </svg>
+          <span id="fsTxt">FULLSCREEN</span>
+        </button>
       </div>
     </div>
 
@@ -585,7 +606,29 @@
       document.getElementById('netBar').style.width=net+'%';
     }
 
-    // ── Weather via Open-Meteo (free, no API key) ──
+    // ── Fullscreen ──
+    const exitSVG = `<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>`;
+    const enterSVG = `<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      const isFs = !!document.fullscreenElement;
+      document.getElementById('fsIcon').innerHTML = isFs ? exitSVG : enterSVG;
+      document.getElementById('fsTxt').textContent = isFs ? 'EXIT' : 'FULLSCREEN';
+    });
+
+    // Press F key as shortcut
+    document.addEventListener('keydown', e => {
+      if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+      if (e.key === 'Escape' && document.fullscreenElement) document.exitFullscreen();
+    });
     const WMO_ICONS = {
       0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',
       51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',
