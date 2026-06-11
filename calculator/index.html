@@ -1,358 +1,602 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <style>
-    /* ============================================================
-       BACKGROUND IMAGE — change the URL below to your own image
-         • Local file : url('your-photo.jpg')
-         • Web URL    : url('https://example.com/photo.jpg')
-    ============================================================ */
-    :root {
-      --bg-image: url('f17f48448b00ee31ba98f4340514c90c.jpg');
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Sparkles, 
+  Moon, 
+  Sun,
+  Check,
+  Copy
+} from 'lucide-react';
+
+// ==========================================
+// CONFIGURATION block for GitHub developers
+// ==========================================
+const CONFIG = {
+  // Set your custom background URL here:
+  bgImageUrl: 'f17f48448b00ee31ba98f4340514c90c.jpg',
+  // Customizable aesthetic orb settings:
+  orbColor: '#005ed3',
+  orbSize: 520, //px
+};
+
+export default function App() {
+  // Calculator Starts from 0/Empty
+  const [expression, setExpression] = useState('');
+  const [result, setResult] = useState('0');
+  
+  // Theme state: 'dark' (Midnight Dark) or 'light' (Ice Light)
+  const [theme, setTheme] = useState('dark');
+  const [copied, setCopied] = useState(false);
+  const [scientificMode, setScientificMode] = useState(false);
+  const [isDeg, setIsDeg] = useState(true);
+
+  // Mouse position for the premium interactive backdrop orb
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const containerRef = useRef(null);
+
+  // Gentle parallax effect for the backdrop lighting orb
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      setMousePos({ x: x * 0.12, y: y * 0.12 });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Secure Keyboard inputs handling
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const key = e.key;
+      if (/[0-9.]/.test(key)) {
+        handleKeyPress(key);
+      } else if (['+', '-', '*', '/'].includes(key)) {
+        handleKeyPress(key === '*' ? '×' : key === '/' ? '÷' : key);
+      } else if (key === 'Enter' || key === '=') {
+        handleEvaluate();
+      } else if (key === 'Backspace') {
+        handleClearLast();
+      } else if (key === 'Escape') {
+        handleClearAll();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [expression]);
+
+  // Premium comma formatting for output
+  const formatNumber = (numStr) => {
+    if (!numStr) return '0';
+    if (numStr === 'Error' || numStr === 'Infinity' || numStr === 'NaN') return numStr;
+    
+    const parts = numStr.toString().split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
+  };
+
+  // Safe expression execution
+  const calculateResult = (expr) => {
+    try {
+      let parsedExpr = expr
+        .replace(/×/g, '*')
+        .replace(/÷/g, '/')
+        .replace(/−/g, '-')
+        .replace(/%/g, '*0.01');
+
+      // Process Trig functions if applicable
+      parsedExpr = parsedExpr.replace(/sin\((.*?)\)/g, (_, val) => {
+        const num = parseFloat(val);
+        if (isNaN(num)) return 'NaN';
+        return isDeg ? Math.sin(num * Math.PI / 180).toString() : Math.sin(num).toString();
+      });
+
+      parsedExpr = parsedExpr.replace(/cos\((.*?)\)/g, (_, val) => {
+        const num = parseFloat(val);
+        if (isNaN(num)) return 'NaN';
+        return isDeg ? Math.cos(num * Math.PI / 180).toString() : Math.cos(num).toString();
+      });
+
+      parsedExpr = parsedExpr.replace(/tan\((.*?)\)/g, (_, val) => {
+        const num = parseFloat(val);
+        if (isNaN(num)) return 'NaN';
+        return isDeg ? Math.tan(num * Math.PI / 180).toString() : Math.tan(num).toString();
+      });
+
+      if (/[^-()\d/*+.]/.test(parsedExpr)) {
+        return 'Error';
+      }
+
+      const evaluated = new Function(`"use strict"; return (${parsedExpr})`)();
+      if (evaluated === undefined || isNaN(evaluated)) return 'Error';
+      
+      const rounded = parseFloat(Number(evaluated).toFixed(8));
+      return rounded.toString();
+    } catch (err) {
+      return 'Error';
     }
+  };
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  const handleEvaluate = () => {
+    if (!expression) return;
+    const rawResult = calculateResult(expression);
+    setResult(formatNumber(rawResult));
+  };
 
-    body {
-      min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Inter', sans-serif;
-      overflow: hidden; position: relative;
-    }
-
-    .bg {
-      position: fixed; inset: 0;
-      background-image: var(--bg-image);
-      background-size: cover; background-position: center;
-      filter: brightness(0.85) saturate(0.7);
-      z-index: 0; transition: filter 0.5s;
-    }
-    body.dark .bg { filter: brightness(0.18) saturate(0.4); }
-
-    .blob {
-      position: fixed;
-      width: 560px; height: 560px; border-radius: 50%;
-      background: radial-gradient(circle, #5aa0f0 0%, #2563eb 55%, transparent 100%);
-      top: 50%; left: 50%; transform: translate(-25%, -52%);
-      filter: blur(2px); opacity: 0.45; z-index: 1; pointer-events: none;
-      transition: opacity 0.4s;
-    }
-    body.dark .blob { opacity: 0.12; }
-
-    /* ── Toggle ── */
-    .toggle-wrap {
-      position: fixed; top: clamp(12px,3vw,22px); right: clamp(12px,3vw,22px);
-      z-index: 200;
-    }
-    .toggle {
-      display: flex; align-items: center; gap: 7px;
-      background: rgba(255,255,255,0.28);
-      border: 1px solid rgba(255,255,255,0.45);
-      border-radius: 30px; padding: 6px 13px;
-      cursor: pointer; backdrop-filter: blur(14px);
-      font-size: 0.68rem; font-weight: 600;
-      letter-spacing: 0.1em; color: #1a2340;
-      transition: background 0.3s, color 0.3s, border-color 0.3s;
-      user-select: none;
-    }
-    body.dark .toggle { background: rgba(25,30,48,0.75); border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.65); }
-    .t-track { width: 32px; height: 17px; border-radius: 9px; background: rgba(0,0,0,0.13); position: relative; transition: background 0.3s; }
-    body.dark .t-track { background: #2563eb; }
-    .t-thumb { position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: transform 0.3s cubic-bezier(.4,0,.2,1); }
-    body.dark .t-thumb { transform: translateX(15px); }
-
-    /* ── Calc card ── */
-    .calc {
-      position: relative; z-index: 10;
-      width: clamp(290px, 88vw, 370px);
-      border-radius: 32px;
-      padding: clamp(16px,4vw,26px);
-      display: flex; flex-direction: column; gap: clamp(8px,2vw,13px);
-      /* LIGHT */
-      background: rgba(255,255,255,0.42);
-      border: 1px solid rgba(255,255,255,0.72);
-      backdrop-filter: blur(32px) saturate(1.8);
-      box-shadow: 0 24px 64px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.9);
-      transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
-    }
-    body.dark .calc {
-      background: rgba(16,20,34,0.92);
-      border-color: rgba(255,255,255,0.06);
-      box-shadow: 0 28px 72px rgba(0,0,0,0.6);
-    }
-
-    /* ── Display ── */
-    .display {
-      padding: clamp(10px,2.5vw,16px) clamp(12px,3vw,18px);
-      border-radius: 18px;
-      background: rgba(255,255,255,0.28);
-      border: 1px solid rgba(255,255,255,0.55);
-      min-height: clamp(76px,17vw,106px);
-      display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; gap: 3px;
-      transition: background 0.4s, border-color 0.4s; overflow: hidden;
-    }
-    body.dark .display { background: rgba(0,0,0,0.22); border-color: rgba(255,255,255,0.05); }
-    .expr  { font-size: clamp(0.7rem,2.2vw,0.85rem); color: rgba(30,40,80,0.45); font-weight:400; text-align:right; word-break:break-all; min-height:1.1em; transition: color 0.4s; }
-    body.dark .expr { color: rgba(255,255,255,0.3); }
-    .result { font-size: clamp(1.8rem,7.5vw,2.7rem); font-weight:700; color:#1a2340; text-align:right; word-break:break-all; line-height:1.1; transition: color 0.4s, font-size 0.2s; }
-    body.dark .result { color: #fff; }
-
-    /* ── Grid ── */
-    .grid { display: grid; grid-template-columns: repeat(5,1fr); gap: clamp(6px,1.6vw,10px); }
-
-    /* ── Base button ── */
-    .btn {
-      border: none; cursor: pointer; border-radius: clamp(10px,2.5vw,14px);
-      font-family: 'Inter', sans-serif; font-size: clamp(0.72rem,2.4vw,0.9rem); font-weight: 500;
-      height: clamp(46px,11.5vw,62px);
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 0.08s, box-shadow 0.12s, background 0.3s, color 0.3s, filter 0.1s;
-      position: relative; overflow: hidden;
-      -webkit-tap-highlight-color: transparent; outline: none;
-      letter-spacing: 0.01em;
-    }
-    .btn:active { transform: scale(0.90); filter: brightness(0.88); }
-
-    /* Ripple */
-    .btn span.rip {
-      position: absolute; border-radius: 50%;
-      background: rgba(255,255,255,0.38);
-      transform: scale(0); pointer-events: none;
-      animation: rip 0.42s ease-out forwards;
-    }
-    @keyframes rip { to { transform: scale(4); opacity: 0; } }
-
-    /* ─ LIGHT mode colours ─ */
-    .b-num  { background: rgba(255,255,255,0.62); border: 1px solid rgba(255,255,255,0.85); color:#1e2a50; box-shadow: 0 3px 10px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.9); }
-    .b-num:hover { background: rgba(255,255,255,0.82); }
-    .b-op   { background: #2563eb; border: 1px solid #3b80ff; color:#fff; box-shadow: 0 4px 14px rgba(37,99,235,0.4); }
-    .b-op:hover { background: #1d55d4; }
-    .b-fn   { background: rgba(210,222,246,0.5); border: 1px solid rgba(255,255,255,0.6); color:#3a5a9a; font-size: clamp(0.58rem,1.9vw,0.75rem); font-weight:600; }
-    .b-fn:hover { background: rgba(210,222,246,0.78); }
-    .b-ac   { background: #2563eb; border: 1px solid #3b80ff; color:#fff; font-weight:700; box-shadow: 0 4px 14px rgba(37,99,235,0.4); }
-    .b-neg  { background: rgba(210,222,246,0.5); border: 1px solid rgba(255,255,255,0.6); color:#3a5a9a; font-weight:600; }
-    .b-pct  { background: rgba(210,222,246,0.5); border: 1px solid rgba(255,255,255,0.6); color:#3a5a9a; font-weight:600; }
-    .b-eq   { background: #2563eb; border: 1px solid #5598ff; color:#fff; font-weight:700; font-size: clamp(1rem,3vw,1.2rem); box-shadow: 0 6px 20px rgba(37,99,235,0.45); }
-
-    /* ─ DARK mode overrides ─ */
-    body.dark .b-num  { background: rgba(44,52,74,0.92); border-color: rgba(255,255,255,0.06); color:#dee3f5; box-shadow: 0 3px 10px rgba(0,0,0,0.35); }
-    body.dark .b-num:hover { background: rgba(58,68,94,0.95); }
-    body.dark .b-fn   { background: rgba(32,38,56,0.92); border-color: rgba(255,255,255,0.05); color:rgba(255,255,255,0.45); }
-    body.dark .b-fn:hover { background: rgba(44,52,72,0.95); }
-    body.dark .b-neg  { background: rgba(32,38,56,0.92); border-color: rgba(255,255,255,0.05); color:rgba(255,255,255,0.5); }
-    body.dark .b-pct  { background: rgba(32,38,56,0.92); border-color: rgba(255,255,255,0.05); color:rgba(255,255,255,0.5); }
-    body.dark .b-op   { background: #1d4ed8; border-color: rgba(37,99,235,0.5); box-shadow: 0 4px 14px rgba(29,78,216,0.45); }
-    body.dark .b-ac   { background: #1d4ed8; border-color: rgba(37,99,235,0.5); box-shadow: 0 4px 14px rgba(29,78,216,0.45); }
-    body.dark .b-eq   { background: #1d4ed8; border-color: rgba(60,110,255,0.5); box-shadow: 0 6px 22px rgba(29,78,216,0.52); }
-
-    /* span-2 */
-    .s2 { grid-column: span 2; }
-
-    /* ── Card border ── */
-    .card-wrap {
-      position: relative; z-index: 10;
-      border-radius: 34px;
-      padding: 3px;
-      background: #000;
-      box-shadow: 0 0 0 3px #000, 0 24px 60px rgba(0,0,0,0.35);
-    }
-    .calc {
-      position: relative; z-index: 20;
-      border-radius: 32px; /* slightly less than card-wrap so border shows */
-    }
-    /* In light mode give the calc a solid white-ish background so
-       the black card-wrap padding doesn't show through the blur */
-    body:not(.dark) .calc {
-      background: rgba(225,235,252,0.85) !important;
-      backdrop-filter: blur(24px) saturate(1.6);
-    }
-
-    /* ── Responsive ── */
-    @media (max-width:360px) {
-      .btn { height: 42px; }
-      .tall { min-height: 92px; }
-    }
-  </style>
-</head>
-<body>
-
-<div class="bg"></div>
-<div class="blob"></div>
-
-<div class="toggle-wrap">
-  <div class="toggle" onclick="toggleTheme()">
-    <div class="t-track"><div class="t-thumb"></div></div>
-    <span id="tlbl">DARK</span>
-  </div>
-</div>
-
-<div class="card-wrap" id="cardWrap">
-  <div class="calc">
-  <div class="display">
-    <div class="expr"   id="expr"></div>
-    <div class="result" id="result">0</div>
-  </div>
-
-  <div class="grid">
-    <!-- Row 1: memory / fn row (5 cols) -->
-    <button class="btn b-fn"  data-a="mc">mc</button>
-    <button class="btn b-fn"  data-a="m+">m+</button>
-    <button class="btn b-fn"  data-a="m-">m−</button>
-    <button class="btn b-fn"  data-a="mr">mr</button>
-    <button class="btn b-fn"  data-a="ms">ms</button>
-
-    <!-- Row 2: AC ← +/- / × -->
-    <button class="btn b-ac"  data-a="ac">AC</button>
-    <button class="btn b-neg" data-a="back">←</button>
-    <button class="btn b-pct" data-a="sign">+/−</button>
-    <button class="btn b-op"  data-a="op" data-v="/">/</button>
-    <button class="btn b-op"  data-a="op" data-v="*">×</button>
-
-    <!-- Row 3: 7 8 9 − -->
-    <button class="btn b-num" data-a="num" data-v="7">7</button>
-    <button class="btn b-num" data-a="num" data-v="8">8</button>
-    <button class="btn b-num" data-a="num" data-v="9">9</button>
-    <button class="btn b-op"  data-a="op"  data-v="-">−</button>
-    <button class="btn b-op"  data-a="op"  data-v="+">+</button>
-
-    <!-- Row 4: 4 5 6 % -->
-    <button class="btn b-num" data-a="num" data-v="4">4</button>
-    <button class="btn b-num" data-a="num" data-v="5">5</button>
-    <button class="btn b-num" data-a="num" data-v="6">6</button>
-    <button class="btn b-pct" data-a="pct">%</button>
-    <button class="btn b-pct" data-a="pow">^</button>
-
-    <!-- Row 5: 1 2 3 √ = -->
-    <button class="btn b-num" data-a="num" data-v="1">1</button>
-    <button class="btn b-num" data-a="num" data-v="2">2</button>
-    <button class="btn b-num" data-a="num" data-v="3">3</button>
-    <button class="btn b-fn"  data-a="sqrt">√</button>
-    <button class="btn b-eq"  data-a="eq">=</button>
-
-    <!-- Row 6: 0 (wide) . -->
-    <button class="btn b-num s2" data-a="num" data-v="0">0</button>
-    <button class="btn b-num"    data-a="dot">.</button>
-  </div><!-- .grid -->
-</div><!-- .calc -->
-</div><!-- .card-wrap -->
-
-<script>
-  /* ── Theme ── */
-  function toggleTheme(){
-    document.body.classList.toggle('dark');
-    document.getElementById('tlbl').textContent = document.body.classList.contains('dark') ? 'LIGHT' : 'DARK';
-  }
-
-  /* ── State ── */
-  let expr='', display='0', justEvaled=false, memory=0;
-  const exprEl=document.getElementById('expr'), resEl=document.getElementById('result');
-
-  function fmt(n){
-    if(!isFinite(n)) return String(n);
-    let s=parseFloat(n.toPrecision(12)).toString();
-    return s;
-  }
-  function render(){
-    exprEl.textContent=expr;
-    resEl.textContent=display;
-    const l=display.replace(/[^0-9.]/g,'').length;
-    resEl.style.fontSize = l>11 ? Math.max(1.2, 2.7-(l-11)*0.13)+'rem' : '';
-  }
-
-  function handle(a,v){
-    switch(a){
-      case 'ac':   expr=''; display='0'; justEvaled=false; break;
-      case 'back':
-        if(justEvaled){expr='';display='0';justEvaled=false;break;}
-        display=display.length>1?display.slice(0,-1):'0';
-        if(expr.length) expr=expr.slice(0,-1);
-        break;
-      case 'num':
-        if(justEvaled){expr=v;display=v;justEvaled=false;}
-        else{ if(display==='0'&&v!=='.') display=v; else display+=v; expr+=v; }
-        break;
-      case 'dot':
-        if(justEvaled){expr='0.';display='0.';justEvaled=false;break;}
-        if(!display.includes('.')){display+='.';expr+='.';}
-        break;
-      case 'op':
-        justEvaled=false;
-        if(expr&&'+-*/^'.includes(expr.slice(-1))) expr=expr.slice(0,-1);
-        expr+=v;
-        display={'+':'+','-':'−','*':'×','/':'÷','^':'^'}[v]||v;
-        break;
-      case 'sign':
-        if(display!=='0'){
-          if(display.startsWith('-')){display=display.slice(1);}
-          else{display='-'+display;}
-          // rebuild expr ending
-          const last=expr.split(/[+\-*\/]/).pop();
-          expr=expr.slice(0,expr.lastIndexOf(last))+display;
-        }
-        break;
-      case 'pct':
-        try{const n=parseFloat(display);display=fmt(n/100);expr=display;justEvaled=true;}catch(e){}
-        break;
-      case 'pow':
-        justEvaled=false;
-        if(expr&&'+-*/^'.includes(expr.slice(-1))) expr=expr.slice(0,-1);
-        expr+='**'; display='^';
-        break;
-      case 'sqrt':
-        try{const n=parseFloat(display);display=fmt(Math.sqrt(n));expr=display;justEvaled=true;}catch(e){}
-        break;
-      case 'eq':
-        if(!expr||expr===display) break;
-        try{
-          const res=Function('"use strict";return('+expr+')')();
-          exprEl.textContent=expr+' =';
-          display=fmt(res); expr=fmt(res); justEvaled=true;
-        }catch(e){display='Error';expr='';justEvaled=true;}
-        break;
-      case 'mc': memory=0; break;
-      case 'm+': try{memory+=parseFloat(display);}catch(e){} break;
-      case 'm-': try{memory-=parseFloat(display);}catch(e){} break;
-      case 'mr': display=fmt(memory);expr=display;justEvaled=true; break;
-      case 'ms': memory=parseFloat(display)||0; break;
-    }
-    render();
-  }
-
-  /* ── Buttons ── */
-  document.querySelectorAll('.btn').forEach(btn=>{
-    btn.addEventListener('pointerdown', e=>{
-      const r=btn.getBoundingClientRect();
-      const span=document.createElement('span');
-      span.className='rip';
-      const size=Math.max(r.width,r.height)*1.5;
-      span.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-r.left-size/2}px;top:${e.clientY-r.top-size/2}px`;
-      btn.appendChild(span);
-      span.addEventListener('animationend',()=>span.remove());
+  const handleKeyPress = (value) => {
+    setExpression((prev) => {
+      if (prev === 'Error' || prev === 'Infinity') return value;
+      
+      const lastChar = prev.slice(-1);
+      const isOperator = ['+', '−', '×', '÷'].includes(value);
+      const isLastCharOperator = ['+', '−', '×', '÷'].includes(lastChar);
+      
+      if (isOperator && isLastCharOperator) {
+        return prev.slice(0, -1) + value; // swap operator
+      }
+      return prev + value;
     });
-    btn.addEventListener('click',()=>handle(btn.dataset.a, btn.dataset.v));
-  });
+  };
 
-  /* ── Keyboard ── */
-  document.addEventListener('keydown',e=>{
-    const k=e.key;
-    if(k>='0'&&k<='9') handle('num',k);
-    else if(k==='.') handle('dot');
-    else if(k==='+') handle('op','+');
-    else if(k==='-') handle('op','-');
-    else if(k==='*') handle('op','*');
-    else if(k==='/'){e.preventDefault();handle('op','/');}
-    else if(k==='^') handle('pow');
-    else if(k==='%') handle('pct');
-    else if(k==='Enter'||k==='=') handle('eq');
-    else if(k==='Backspace') handle('back');
-    else if(k==='Escape') handle('ac');
-  });
+  const handleClearAll = () => {
+    setExpression('');
+    setResult('0');
+  };
 
-  render();
-</script>
-</body>
-</html>
+  const handleClearLast = () => {
+    setExpression((prev) => (prev.length > 0 ? prev.slice(0, -1) : ''));
+  };
+
+  const togglePlusMinus = () => {
+    setExpression((prev) => {
+      if (!prev) return '-';
+      if (prev.startsWith('-')) return prev.slice(1);
+      return '-' + prev;
+    });
+  };
+
+  const applyPercent = () => {
+    setExpression((prev) => (prev ? `(${prev})%` : ''));
+  };
+
+  const applySciFunc = (func) => {
+    setExpression((prev) => `${func}(${prev || '0'})`);
+  };
+
+  const copyResultToClipboard = () => {
+    const textArea = document.createElement('textarea');
+    textArea.value = result;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Copy failed', err);
+    }
+    document.body.removeChild(textArea);
+  };
+
+  return (
+    <div 
+      ref={containerRef}
+      className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden font-sans select-none transition-colors duration-500 bg-slate-900"
+      style={{
+        backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.45)), url(${CONFIG.bgImageUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      {/* Background Glow Ring/Orb replicating user's original layout circle */}
+      <div 
+        className="absolute rounded-full pointer-events-none mix-blend-initial transition-transform duration-300 ease-out"
+        style={{
+          width: `${CONFIG.orbSize}px`,
+          height: `${CONFIG.orbSize}px`,
+          backgroundColor: CONFIG.orbColor,
+          top: '50%',
+          left: '50%',
+          transform: `translate(calc(-50% + ${mousePos.x}px), calc(-50% + ${mousePos.y}px))`,
+          filter: 'blur(45px)',
+          opacity: 0.65,
+          zIndex: 1
+        }}
+      />
+
+      {/* --- HEADER UI (Clean & Elegant) --- */}
+      <header className="relative z-10 w-full px-6 py-4 flex items-center justify-between backdrop-blur-md bg-slate-950/20 border-b border-white/5">
+        <div className="flex items-center gap-3">
+          <div className="bg-blue-600 text-white p-2 rounded-lg shadow-md">
+            <Sparkles className="w-4 h-4" />
+          </div>
+          <div>
+            <h1 className="text-sm font-bold text-white tracking-wider uppercase">Glassmorphic Studio</h1>
+          </div>
+        </div>
+      </header>
+
+      {/* --- CORE CALCULATOR DISPLAY AREA --- */}
+      <main className="relative z-10 flex-grow w-full max-w-lg mx-auto px-4 py-12 flex items-center justify-center">
+        <div className="relative w-full max-w-[370px]">
+          
+          {/* Glassmorphic Calculator Card */}
+          <div 
+            className="relative w-full rounded-[40px] p-6 flex flex-col justify-between transition-all duration-500 overflow-hidden"
+            style={{
+              background: theme === 'light' 
+                ? 'rgba(255, 255, 255, 0.45)' 
+                : 'rgba(15, 23, 42, 0.72)',
+              backdropFilter: 'blur(30px) saturate(160%)',
+              WebkitBackdropFilter: 'blur(30px) saturate(160%)',
+              border: theme === 'light' 
+                ? '1px solid rgba(255, 255, 255, 0.4)' 
+                : '1px solid rgba(255, 255, 255, 0.08)',
+              boxShadow: theme === 'light' 
+                ? '0 30px 60px -15px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+                : '0 30px 60px -15px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+            }}
+          >
+            
+            {/* Theme & Mode Selector Top-Bar inside Card */}
+            <div className="flex justify-between items-center mb-6">
+              <span className={`text-[10px] font-bold tracking-widest uppercase ${theme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
+                {theme === 'light' ? 'Ice Light Edition' : 'Midnight Dark Edition'}
+              </span>
+              
+              <div className="flex items-center gap-1 bg-white/10 dark:bg-slate-900/40 p-1 rounded-full border border-white/10">
+                <button 
+                  onClick={() => setTheme('light')}
+                  className={`p-1.5 rounded-full transition-all ${theme === 'light' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-white'}`}
+                  title="Switch to Ice Light"
+                >
+                  <Sun className="w-3.5 h-3.5" />
+                </button>
+                <button 
+                  onClick={() => setTheme('dark')}
+                  className={`p-1.5 rounded-full transition-all ${theme === 'dark' ? 'bg-slate-800 text-blue-400 shadow-sm' : 'text-slate-400 hover:text-white'}`}
+                  title="Switch to Midnight Dark"
+                >
+                  <Moon className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Display Screen */}
+            <div className="text-right flex flex-col justify-end min-h-[110px] mb-4">
+              {/* Active Formula Expression */}
+              <div 
+                className={`text-xs font-semibold tracking-tight font-mono min-h-[18px] overflow-x-auto whitespace-nowrap scrollbar-none transition-colors duration-300 ${
+                  theme === 'light' ? 'text-slate-600' : 'text-slate-400'
+                }`}
+              >
+                {expression || '0'}
+              </div>
+              
+              {/* Output Result */}
+              <div 
+                className={`text-4xl font-black tracking-tight mt-1 flex items-center justify-end gap-1 overflow-x-auto whitespace-nowrap scrollbar-none transition-colors duration-300 ${
+                  theme === 'light' ? 'text-slate-900' : 'text-white'
+                }`}
+              >
+                <span className={`text-xl font-light mr-1 ${theme === 'light' ? 'text-slate-400' : 'text-slate-500'}`}>=</span>
+                <span 
+                  className="font-mono cursor-pointer active:scale-95 transition-transform"
+                  onClick={copyResultToClipboard}
+                  title="Click to copy result"
+                >
+                  {result}
+                </span>
+              </div>
+            </div>
+
+            {/* Divider Line */}
+            <div className={`h-px my-4 transition-colors duration-300 ${theme === 'light' ? 'bg-slate-300/40' : 'bg-slate-800/40'}`} />
+
+            {/* Replicated High-Fidelity 4x5 Keypad Grid */}
+            <div className="grid grid-cols-4 gap-3">
+              
+              {/* Row 1 - Clean Functions */}
+              <button 
+                onClick={() => setScientificMode(!scientificMode)}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-xs transition-all active:scale-95 border ${
+                  scientificMode 
+                    ? 'bg-blue-600 text-white border-blue-500' 
+                    : theme === 'light' 
+                      ? 'bg-white/30 text-slate-600 hover:text-slate-900 hover:bg-white/40 border-slate-300/20' 
+                      : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
+                }`}
+              >
+                sc
+              </button>
+              <button 
+                onClick={togglePlusMinus}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-sm transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/30 text-slate-600 hover:text-slate-900 hover:bg-white/40 border-slate-300/20' 
+                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
+                }`}
+              >
+                ±
+              </button>
+              <button 
+                onClick={applyPercent}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-sm transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/30 text-slate-600 hover:text-slate-900 hover:bg-white/40 border-slate-300/20' 
+                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
+                }`}
+              >
+                %
+              </button>
+              <button 
+                onClick={() => handleKeyPress('÷')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-black text-sm transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/30 text-slate-600 hover:text-slate-950 border-slate-300/20' 
+                    : 'bg-white/5 text-blue-400 hover:text-blue-300 hover:bg-white/10 border-white/5'
+                }`}
+              >
+                ÷
+              </button>
+
+              {/* Row 2 */}
+              <button 
+                onClick={() => handleKeyPress('7')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
+                }`}
+              >
+                7
+              </button>
+              <button 
+                onClick={() => handleKeyPress('8')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
+                }`}
+              >
+                8
+              </button>
+              <button 
+                onClick={() => handleKeyPress('9')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
+                }`}
+              >
+                9
+              </button>
+              <button 
+                onClick={() => handleKeyPress('×')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-black text-sm transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/30 text-slate-600 hover:text-slate-950 border-slate-300/20' 
+                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
+                }`}
+              >
+                ×
+              </button>
+
+              {/* Row 3 */}
+              <button 
+                onClick={() => handleKeyPress('4')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
+                }`}
+              >
+                4
+              </button>
+              <button 
+                onClick={() => handleKeyPress('5')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
+                }`}
+              >
+                5
+              </button>
+              <button 
+                onClick={() => handleKeyPress('6')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
+                }`}
+              >
+                6
+              </button>
+              <button 
+                onClick={() => handleKeyPress('−')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-black text-sm transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/30 text-slate-600 hover:text-slate-950 border-slate-300/20' 
+                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
+                }`}
+              >
+                −
+              </button>
+
+              {/* Row 4 */}
+              <button 
+                onClick={() => handleKeyPress('1')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
+                }`}
+              >
+                1
+              </button>
+              <button 
+                onClick={() => handleKeyPress('2')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
+                }`}
+              >
+                2
+              </button>
+              <button 
+                onClick={() => handleKeyPress('3')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
+                }`}
+              >
+                3
+              </button>
+              <button 
+                onClick={() => handleKeyPress('+')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-black text-sm transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/30 text-slate-600 hover:text-slate-950 border-slate-300/20' 
+                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
+                }`}
+              >
+                +
+              </button>
+
+              {/* Row 5 */}
+              <button 
+                onClick={() => handleKeyPress('0')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
+                }`}
+              >
+                0
+              </button>
+              <button 
+                onClick={() => handleKeyPress('.')}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
+                }`}
+              >
+                .
+              </button>
+              <button 
+                onClick={handleClearAll}
+                className={`aspect-square rounded-2xl flex items-center justify-center font-extrabold text-xs transition-all active:scale-95 border ${
+                  theme === 'light' 
+                    ? 'bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-500/10' 
+                    : 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border-red-500/10'
+                }`}
+              >
+                AC
+              </button>
+              <button 
+                onClick={handleEvaluate}
+                className="aspect-square rounded-2xl flex items-center justify-center font-black text-xl text-white bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-600/30 transition-all active:scale-95 border border-blue-400/25"
+              >
+                =
+              </button>
+
+            </div>
+
+            {/* Slide-out Extra Advanced Functions */}
+            <div className={`transition-all duration-300 overflow-hidden ${scientificMode ? 'max-h-24 mt-4 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}>
+              <div className={`p-2.5 rounded-2xl grid grid-cols-4 gap-2 border ${
+                theme === 'light' ? 'bg-white/20 border-white/40' : 'bg-slate-900/60 border-white/5'
+              }`}>
+                <button 
+                  onClick={() => applySciFunc('sin')}
+                  className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all ${
+                    theme === 'light' ? 'bg-white/60 hover:bg-white/90 text-slate-800' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                  }`}
+                >
+                  sin
+                </button>
+                <button 
+                  onClick={() => applySciFunc('cos')}
+                  className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all ${
+                    theme === 'light' ? 'bg-white/60 hover:bg-white/90 text-slate-800' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                  }`}
+                >
+                  cos
+                </button>
+                <button 
+                  onClick={() => applySciFunc('tan')}
+                  className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all ${
+                    theme === 'light' ? 'bg-white/60 hover:bg-white/90 text-slate-800' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                  }`}
+                >
+                  tan
+                </button>
+                <button 
+                  onClick={() => setIsDeg(!isDeg)}
+                  className={`py-1.5 px-2 rounded-xl text-xs font-black transition-all ${
+                    theme === 'light' ? 'bg-blue-100 text-blue-700' : 'bg-blue-900/40 text-blue-400'
+                  }`}
+                >
+                  {isDeg ? 'DEG' : 'RAD'}
+                </button>
+                
+                <button 
+                  onClick={() => setExpression(prev => prev ? `(${prev})*(${prev})` : '0')}
+                  className={`col-span-2 py-1.5 rounded-xl text-xs font-mono font-bold transition-all ${
+                    theme === 'light' ? 'bg-white/60 hover:bg-white/90 text-slate-800' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                  }`}
+                >
+                  Square (x²)
+                </button>
+                <button 
+                  onClick={handleClearLast}
+                  className="col-span-2 py-1.5 rounded-xl text-xs font-bold bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all"
+                >
+                  Backspace
+                </button>
+              </div>
+            </div>
+
+            {/* Premium Micro-Indicators */}
+            <div className={`mt-5 flex justify-between items-center text-[10px] font-semibold tracking-wider ${
+              theme === 'light' ? 'text-slate-500' : 'text-slate-400'
+            }`}>
+              <span className="flex items-center gap-1">
+                <span className={`w-1.5 h-1.5 rounded-full ${theme === 'light' ? 'bg-emerald-500' : 'bg-cyan-400'}`} />
+                SYSTEM ONLINE
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </main>
+
+      {/* --- COPY NOTIFICATION TOAST --- */}
+      {copied && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-xl border border-slate-700/50 flex items-center gap-2 animate-bounce">
+          <Check className="w-4 h-4 text-emerald-400" />
+          Result Copied
+        </div>
+      )}
+
+      {/* --- PREMIUM FOOTER DETAILS --- */}
+      <footer className="relative z-10 w-full px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2 backdrop-blur-md bg-slate-950/20 border-t border-white/5 text-[10px] text-slate-300 font-semibold tracking-wide">
+        <div>
+          <span>Glassmorphic Calculator Studio</span>
+        </div>
+        <div className="flex gap-4">
+          <a href="#github" className="hover:text-blue-400 transition-colors">Documentation</a>
+          <span>•</span>
+          <a href="#license" className="hover:text-blue-400 transition-colors">MIT License</a>
+        </div>
+      </footer>
+    </div>
+  );
+}
