@@ -1,602 +1,525 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Sparkles, 
-  Moon, 
-  Sun,
-  Check,
-  Copy
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aesthetic Themeable Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+        }
 
-// ==========================================
-// CONFIGURATION block for GitHub developers
-// ==========================================
-const CONFIG = {
-  // Set your custom background URL here:
-  bgImageUrl: 'f17f48448b00ee31ba98f4340514c90c.jpg',
-  // Customizable aesthetic orb settings:
-  orbColor: '#005ed3',
-  orbSize: 520, //px
-};
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #dbe6f2; /* Soft pastel blue background */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 30px 20px;
+            transition: background-color 0.3s ease;
+        }
 
-export default function App() {
-  // Calculator Starts from 0/Empty
-  const [expression, setExpression] = useState('');
-  const [result, setResult] = useState('0');
-  
-  // Theme state: 'dark' (Midnight Dark) or 'light' (Ice Light)
-  const [theme, setTheme] = useState('dark');
-  const [copied, setCopied] = useState(false);
-  const [scientificMode, setScientificMode] = useState(false);
-  const [isDeg, setIsDeg] = useState(true);
+        /* Top Theme Toggle Controls */
+        .controls {
+            margin-bottom: 20px;
+            z-index: 10;
+        }
 
-  // Mouse position for the premium interactive backdrop orb
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const containerRef = useRef(null);
+        .toggle-btn {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #3b4b5a;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(15, 35, 60, 0.05);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-  // Gentle parallax effect for the backdrop lighting orb
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      setMousePos({ x: x * 0.12, y: y * 0.12 });
-    };
+        .toggle-btn:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.85);
+        }
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+        /* Composition Wrapper */
+        .artboard {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px 0;
+        }
 
-  // Secure Keyboard inputs handling
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      const key = e.key;
-      if (/[0-9.]/.test(key)) {
-        handleKeyPress(key);
-      } else if (['+', '-', '*', '/'].includes(key)) {
-        handleKeyPress(key === '*' ? '×' : key === '/' ? '÷' : key);
-      } else if (key === 'Enter' || key === '=') {
-        handleEvaluate();
-      } else if (key === 'Backspace') {
-        handleClearLast();
-      } else if (key === 'Escape') {
-        handleClearAll();
-      }
-    };
+        /* Blue Backdrop Circle (Perfect absolute centering) */
+        .backdrop-circle {
+            position: absolute;
+            width: 440px;
+            height: 440px;
+            background-color: #1073e5; /* Exact vibrant blue from the image */
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 15px 45px rgba(16, 115, 229, 0.25);
+            pointer-events: none;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [expression]);
+        /* Calculator Card container */
+        .calculator-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-  // Premium comma formatting for output
-  const formatNumber = (numStr) => {
-    if (!numStr) return '0';
-    if (numStr === 'Error' || numStr === 'Infinity' || numStr === 'NaN') return numStr;
-    
-    const parts = numStr.toString().split('.');
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return parts.join('.');
-  };
+        /* ==========================================
+           COMMON CALCULATOR CARD STYLES
+           ========================================== */
+        .calc-card {
+            width: 320px;
+            height: 570px;
+            border-radius: 40px;
+            padding: 30px 24px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+            animation: fadeIn 0.35s ease-out forwards;
+        }
 
-  // Safe expression execution
-  const calculateResult = (expr) => {
-    try {
-      let parsedExpr = expr
-        .replace(/×/g, '*')
-        .replace(/÷/g, '/')
-        .replace(/−/g, '-')
-        .replace(/%/g, '*0.01');
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
 
-      // Process Trig functions if applicable
-      parsedExpr = parsedExpr.replace(/sin\((.*?)\)/g, (_, val) => {
-        const num = parseFloat(val);
-        if (isNaN(num)) return 'NaN';
-        return isDeg ? Math.sin(num * Math.PI / 180).toString() : Math.sin(num).toString();
-      });
+        /* Display Panel styling */
+        .display {
+            text-align: right;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
 
-      parsedExpr = parsedExpr.replace(/cos\((.*?)\)/g, (_, val) => {
-        const num = parseFloat(val);
-        if (isNaN(num)) return 'NaN';
-        return isDeg ? Math.cos(num * Math.PI / 180).toString() : Math.cos(num).toString();
-      });
+        .expression {
+            font-size: 1.15rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            min-height: 1.5rem;
+            font-weight: 400;
+        }
 
-      parsedExpr = parsedExpr.replace(/tan\((.*?)\)/g, (_, val) => {
-        const num = parseFloat(val);
-        if (isNaN(num)) return 'NaN';
-        return isDeg ? Math.tan(num * Math.PI / 180).toString() : Math.tan(num).toString();
-      });
+        .result {
+            font-size: 2.3rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            min-height: 3.2rem;
+        }
 
-      if (/[^-()\d/*+.]/.test(parsedExpr)) {
-        return 'Error';
-      }
+        /* Keypad Grid layout */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
 
-      const evaluated = new Function(`"use strict"; return (${parsedExpr})`)();
-      if (evaluated === undefined || isNaN(evaluated)) return 'Error';
-      
-      const rounded = parseFloat(Number(evaluated).toFixed(8));
-      return rounded.toString();
-    } catch (err) {
-      return 'Error';
-    }
-  };
+        /* Individual Button styling */
+        .btn {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 18px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
 
-  const handleEvaluate = () => {
-    if (!expression) return;
-    const rawResult = calculateResult(expression);
-    setResult(formatNumber(rawResult));
-  };
+        .btn:active {
+            transform: scale(0.95);
+        }
 
-  const handleKeyPress = (value) => {
-    setExpression((prev) => {
-      if (prev === 'Error' || prev === 'Infinity') return value;
-      
-      const lastChar = prev.slice(-1);
-      const isOperator = ['+', '−', '×', '÷'].includes(value);
-      const isLastCharOperator = ['+', '−', '×', '÷'].includes(lastChar);
-      
-      if (isOperator && isLastCharOperator) {
-        return prev.slice(0, -1) + value; // swap operator
-      }
-      return prev + value;
-    });
-  };
+        /* Elongated pill button shape */
+        .btn.pill {
+            border-radius: 24px;
+        }
 
-  const handleClearAll = () => {
-    setExpression('');
-    setResult('0');
-  };
+        /* Accent Blue Button (Common) */
+        .btn.accent-blue {
+            background: linear-gradient(180deg, #1d82f5 0%, #116cd6 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(17, 108, 214, 0.35);
+        }
 
-  const handleClearLast = () => {
-    setExpression((prev) => (prev.length > 0 ? prev.slice(0, -1) : ''));
-  };
+        /* ==========================================
+           LEFT (LIGHT THEME) STYLING
+           ========================================== */
+        .calc-light {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(222, 236, 248, 0.75) 100%);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 30px 60px rgba(15, 35, 60, 0.12);
+        }
 
-  const togglePlusMinus = () => {
-    setExpression((prev) => {
-      if (!prev) return '-';
-      if (prev.startsWith('-')) return prev.slice(1);
-      return '-' + prev;
-    });
-  };
+        .calc-light .expression {
+            color: rgba(29, 45, 58, 0.65);
+        }
 
-  const applyPercent = () => {
-    setExpression((prev) => (prev ? `(${prev})%` : ''));
-  };
+        .calc-light .result {
+            color: #1d2d3a;
+        }
 
-  const applySciFunc = (func) => {
-    setExpression((prev) => `${func}(${prev || '0'})`);
-  };
+        .calc-light .btn {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(235, 242, 248, 0.85) 100%);
+            color: #7a8c9e;
+            box-shadow: 
+                -2px -2px 6px rgba(255, 255, 255, 0.9),
+                2px 2px 8px rgba(160, 185, 210, 0.25);
+        }
 
-  const copyResultToClipboard = () => {
-    const textArea = document.createElement('textarea');
-    textArea.value = result;
-    document.body.appendChild(textArea);
-    textArea.select();
-    try {
-      document.execCommand('copy');
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Copy failed', err);
-    }
-    document.body.removeChild(textArea);
-  };
+        .calc-light .btn.num {
+            color: #506275;
+        }
 
-  return (
-    <div 
-      ref={containerRef}
-      className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden font-sans select-none transition-colors duration-500 bg-slate-900"
-      style={{
-        backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.45)), url(${CONFIG.bgImageUrl})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      {/* Background Glow Ring/Orb replicating user's original layout circle */}
-      <div 
-        className="absolute rounded-full pointer-events-none mix-blend-initial transition-transform duration-300 ease-out"
-        style={{
-          width: `${CONFIG.orbSize}px`,
-          height: `${CONFIG.orbSize}px`,
-          backgroundColor: CONFIG.orbColor,
-          top: '50%',
-          left: '50%',
-          transform: `translate(calc(-50% + ${mousePos.x}px), calc(-50% + ${mousePos.y}px))`,
-          filter: 'blur(45px)',
-          opacity: 0.65,
-          zIndex: 1
-        }}
-      />
+        /* ==========================================
+           RIGHT (DARK THEME) STYLING
+           ========================================== */
+        .calc-dark {
+            background: linear-gradient(135deg, #1b2129 0%, #0e1216 100%);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
 
-      {/* --- HEADER UI (Clean & Elegant) --- */}
-      <header className="relative z-10 w-full px-6 py-4 flex items-center justify-between backdrop-blur-md bg-slate-950/20 border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <div className="bg-blue-600 text-white p-2 rounded-lg shadow-md">
-            <Sparkles className="w-4 h-4" />
-          </div>
-          <div>
-            <h1 className="text-sm font-bold text-white tracking-wider uppercase">Glassmorphic Studio</h1>
-          </div>
-        </div>
-      </header>
+        .calc-dark .expression {
+            color: #7a8c9e;
+        }
 
-      {/* --- CORE CALCULATOR DISPLAY AREA --- */}
-      <main className="relative z-10 flex-grow w-full max-w-lg mx-auto px-4 py-12 flex items-center justify-center">
-        <div className="relative w-full max-w-[370px]">
-          
-          {/* Glassmorphic Calculator Card */}
-          <div 
-            className="relative w-full rounded-[40px] p-6 flex flex-col justify-between transition-all duration-500 overflow-hidden"
-            style={{
-              background: theme === 'light' 
-                ? 'rgba(255, 255, 255, 0.45)' 
-                : 'rgba(15, 23, 42, 0.72)',
-              backdropFilter: 'blur(30px) saturate(160%)',
-              WebkitBackdropFilter: 'blur(30px) saturate(160%)',
-              border: theme === 'light' 
-                ? '1px solid rgba(255, 255, 255, 0.4)' 
-                : '1px solid rgba(255, 255, 255, 0.08)',
-              boxShadow: theme === 'light' 
-                ? '0 30px 60px -15px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
-                : '0 30px 60px -15px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
-            }}
-          >
-            
-            {/* Theme & Mode Selector Top-Bar inside Card */}
-            <div className="flex justify-between items-center mb-6">
-              <span className={`text-[10px] font-bold tracking-widest uppercase ${theme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
-                {theme === 'light' ? 'Ice Light Edition' : 'Midnight Dark Edition'}
-              </span>
-              
-              <div className="flex items-center gap-1 bg-white/10 dark:bg-slate-900/40 p-1 rounded-full border border-white/10">
-                <button 
-                  onClick={() => setTheme('light')}
-                  className={`p-1.5 rounded-full transition-all ${theme === 'light' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-white'}`}
-                  title="Switch to Ice Light"
-                >
-                  <Sun className="w-3.5 h-3.5" />
-                </button>
-                <button 
-                  onClick={() => setTheme('dark')}
-                  className={`p-1.5 rounded-full transition-all ${theme === 'dark' ? 'bg-slate-800 text-blue-400 shadow-sm' : 'text-slate-400 hover:text-white'}`}
-                  title="Switch to Midnight Dark"
-                >
-                  <Moon className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
+        .calc-dark .result {
+            color: #ffffff;
+        }
 
-            {/* Display Screen */}
-            <div className="text-right flex flex-col justify-end min-h-[110px] mb-4">
-              {/* Active Formula Expression */}
-              <div 
-                className={`text-xs font-semibold tracking-tight font-mono min-h-[18px] overflow-x-auto whitespace-nowrap scrollbar-none transition-colors duration-300 ${
-                  theme === 'light' ? 'text-slate-600' : 'text-slate-400'
-                }`}
-              >
-                {expression || '0'}
-              </div>
-              
-              {/* Output Result */}
-              <div 
-                className={`text-4xl font-black tracking-tight mt-1 flex items-center justify-end gap-1 overflow-x-auto whitespace-nowrap scrollbar-none transition-colors duration-300 ${
-                  theme === 'light' ? 'text-slate-900' : 'text-white'
-                }`}
-              >
-                <span className={`text-xl font-light mr-1 ${theme === 'light' ? 'text-slate-400' : 'text-slate-500'}`}>=</span>
-                <span 
-                  className="font-mono cursor-pointer active:scale-95 transition-transform"
-                  onClick={copyResultToClipboard}
-                  title="Click to copy result"
-                >
-                  {result}
-                </span>
-              </div>
-            </div>
+        .calc-dark .btn {
+            background: linear-gradient(135deg, #232a33 0%, #171d24 100%);
+            color: #8fa0b0;
+            box-shadow: 
+                -2px -2px 6px rgba(255, 255, 255, 0.02),
+                2px 2px 8px rgba(0, 0, 0, 0.45);
+        }
 
-            {/* Divider Line */}
-            <div className={`h-px my-4 transition-colors duration-300 ${theme === 'light' ? 'bg-slate-300/40' : 'bg-slate-800/40'}`} />
+        .calc-dark .btn.num {
+            color: #cfd8dc;
+        }
 
-            {/* Replicated High-Fidelity 4x5 Keypad Grid */}
-            <div className="grid grid-cols-4 gap-3">
-              
-              {/* Row 1 - Clean Functions */}
-              <button 
-                onClick={() => setScientificMode(!scientificMode)}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-xs transition-all active:scale-95 border ${
-                  scientificMode 
-                    ? 'bg-blue-600 text-white border-blue-500' 
-                    : theme === 'light' 
-                      ? 'bg-white/30 text-slate-600 hover:text-slate-900 hover:bg-white/40 border-slate-300/20' 
-                      : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
-                }`}
-              >
-                sc
-              </button>
-              <button 
-                onClick={togglePlusMinus}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-sm transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/30 text-slate-600 hover:text-slate-900 hover:bg-white/40 border-slate-300/20' 
-                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
-                }`}
-              >
-                ±
-              </button>
-              <button 
-                onClick={applyPercent}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-sm transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/30 text-slate-600 hover:text-slate-900 hover:bg-white/40 border-slate-300/20' 
-                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
-                }`}
-              >
-                %
-              </button>
-              <button 
-                onClick={() => handleKeyPress('÷')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-black text-sm transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/30 text-slate-600 hover:text-slate-950 border-slate-300/20' 
-                    : 'bg-white/5 text-blue-400 hover:text-blue-300 hover:bg-white/10 border-white/5'
-                }`}
-              >
-                ÷
-              </button>
+        /* ==========================================
+           TOGGLE VISIBILITY CONTROLS
+           ========================================== */
+        body[data-active-theme="light"] .calc-dark {
+            display: none !important;
+        }
 
-              {/* Row 2 */}
-              <button 
-                onClick={() => handleKeyPress('7')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
-                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
-                }`}
-              >
-                7
-              </button>
-              <button 
-                onClick={() => handleKeyPress('8')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
-                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
-                }`}
-              >
-                8
-              </button>
-              <button 
-                onClick={() => handleKeyPress('9')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
-                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
-                }`}
-              >
-                9
-              </button>
-              <button 
-                onClick={() => handleKeyPress('×')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-black text-sm transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/30 text-slate-600 hover:text-slate-950 border-slate-300/20' 
-                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
-                }`}
-              >
-                ×
-              </button>
+        body[data-active-theme="dark"] .calc-light {
+            display: none !important;
+        }
 
-              {/* Row 3 */}
-              <button 
-                onClick={() => handleKeyPress('4')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
-                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
-                }`}
-              >
-                4
-              </button>
-              <button 
-                onClick={() => handleKeyPress('5')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
-                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
-                }`}
-              >
-                5
-              </button>
-              <button 
-                onClick={() => handleKeyPress('6')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
-                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
-                }`}
-              >
-                6
-              </button>
-              <button 
-                onClick={() => handleKeyPress('−')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-black text-sm transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/30 text-slate-600 hover:text-slate-950 border-slate-300/20' 
-                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
-                }`}
-              >
-                −
-              </button>
+        /* ==========================================
+           RESPONSIVE SMALL SCREEN MEDIA QUERY
+           ========================================== */
+        @media (max-width: 480px) {
+            .backdrop-circle {
+                width: 320px;
+                height: 320px;
+            }
+            .calc-card {
+                width: 290px;
+                height: 520px;
+                padding: 24px 18px 18px 18px;
+                border-radius: 32px;
+            }
+            .result {
+                font-size: 2rem;
+                min-height: 2.8rem;
+            }
+            .keypad {
+                gap: 8px;
+            }
+            .btn {
+                border-radius: 14px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body data-active-theme="light">
 
-              {/* Row 4 */}
-              <button 
-                onClick={() => handleKeyPress('1')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
-                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
-                }`}
-              >
-                1
-              </button>
-              <button 
-                onClick={() => handleKeyPress('2')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
-                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
-                }`}
-              >
-                2
-              </button>
-              <button 
-                onClick={() => handleKeyPress('3')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
-                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
-                }`}
-              >
-                3
-              </button>
-              <button 
-                onClick={() => handleKeyPress('+')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-black text-sm transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/30 text-slate-600 hover:text-slate-950 border-slate-300/20' 
-                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border-white/5'
-                }`}
-              >
-                +
-              </button>
-
-              {/* Row 5 */}
-              <button 
-                onClick={() => handleKeyPress('0')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
-                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
-                }`}
-              >
-                0
-              </button>
-              <button 
-                onClick={() => handleKeyPress('.')}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-bold text-lg transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-white/50 text-slate-800 hover:bg-white/70 border-white/40' 
-                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border-white/10'
-                }`}
-              >
-                .
-              </button>
-              <button 
-                onClick={handleClearAll}
-                className={`aspect-square rounded-2xl flex items-center justify-center font-extrabold text-xs transition-all active:scale-95 border ${
-                  theme === 'light' 
-                    ? 'bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-500/10' 
-                    : 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border-red-500/10'
-                }`}
-              >
-                AC
-              </button>
-              <button 
-                onClick={handleEvaluate}
-                className="aspect-square rounded-2xl flex items-center justify-center font-black text-xl text-white bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-600/30 transition-all active:scale-95 border border-blue-400/25"
-              >
-                =
-              </button>
-
-            </div>
-
-            {/* Slide-out Extra Advanced Functions */}
-            <div className={`transition-all duration-300 overflow-hidden ${scientificMode ? 'max-h-24 mt-4 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}>
-              <div className={`p-2.5 rounded-2xl grid grid-cols-4 gap-2 border ${
-                theme === 'light' ? 'bg-white/20 border-white/40' : 'bg-slate-900/60 border-white/5'
-              }`}>
-                <button 
-                  onClick={() => applySciFunc('sin')}
-                  className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all ${
-                    theme === 'light' ? 'bg-white/60 hover:bg-white/90 text-slate-800' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
-                  }`}
-                >
-                  sin
-                </button>
-                <button 
-                  onClick={() => applySciFunc('cos')}
-                  className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all ${
-                    theme === 'light' ? 'bg-white/60 hover:bg-white/90 text-slate-800' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
-                  }`}
-                >
-                  cos
-                </button>
-                <button 
-                  onClick={() => applySciFunc('tan')}
-                  className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all ${
-                    theme === 'light' ? 'bg-white/60 hover:bg-white/90 text-slate-800' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
-                  }`}
-                >
-                  tan
-                </button>
-                <button 
-                  onClick={() => setIsDeg(!isDeg)}
-                  className={`py-1.5 px-2 rounded-xl text-xs font-black transition-all ${
-                    theme === 'light' ? 'bg-blue-100 text-blue-700' : 'bg-blue-900/40 text-blue-400'
-                  }`}
-                >
-                  {isDeg ? 'DEG' : 'RAD'}
-                </button>
-                
-                <button 
-                  onClick={() => setExpression(prev => prev ? `(${prev})*(${prev})` : '0')}
-                  className={`col-span-2 py-1.5 rounded-xl text-xs font-mono font-bold transition-all ${
-                    theme === 'light' ? 'bg-white/60 hover:bg-white/90 text-slate-800' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
-                  }`}
-                >
-                  Square (x²)
-                </button>
-                <button 
-                  onClick={handleClearLast}
-                  className="col-span-2 py-1.5 rounded-xl text-xs font-bold bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all"
-                >
-                  Backspace
-                </button>
-              </div>
-            </div>
-
-            {/* Premium Micro-Indicators */}
-            <div className={`mt-5 flex justify-between items-center text-[10px] font-semibold tracking-wider ${
-              theme === 'light' ? 'text-slate-500' : 'text-slate-400'
-            }`}>
-              <span className="flex items-center gap-1">
-                <span className={`w-1.5 h-1.5 rounded-full ${theme === 'light' ? 'bg-emerald-500' : 'bg-cyan-400'}`} />
-                SYSTEM ONLINE
-              </span>
-            </div>
-
-          </div>
-        </div>
-      </main>
-
-      {/* --- COPY NOTIFICATION TOAST --- */}
-      {copied && (
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-xl border border-slate-700/50 flex items-center gap-2 animate-bounce">
-          <Check className="w-4 h-4 text-emerald-400" />
-          Result Copied
-        </div>
-      )}
-
-      {/* --- PREMIUM FOOTER DETAILS --- */}
-      <footer className="relative z-10 w-full px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2 backdrop-blur-md bg-slate-950/20 border-t border-white/5 text-[10px] text-slate-300 font-semibold tracking-wide">
-        <div>
-          <span>Glassmorphic Calculator Studio</span>
-        </div>
-        <div className="flex gap-4">
-          <a href="#github" className="hover:text-blue-400 transition-colors">Documentation</a>
-          <span>•</span>
-          <a href="#license" className="hover:text-blue-400 transition-colors">MIT License</a>
-        </div>
-      </footer>
+    <!-- Top Theme Switch Control -->
+    <div class="controls">
+        <button class="toggle-btn" onclick="toggleTheme()" id="toggle-text">
+            Switch to Dark Theme 🌙
+        </button>
     </div>
-  );
-}
+
+    <div class="artboard">
+        <!-- Vibrant blue background circle -->
+        <div class="backdrop-circle"></div>
+
+        <div class="calculator-wrapper">
+            
+            <!-- ==========================================
+                 LIGHT THEME CALCULATOR
+                 ========================================== -->
+            <div class="calc-card calc-light" id="calc-light">
+                <div class="display">
+                    <div class="expression" id="light-expr"></div>
+                    <div class="result" id="light-res">0</div>
+                </div>
+                <div class="keypad">
+                    <!-- Row 1 -->
+                    <button class="btn" onclick="pressLight('Ac')">Ac</button>
+                    <button class="btn" onclick="pressLight('±')">±</button>
+                    <button class="btn" onclick="pressLight('%')">%</button>
+                    <button class="btn" onclick="pressLight('%')">%</button>
+                    
+                    <!-- Row 2 -->
+                    <button class="btn" onclick="pressLight('Ac')">Ac</button>
+                    <button class="btn num" onclick="pressLight('8')">8</button>
+                    <button class="btn num" onclick="pressLight('9')">9</button>
+                    <button class="btn" onclick="pressLight('/')">÷</button>
+                    
+                    <!-- Row 3 -->
+                    <button class="btn num" onclick="pressLight('4')">4</button>
+                    <button class="btn num" onclick="pressLight('5')">5</button>
+                    <button class="btn num" onclick="pressLight('6')">6</button>
+                    <button class="btn" onclick="pressLight('*')">×</button>
+                    
+                    <!-- Row 4 -->
+                    <button class="btn num" onclick="pressLight('1')">1</button>
+                    <button class="btn num" onclick="pressLight('2')">2</button>
+                    <button class="btn num" onclick="pressLight('3')">3</button>
+                    <button class="btn" onclick="pressLight('-')">−</button>
+                    
+                    <!-- Row 5 -->
+                    <button class="btn num" onclick="pressLight('0')">0</button>
+                    <button class="btn" onclick="pressLight('.')">.</button>
+                    <button class="btn" onclick="pressLight('+')">+</button>
+                    <button class="btn accent-blue pill" onclick="pressLight('=')">=</button>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 DARK THEME CALCULATOR
+                 ========================================== -->
+            <div class="calc-card calc-dark" id="calc-dark">
+                <div class="display">
+                    <div class="expression" id="dark-expr"></div>
+                    <div class="result" id="dark-res">0</div>
+                </div>
+                <div class="keypad">
+                    <!-- Row 1 -->
+                    <button class="btn" onclick="pressDark('sc')">sc</button>
+                    <button class="btn" onclick="pressDark('sin')">sin</button>
+                    <button class="btn" onclick="pressDark('deg')">deg</button>
+                    <button class="btn" onclick="pressDark('%')">%</button>
+                    
+                    <!-- Row 2 -->
+                    <button class="btn num" onclick="pressDark('7')">7</button>
+                    <button class="btn num" onclick="pressDark('8')">8</button>
+                    <button class="btn num" onclick="pressDark('9')">9</button>
+                    <button class="btn accent-blue" onclick="pressDark('/')">÷</button>
+                    
+                    <!-- Row 3 -->
+                    <button class="btn num" onclick="pressDark('4')">4</button>
+                    <button class="btn num" onclick="pressDark('5')">5</button>
+                    <button class="btn num" onclick="pressDark('6')">6</button>
+                    <button class="btn" onclick="pressDark('*')">×</button>
+                    
+                    <!-- Row 4 -->
+                    <button class="btn num" onclick="pressDark('1')">1</button>
+                    <button class="btn num" onclick="pressDark('2')">2</button>
+                    <button class="btn num" onclick="pressDark('3')">3</button>
+                    <button class="btn accent-blue" onclick="pressDark('+')">+</button>
+                    
+                    <!-- Row 5 -->
+                    <button class="btn num" onclick="pressDark('0')">0</button>
+                    <button class="btn" onclick="pressDark('.')">.</button>
+                    <button class="btn" onclick="pressDark('=')">=</button>
+                    <button class="btn accent-blue pill" onclick="pressDark('=')">=</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // ⚙️ CUSTOMIZE BACKGROUND IMAGE HERE ⚙️
+        // Paste any online image URL inside the quotes:
+        const CUSTOM_BACKGROUND_URL = 'f17f48448b00ee31ba98f4340514c90c.jpg'; 
+        // ==========================================
+
+        // Apply background URL from code customization
+        window.addEventListener('DOMContentLoaded', () => {
+            if (CUSTOM_BACKGROUND_URL.trim() !== '') {
+                document.body.style.backgroundImage = `url('${CUSTOM_BACKGROUND_URL}')`;
+            }
+        });
+
+        const body = document.body;
+        const toggleText = document.getElementById('toggle-text');
+
+        // Theme Toggle Handler
+        function toggleTheme() {
+            const currentTheme = body.getAttribute('data-active-theme');
+            if (currentTheme === 'light') {
+                body.setAttribute('data-active-theme', 'dark');
+                toggleText.innerHTML = 'Switch to Light Theme ☀️';
+            } else {
+                body.setAttribute('data-active-theme', 'light');
+                toggleText.innerHTML = 'Switch to Dark Theme 🌙';
+            }
+        }
+
+        // Calculator states, starting entirely from '0'
+        let lightState = { expression: '', isFresh: true };
+        let darkState = { expression: '', isFresh: true };
+
+        const lightExprEl = document.getElementById('light-expr');
+        const lightResEl = document.getElementById('light-res');
+
+        const darkExprEl = document.getElementById('dark-expr');
+        const darkResEl = document.getElementById('dark-res');
+
+        // Light Calculator Logic
+        function pressLight(val) {
+            if (lightState.isFresh) {
+                lightState.expression = '';
+                lightState.isFresh = false;
+            }
+
+            if (val === 'Ac') {
+                lightState.expression = '';
+                lightExprEl.textContent = '';
+                lightResEl.textContent = '0';
+                return;
+            }
+
+            if (val === '=') {
+                evaluate(lightState, lightExprEl, lightResEl);
+                return;
+            }
+
+            if (val === '±') {
+                if (lightState.expression) {
+                    if (lightState.expression.startsWith('-')) {
+                        lightState.expression = lightState.expression.substring(1);
+                    } else {
+                        lightState.expression = '-' + lightState.expression;
+                    }
+                    updateUi(lightState, lightExprEl);
+                }
+                return;
+            }
+
+            appendInput(lightState, val);
+            updateUi(lightState, lightExprEl);
+        }
+
+        // Dark Calculator Logic
+        function pressDark(val) {
+            if (darkState.isFresh) {
+                darkState.expression = '';
+                darkState.isFresh = false;
+            }
+
+            if (val === 'sc') {
+                darkState.expression = '';
+                darkExprEl.textContent = '';
+                darkResEl.textContent = '0';
+                return;
+            }
+
+            if (val === 'sin') {
+                try {
+                    let currentVal = eval(darkState.expression || '0');
+                    let sinVal = Math.sin(currentVal);
+                    darkResEl.textContent = '=' + formatNumber(sinVal);
+                    darkState.expression = sinVal.toString();
+                } catch {
+                    darkResEl.textContent = 'Error';
+                }
+                return;
+            }
+
+            if (val === '=') {
+                evaluate(darkState, darkExprEl, darkResEl);
+                return;
+            }
+
+            appendInput(darkState, val);
+            updateUi(darkState, darkExprEl);
+        }
+
+        // Shared Logic Helpers
+        function appendInput(state, val) {
+            const last = state.expression.slice(-1);
+            if (['+', '-', '*', '/', '%', '.'].includes(val) && ['+', '-', '*', '/', '%', '.'].includes(last)) {
+                state.expression = state.expression.slice(0, -1) + val;
+            } else {
+                state.expression += val;
+            }
+        }
+
+        function updateUi(state, exprElement) {
+            let formatted = state.expression
+                .replace(/\*/g, '×')
+                .replace(/\//g, '÷')
+                .replace(/\+/g, '+')
+                .replace(/\-/g, '−');
+            exprElement.textContent = formatted;
+        }
+
+        function evaluate(state, exprElement, resElement) {
+            if (!state.expression) return;
+            try {
+                const sanitized = state.expression.replace(/[^0-9+\-*/%.()]/g, '');
+                let rawRes = Function(`"use strict"; return (${sanitized})`)();
+                
+                if (rawRes === Infinity || isNaN(rawRes)) {
+                    resElement.textContent = 'Error';
+                } else {
+                    resElement.textContent = '=' + formatNumber(rawRes);
+                    state.expression = rawRes.toString();
+                }
+            } catch {
+                resElement.textContent = 'Error';
+            }
+        }
+
+        function formatNumber(num) {
+            return Number(num.toFixed(8)).toLocaleString(undefined, {
+                maximumFractionDigits: 3
+            });
+        }
+    </script>
+</body>
+</html>
