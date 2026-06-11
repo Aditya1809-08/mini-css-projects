@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aesthetic Themeable Calculator</title>
+    <title>Aesthetic Glassmorphic Calculator & History</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,65 +13,210 @@
             user-select: none;
         }
 
+        :root {
+            --text-primary: #1d2d3a;
+            --text-secondary: #506275;
+            --bg-color: #dbe6f2;
+            --glass-card-light: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.15) 100%);
+            --glass-card-dark: linear-gradient(135deg, rgba(25, 33, 44, 0.65) 0%, rgba(10, 14, 20, 0.75) 100%);
+            --border-light: rgba(255, 255, 255, 0.5);
+            --border-dark: rgba(255, 255, 255, 0.08);
+            --btn-glass-light: rgba(255, 255, 255, 0.32);
+            --btn-glass-dark: rgba(255, 255, 255, 0.06);
+            --history-hover-light: rgba(255, 255, 255, 0.4);
+            --history-hover-dark: rgba(255, 255, 255, 0.08);
+        }
+
+        [data-theme="dark"] {
+            --text-primary: #ffffff;
+            --text-secondary: #8fa0b0;
+            --bg-color: #0b1116;
+        }
+
         body {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-color: #dbe6f2; /* Soft pastel blue background */
+            background-color: var(--bg-color);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            padding: 30px 20px;
+            padding: 40px 20px;
+            overflow-x: hidden;
             transition: background-color 0.3s ease;
         }
 
-        /* Top Theme Toggle Controls */
+        /* Top Theme Toggle */
         .controls {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             z-index: 10;
         }
 
         .toggle-btn {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: #3b4b5a;
-            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: #2c3e50;
+            padding: 10px 24px;
             border-radius: 20px;
             font-weight: 600;
+            font-size: 0.95rem;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(15, 35, 60, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .toggle-btn:hover {
             transform: translateY(-1px);
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.65);
         }
 
-        /* Composition Wrapper */
+        /* ==========================================
+           WEB CORE LAYOUT CONTAINER
+           ========================================== */
+        .web-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            width: 100%;
+            max-width: 1100px;
+            z-index: 2;
+        }
+
+        /* Common Glassmorphic Card Settings */
+        .glass-panel {
+            backdrop-filter: blur(40px) saturate(210%);
+            -webkit-backdrop-filter: blur(40px) saturate(210%);
+            border-radius: 46px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* ==========================================
+           LEFT PANEL: CALCULATION HISTORY
+           ========================================== */
+        .history-panel {
+            width: 380px;
+            height: 520px; /* Aligns with proportional desktop heights */
+            padding: 35px 28px;
+            justify-content: flex-start;
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .history-header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .clear-history-btn {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: all 0.2s ease;
+        }
+
+        .clear-history-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Scrolling Area */
+        .history-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-right: 5px;
+        }
+
+        /* Entry Elements */
+        .history-item {
+            padding: 12px 16px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.15s ease;
+            text-align: right;
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .history-item .hist-expr {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .history-item .hist-res {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .empty-history-text {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            text-align: center;
+            margin: auto;
+            opacity: 0.7;
+        }
+
+        /* Styled scrollbars mimicking Big Sur OS UI */
+        .history-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .history-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .history-list::-webkit-scrollbar-thumb {
+            background: rgba(120, 120, 120, 0.2);
+            border-radius: 10px;
+        }
+        .history-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(120, 120, 120, 0.4);
+        }
+
+        /* ==========================================
+           RIGHT PANEL: THE CALCULATOR
+           ========================================== */
         .artboard {
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
-            max-width: 500px;
-            padding: 20px 0;
+            max-width: 550px;
         }
 
-        /* Blue Backdrop Circle (Perfect absolute centering) */
         .backdrop-circle {
             position: absolute;
-            width: 440px;
-            height: 440px;
-            background-color: #1073e5; /* Exact vibrant blue from the image */
+            width: 520px;
+            height: 520px;
+            background-color: #1073e5; 
             border-radius: 50%;
             z-index: 1;
             box-shadow: 0 15px 45px rgba(16, 115, 229, 0.25);
@@ -79,74 +224,94 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            transition: width 0.3s ease, height 0.3s ease;
+            transition: all 0.3s ease;
         }
 
-        /* Calculator Card container */
+        /* Floating background keycaps */
+        .floating-cap {
+            position: absolute;
+            width: 52px;
+            height: 52px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .cap-3 { top: 8%; left: -15px; transform: rotate(15deg); animation: drift 6s ease-in-out infinite alternate; }
+        .cap-0 { bottom: 12%; left: -40px; transform: rotate(-12deg); animation: drift 5s ease-in-out infinite alternate-reverse; }
+        .cap-8 { top: 15%; right: -25px; transform: rotate(20deg); animation: drift 7s ease-in-out infinite alternate; }
+
+        @keyframes drift {
+            0% { transform: translateY(0) rotate(var(--rot, 15deg)); }
+            100% { transform: translateY(-15px) rotate(calc(var(--rot, 15deg) + 8deg)); }
+        }
+
         .calculator-wrapper {
             position: relative;
-            z-index: 2;
-            width: 100%;
+            z-index: 3;
             display: flex;
             justify-content: center;
             align-items: center;
+            transform-origin: center center;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* ==========================================
-           COMMON CALCULATOR CARD STYLES
-           ========================================== */
         .calc-card {
-            width: 320px;
-            height: 570px;
-            border-radius: 40px;
-            padding: 30px 24px 24px 24px;
-            display: flex;
-            flex-direction: column;
+            width: 380px; 
+            height: 680px; 
+            padding: 40px 30px 30px 30px;
             justify-content: space-between;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
-            animation: fadeIn 0.35s ease-out forwards;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Display Panel styling */
+        /* Display Panel */
         .display {
             text-align: right;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 180px; 
         }
 
         .expression {
-            font-size: 1.15rem;
+            font-size: 1.3rem;
             letter-spacing: 0.5px;
-            margin-bottom: 4px;
-            min-height: 1.5rem;
+            margin-bottom: 8px;
+            min-height: 1.8rem;
             font-weight: 400;
         }
 
         .result {
-            font-size: 2.3rem;
+            font-size: 3.3rem;
             font-weight: 600;
-            letter-spacing: -0.5px;
-            min-height: 3.2rem;
+            letter-spacing: -1px;
+            min-height: 4rem;
         }
 
-        /* Keypad Grid layout */
+        /* Grid */
         .keypad {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            gap: 16px;
         }
 
-        /* Individual Button styling */
         .btn {
             aspect-ratio: 1;
             border: none;
-            border-radius: 18px;
-            font-size: 1.1rem;
+            border-radius: 22px;
+            font-size: 1.25rem;
             font-weight: 500;
             cursor: pointer;
             display: flex;
@@ -156,217 +321,292 @@
         }
 
         .btn:active {
-            transform: scale(0.95);
+            transform: scale(0.93);
         }
 
-        /* Elongated pill button shape */
         .btn.pill {
-            border-radius: 24px;
+            border-radius: 28px;
         }
 
-        /* Accent Blue Button (Common) */
         .btn.accent-blue {
-            background: linear-gradient(180deg, #1d82f5 0%, #116cd6 100%);
+            background: linear-gradient(180deg, #1d82f5 0%, #1066cc 100%);
             color: #ffffff;
-            box-shadow: 0 4px 15px rgba(17, 108, 214, 0.35);
+            box-shadow: 
+                0 4px 15px rgba(17, 108, 214, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         /* ==========================================
-           LEFT (LIGHT THEME) STYLING
+           THEME MODIFICATIONS
            ========================================== */
-        .calc-light {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(222, 236, 248, 0.75) 100%);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 30px 60px rgba(15, 35, 60, 0.12);
+        /* Light Theme Values */
+        .calc-light, .history-light {
+            background: var(--glass-card-light);
+            border: 1px solid var(--border-light);
+            box-shadow: 
+                0 30px 60px rgba(15, 35, 60, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
         }
 
-        .calc-light .expression {
-            color: rgba(29, 45, 58, 0.65);
-        }
-
-        .calc-light .result {
-            color: #1d2d3a;
-        }
+        .calc-light .expression { color: rgba(29, 45, 58, 0.6); }
+        .calc-light .result { color: #1d2d3a; }
 
         .calc-light .btn {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(235, 242, 248, 0.85) 100%);
-            color: #7a8c9e;
+            background: var(--btn-glass-light);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #4b5d6e;
             box-shadow: 
-                -2px -2px 6px rgba(255, 255, 255, 0.9),
-                2px 2px 8px rgba(160, 185, 210, 0.25);
+                0 4px 10px rgba(0, 0, 0, 0.03),
+                inset 0 1px 1px rgba(255, 255, 255, 0.3);
         }
 
-        .calc-light .btn.num {
-            color: #506275;
+        .calc-light .btn:hover { background: rgba(255, 255, 255, 0.45); }
+        .calc-light .btn.num { color: #1e2a38; font-weight: 600; }
+        
+        .history-light .history-item:hover {
+            background-color: var(--history-hover-light);
         }
 
-        /* ==========================================
-           RIGHT (DARK THEME) STYLING
-           ========================================== */
-        .calc-dark {
-            background: linear-gradient(135deg, #1b2129 0%, #0e1216 100%);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+        /* Dark Theme Values */
+        .calc-dark, .history-dark {
+            background: var(--glass-card-dark);
+            border: 1px solid var(--border-dark);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.35),
+                inset 0 1px 1px rgba(255, 255, 255, 0.06);
         }
 
-        .calc-dark .expression {
-            color: #7a8c9e;
-        }
-
-        .calc-dark .result {
-            color: #ffffff;
-        }
+        .calc-dark .expression { color: #7c8e9f; }
+        .calc-dark .result { color: #ffffff; }
 
         .calc-dark .btn {
-            background: linear-gradient(135deg, #232a33 0%, #171d24 100%);
+            background: var(--btn-glass-dark);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             color: #8fa0b0;
             box-shadow: 
-                -2px -2px 6px rgba(255, 255, 255, 0.02),
-                2px 2px 8px rgba(0, 0, 0, 0.45);
+                0 4px 10px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0px rgba(255, 255, 255, 0.02);
         }
 
-        .calc-dark .btn.num {
-            color: #cfd8dc;
+        .calc-dark .btn:hover { background: rgba(255, 255, 255, 0.12); }
+        .calc-dark .btn.num { color: #e0e6ed; font-weight: 600; }
+
+        .history-dark .history-item:hover {
+            background-color: var(--history-hover-dark);
         }
 
-        /* ==========================================
-           TOGGLE VISIBILITY CONTROLS
-           ========================================== */
-        body[data-active-theme="light"] .calc-dark {
+        /* Displays Visibility Map */
+        body[data-active-theme="light"] .calc-dark, 
+        body[data-active-theme="light"] .history-dark {
             display: none !important;
         }
 
-        body[data-active-theme="dark"] .calc-light {
+        body[data-active-theme="dark"] .calc-light, 
+        body[data-active-theme="dark"] .history-light {
             display: none !important;
         }
 
         /* ==========================================
-           RESPONSIVE SMALL SCREEN MEDIA QUERY
+           HEIGHT-AWARE RESPONSIVENESS
            ========================================== */
+        @media (max-height: 820px) {
+            .calculator-wrapper { transform: scale(0.85); }
+            .history-panel { height: 440px; transform: scale(0.9); }
+        }
+
+        @media (max-height: 700px) {
+            .calculator-wrapper { transform: scale(0.7); }
+            .history-panel { height: 380px; transform: scale(0.78); }
+        }
+
+        @media (max-height: 580px) {
+            .calculator-wrapper { transform: scale(0.55); }
+            .history-panel { height: 300px; transform: scale(0.65); }
+        }
+
+        /* ==========================================
+           WIDTH-BASED ADAPTIVE SYSTEM
+           ========================================== */
+        @media (max-width: 950px) {
+            .web-layout {
+                flex-direction: column;
+                gap: 40px;
+            }
+            .floating-cap {
+                display: none; 
+            }
+            .history-panel {
+                width: 380px;
+                height: 380px;
+                transform: scale(1) !important;
+            }
+        }
+
         @media (max-width: 480px) {
             .backdrop-circle {
-                width: 320px;
-                height: 320px;
+                width: 340px;
+                height: 340px;
+            }
+            .calculator-wrapper {
+                transform: scale(1) !important; 
             }
             .calc-card {
-                width: 290px;
-                height: 520px;
-                padding: 24px 18px 18px 18px;
-                border-radius: 32px;
+                width: 310px;
+                height: 570px;
+                padding: 30px 20px 20px 20px;
+                border-radius: 36px;
+            }
+            .display {
+                min-height: 120px;
             }
             .result {
-                font-size: 2rem;
-                min-height: 2.8rem;
+                font-size: 2.3rem;
             }
             .keypad {
-                gap: 8px;
+                gap: 12px;
             }
             .btn {
-                border-radius: 14px;
-                font-size: 1rem;
+                border-radius: 16px;
+                font-size: 1.1rem;
+            }
+            .history-panel {
+                width: 310px;
+                height: 340px;
+                border-radius: 36px;
+                padding: 24px;
             }
         }
     </style>
 </head>
 <body data-active-theme="light">
 
-    <!-- Top Theme Switch Control -->
+    <!-- Theme Toggle -->
     <div class="controls">
         <button class="toggle-btn" onclick="toggleTheme()" id="toggle-text">
             Switch to Dark Theme 🌙
         </button>
     </div>
 
-    <div class="artboard">
-        <!-- Vibrant blue background circle -->
-        <div class="backdrop-circle"></div>
-
-        <div class="calculator-wrapper">
-            
-            <!-- ==========================================
-                 LIGHT THEME CALCULATOR
-                 ========================================== -->
-            <div class="calc-card calc-light" id="calc-light">
-                <div class="display">
-                    <div class="expression" id="light-expr"></div>
-                    <div class="result" id="light-res">0</div>
-                </div>
-                <div class="keypad">
-                    <!-- Row 1 -->
-                    <button class="btn" onclick="pressLight('Ac')">Ac</button>
-                    <button class="btn" onclick="pressLight('±')">±</button>
-                    <button class="btn" onclick="pressLight('%')">%</button>
-                    <button class="btn" onclick="pressLight('%')">%</button>
-                    
-                    <!-- Row 2 -->
-                    <button class="btn" onclick="pressLight('Ac')">Ac</button>
-                    <button class="btn num" onclick="pressLight('8')">8</button>
-                    <button class="btn num" onclick="pressLight('9')">9</button>
-                    <button class="btn" onclick="pressLight('/')">÷</button>
-                    
-                    <!-- Row 3 -->
-                    <button class="btn num" onclick="pressLight('4')">4</button>
-                    <button class="btn num" onclick="pressLight('5')">5</button>
-                    <button class="btn num" onclick="pressLight('6')">6</button>
-                    <button class="btn" onclick="pressLight('*')">×</button>
-                    
-                    <!-- Row 4 -->
-                    <button class="btn num" onclick="pressLight('1')">1</button>
-                    <button class="btn num" onclick="pressLight('2')">2</button>
-                    <button class="btn num" onclick="pressLight('3')">3</button>
-                    <button class="btn" onclick="pressLight('-')">−</button>
-                    
-                    <!-- Row 5 -->
-                    <button class="btn num" onclick="pressLight('0')">0</button>
-                    <button class="btn" onclick="pressLight('.')">.</button>
-                    <button class="btn" onclick="pressLight('+')">+</button>
-                    <button class="btn accent-blue pill" onclick="pressLight('=')">=</button>
-                </div>
+    <div class="web-layout">
+        
+        <!-- ==========================================
+             LEFT SIDEBAR PANEL: CALCULATION HISTORY
+             ========================================== -->
+        <!-- Light Theme History Panel -->
+        <div class="glass-panel history-panel history-light" id="history-light">
+            <div class="history-header">
+                <h2>History</h2>
+                <button class="clear-history-btn" onclick="clearHistory()">Clear</button>
             </div>
-
-            <!-- ==========================================
-                 DARK THEME CALCULATOR
-                 ========================================== -->
-            <div class="calc-card calc-dark" id="calc-dark">
-                <div class="display">
-                    <div class="expression" id="dark-expr"></div>
-                    <div class="result" id="dark-res">0</div>
-                </div>
-                <div class="keypad">
-                    <!-- Row 1 -->
-                    <button class="btn" onclick="pressDark('sc')">sc</button>
-                    <button class="btn" onclick="pressDark('sin')">sin</button>
-                    <button class="btn" onclick="pressDark('deg')">deg</button>
-                    <button class="btn" onclick="pressDark('%')">%</button>
-                    
-                    <!-- Row 2 -->
-                    <button class="btn num" onclick="pressDark('7')">7</button>
-                    <button class="btn num" onclick="pressDark('8')">8</button>
-                    <button class="btn num" onclick="pressDark('9')">9</button>
-                    <button class="btn accent-blue" onclick="pressDark('/')">÷</button>
-                    
-                    <!-- Row 3 -->
-                    <button class="btn num" onclick="pressDark('4')">4</button>
-                    <button class="btn num" onclick="pressDark('5')">5</button>
-                    <button class="btn num" onclick="pressDark('6')">6</button>
-                    <button class="btn" onclick="pressDark('*')">×</button>
-                    
-                    <!-- Row 4 -->
-                    <button class="btn num" onclick="pressDark('1')">1</button>
-                    <button class="btn num" onclick="pressDark('2')">2</button>
-                    <button class="btn num" onclick="pressDark('3')">3</button>
-                    <button class="btn accent-blue" onclick="pressDark('+')">+</button>
-                    
-                    <!-- Row 5 -->
-                    <button class="btn num" onclick="pressDark('0')">0</button>
-                    <button class="btn" onclick="pressDark('.')">.</button>
-                    <button class="btn" onclick="pressDark('=')">=</button>
-                    <button class="btn accent-blue pill" onclick="pressDark('=')">=</button>
-                </div>
+            <div class="history-list" id="list-light">
+                <div class="empty-history-text">No calculations recorded.</div>
             </div>
+        </div>
 
+        <!-- Dark Theme History Panel -->
+        <div class="glass-panel history-panel history-dark" id="history-dark">
+            <div class="history-header">
+                <h2>History</h2>
+                <button class="clear-history-btn" onclick="clearHistory()">Clear</button>
+            </div>
+            <div class="history-list" id="list-dark">
+                <div class="empty-history-text">No calculations recorded.</div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             RIGHT PANEL: THE CALCULATOR
+             ========================================== -->
+        <div class="artboard">
+            <div class="backdrop-circle"></div>
+
+            <!-- Floating Translucent ambient blocks -->
+            <div class="floating-cap cap-3" style="--rot: 15deg;">3</div>
+            <div class="floating-cap cap-0" style="--rot: -12deg;">0</div>
+            <div class="floating-cap cap-8" style="--rot: 20deg;">8</div>
+
+            <div class="calculator-wrapper">
+                
+                <!-- LIGHT TEMPLATE DEVICE -->
+                <div class="glass-panel calc-card calc-light" id="calc-light">
+                    <div class="display">
+                        <div class="expression" id="light-expr"></div>
+                        <div class="result" id="light-res">0</div>
+                    </div>
+                    <div class="keypad">
+                        <!-- Row 1 -->
+                        <button class="btn" onclick="pressLight('Ac')">Ac</button>
+                        <button class="btn" onclick="pressLight('±')">±</button>
+                        <button class="btn" onclick="pressLight('%')">%</button>
+                        <button class="btn" onclick="pressLight('%')">%</button>
+                        
+                        <!-- Row 2 -->
+                        <button class="btn" onclick="pressLight('Ac')">Ac</button>
+                        <button class="btn num" onclick="pressLight('8')">8</button>
+                        <button class="btn num" onclick="pressLight('9')">9</button>
+                        <button class="btn" onclick="pressLight('/')">÷</button>
+                        
+                        <!-- Row 3 -->
+                        <button class="btn num" onclick="pressLight('4')">4</button>
+                        <button class="btn num" onclick="pressLight('5')">5</button>
+                        <button class="btn num" onclick="pressLight('6')">6</button>
+                        <button class="btn" onclick="pressLight('*')">×</button>
+                        
+                        <!-- Row 4 -->
+                        <button class="btn num" onclick="pressLight('1')">1</button>
+                        <button class="btn num" onclick="pressLight('2')">2</button>
+                        <button class="btn num" onclick="pressLight('3')">3</button>
+                        <button class="btn" onclick="pressLight('-')">−</button>
+                        
+                        <!-- Row 5 -->
+                        <button class="btn num" onclick="pressLight('0')">0</button>
+                        <button class="btn" onclick="pressLight('.')">.</button>
+                        <button class="btn" onclick="pressLight('+')">+</button>
+                        <button class="btn accent-blue pill" onclick="pressLight('=')">=</button>
+                    </div>
+                </div>
+
+                <!-- DARK TEMPLATE DEVICE -->
+                <div class="glass-panel calc-card calc-dark" id="calc-dark">
+                    <div class="display">
+                        <div class="expression" id="dark-expr"></div>
+                        <div class="result" id="dark-res">0</div>
+                    </div>
+                    <div class="keypad">
+                        <!-- Row 1 -->
+                        <button class="btn" onclick="pressDark('sc')">sc</button>
+                        <button class="btn" onclick="pressDark('sin')">sin</button>
+                        <button class="btn" onclick="pressDark('deg')">deg</button>
+                        <button class="btn" onclick="pressDark('%')">%</button>
+                        
+                        <!-- Row 2 -->
+                        <button class="btn num" onclick="pressDark('7')">7</button>
+                        <button class="btn num" onclick="pressDark('8')">8</button>
+                        <button class="btn num" onclick="pressDark('9')">9</button>
+                        <button class="btn accent-blue" onclick="pressDark('/')">÷</button>
+                        
+                        <!-- Row 3 -->
+                        <button class="btn num" onclick="pressDark('4')">4</button>
+                        <button class="btn num" onclick="pressDark('5')">5</button>
+                        <button class="btn num" onclick="pressDark('6')">6</button>
+                        <button class="btn accent-blue" onclick="pressDark('*')">×</button>
+                        
+                        <!-- Row 4 -->
+                        <button class="btn num" onclick="pressDark('1')">1</button>
+                        <button class="btn num" onclick="pressDark('2')">2</button>
+                        <button class="btn num" onclick="pressDark('3')">3</button>
+                        <button class="btn accent-blue" onclick="pressDark('+')">+</button>
+                        
+                        <!-- Row 5 -->
+                        <button class="btn num" onclick="pressDark('0')">0</button>
+                        <button class="btn" onclick="pressDark('.')">.</button>
+                        <button class="btn" onclick="pressDark('=')">=</button>
+                        <button class="btn accent-blue pill" onclick="pressDark('=')">=</button>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
@@ -374,10 +614,9 @@
         // ==========================================
         // ⚙️ CUSTOMIZE BACKGROUND IMAGE HERE ⚙️
         // Paste any online image URL inside the quotes:
-        const CUSTOM_BACKGROUND_URL = 'f17f48448b00ee31ba98f4340514c90c.jpg'; 
+        const CUSTOM_BACKGROUND_URL = ''; 
         // ==========================================
 
-        // Apply background URL from code customization
         window.addEventListener('DOMContentLoaded', () => {
             if (CUSTOM_BACKGROUND_URL.trim() !== '') {
                 document.body.style.backgroundImage = `url('${CUSTOM_BACKGROUND_URL}')`;
@@ -387,47 +626,50 @@
         const body = document.body;
         const toggleText = document.getElementById('toggle-text');
 
-        // Theme Toggle Handler
         function toggleTheme() {
             const currentTheme = body.getAttribute('data-active-theme');
             if (currentTheme === 'light') {
                 body.setAttribute('data-active-theme', 'dark');
+                body.setAttribute('data-theme', 'dark');
                 toggleText.innerHTML = 'Switch to Light Theme ☀️';
             } else {
                 body.setAttribute('data-active-theme', 'light');
+                body.removeAttribute('data-theme');
                 toggleText.innerHTML = 'Switch to Dark Theme 🌙';
             }
         }
 
-        // Calculator states, starting entirely from '0'
+        // Realtime logs storage
+        let historyRecords = [];
+
+        // Calculator configurations
         let lightState = { expression: '', isFresh: true };
         let darkState = { expression: '', isFresh: true };
 
         const lightExprEl = document.getElementById('light-expr');
         const lightResEl = document.getElementById('light-res');
-
         const darkExprEl = document.getElementById('dark-expr');
         const darkResEl = document.getElementById('dark-res');
 
-        // Light Calculator Logic
+        const listLight = document.getElementById('list-light');
+        const listDark = document.getElementById('list-dark');
+
+        // Light Interface Inputs
         function pressLight(val) {
             if (lightState.isFresh) {
                 lightState.expression = '';
                 lightState.isFresh = false;
             }
-
             if (val === 'Ac') {
                 lightState.expression = '';
                 lightExprEl.textContent = '';
                 lightResEl.textContent = '0';
                 return;
             }
-
             if (val === '=') {
                 evaluate(lightState, lightExprEl, lightResEl);
                 return;
             }
-
             if (val === '±') {
                 if (lightState.expression) {
                     if (lightState.expression.startsWith('-')) {
@@ -439,25 +681,22 @@
                 }
                 return;
             }
-
             appendInput(lightState, val);
             updateUi(lightState, lightExprEl);
         }
 
-        // Dark Calculator Logic
+        // Dark Interface Inputs
         function pressDark(val) {
             if (darkState.isFresh) {
                 darkState.expression = '';
                 darkState.isFresh = false;
             }
-
             if (val === 'sc') {
                 darkState.expression = '';
                 darkExprEl.textContent = '';
                 darkResEl.textContent = '0';
                 return;
             }
-
             if (val === 'sin') {
                 try {
                     let currentVal = eval(darkState.expression || '0');
@@ -469,17 +708,14 @@
                 }
                 return;
             }
-
             if (val === '=') {
                 evaluate(darkState, darkExprEl, darkResEl);
                 return;
             }
-
             appendInput(darkState, val);
             updateUi(darkState, darkExprEl);
         }
 
-        // Shared Logic Helpers
         function appendInput(state, val) {
             const last = state.expression.slice(-1);
             if (['+', '-', '*', '/', '%', '.'].includes(val) && ['+', '-', '*', '/', '%', '.'].includes(last)) {
@@ -507,8 +743,16 @@
                 if (rawRes === Infinity || isNaN(rawRes)) {
                     resElement.textContent = 'Error';
                 } else {
-                    resElement.textContent = '=' + formatNumber(rawRes);
+                    let equationText = exprElement.textContent;
+                    let resultText = '=' + formatNumber(rawRes);
+                    
+                    resElement.textContent = resultText;
+                    
+                    // Add result to history panel
+                    addHistoryRecord(equationText, resultText, rawRes);
+                    
                     state.expression = rawRes.toString();
+                    state.isFresh = true; // Set flag so the next press starts a new equation
                 }
             } catch {
                 resElement.textContent = 'Error';
@@ -519,6 +763,57 @@
             return Number(num.toFixed(8)).toLocaleString(undefined, {
                 maximumFractionDigits: 3
             });
+        }
+
+        // History list update handlers
+        function addHistoryRecord(expr, res, rawVal) {
+            historyRecords.unshift({ expr, res, rawVal });
+            renderHistory();
+        }
+
+        function clearHistory() {
+            historyRecords = [];
+            renderHistory();
+        }
+
+        // Render history items for both containers
+        function renderHistory() {
+            const placeholder = '<div class="empty-history-text">No calculations recorded.</div>';
+            
+            if (historyRecords.length === 0) {
+                listLight.innerHTML = placeholder;
+                listDark.innerHTML = placeholder;
+                return;
+            }
+
+            let htmlString = '';
+            historyRecords.forEach((item, index) => {
+                htmlString += `
+                    <div class="history-item" onclick="loadHistoryValue(${item.rawVal})">
+                        <div class="hist-expr">${item.expr}</div>
+                        <div class="hist-res">${item.res}</div>
+                    </div>
+                `;
+            });
+
+            listLight.innerHTML = htmlString;
+            listDark.innerHTML = htmlString;
+        }
+
+        // Selecting a history entry restores its result into the calculator display
+        function loadHistoryValue(val) {
+            const currentTheme = body.getAttribute('data-active-theme') || 'light';
+            if (currentTheme === 'light') {
+                lightState.expression = val.toString();
+                lightState.isFresh = false;
+                lightExprEl.textContent = '';
+                lightResEl.textContent = formatNumber(val);
+            } else {
+                darkState.expression = val.toString();
+                darkState.isFresh = false;
+                darkExprEl.textContent = '';
+                darkResEl.textContent = formatNumber(val);
+            }
         }
     </script>
 </body>
