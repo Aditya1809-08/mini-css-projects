@@ -12,8 +12,9 @@
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
       background-image: url('bg32.png');
-background-size: cover;
-background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
       display: flex;
       flex-direction: column;
       padding: 24px;
@@ -34,13 +35,19 @@ background-attachment: fixed;
     main {
       max-width: 1100px; width: 100%; margin: auto;
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 48px; align-items: center; padding: 32px 0;
+      gap: 48px; align-items: flex-start; padding: 32px 0; /* Aligns to top grid boundaries */
     }
 
-    /* PROFILE CARD */
+    /* PROFILE CARD & WRAPPER */
+    .profile-card-wrapper {
+      display: flex; 
+      justify-content: center; 
+      width: 100%;
+    }
+
     .profile-card {
       width: 100%; max-width: 380px;
-      margin-left: auto;
+      margin: 0 auto;
       border-radius: 48px;
       overflow: hidden;
       background: white;
@@ -48,6 +55,8 @@ background-attachment: fixed;
       border: 1px solid rgba(255,255,255,0.6);
       position: relative;
       transition: all 0.4s;
+      display: flex;
+      flex-direction: column;
     }
 
     .banner {
@@ -56,6 +65,7 @@ background-attachment: fixed;
       transition: background 0.4s;
       background-size: cover;
       background-position: center;
+      flex-shrink: 0;
     }
 
     .banner-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.1); }
@@ -90,7 +100,10 @@ background-attachment: fixed;
     .follow-btn.following { background: #f0f0f0; color: #1a1a1a; }
     .follow-btn:active { transform: scale(0.97); }
 
-    .card-body { background: white; padding: 56px 32px 32px; }
+    .card-body { 
+      background: white; 
+      padding: 56px 32px 32px; 
+    }
 
     .card-name {
       display: flex; align-items: center; gap: 6px;
@@ -121,6 +134,27 @@ background-attachment: fixed;
 
     .stat-num { font-size: 15px; font-weight: 700; color: #111; }
     .stat-lbl { font-size: 11px; color: #999; }
+
+    /* ==========================================
+       DESKTOP ALIGNMENT OVERRIDES (Height Match)
+       ========================================== */
+    @media (min-width: 769px) {
+      .profile-card-wrapper {
+        margin-top: 54px; /* Matches the vertical space of the right side header text */
+      }
+      .profile-card {
+        height: 478px; /* Matches the exact total height of the 5 platform cards */
+      }
+      .card-body {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        padding: 56px 32px 28px;
+      }
+      .card-stats {
+        margin-top: auto; /* Solid bottom alignment anchor */
+      }
+    }
 
     /* DIRECTORY */
     .directory { display: flex; flex-direction: column; }
@@ -210,8 +244,8 @@ background-attachment: fixed;
   </header>
 
   <main>
-    <!-- PROFILE CARD -->
-    <div style="display:flex;justify-content:flex-end;">
+    <!-- PROFILE CARD (Centered and adjusted vertical offset for desktop top alignment) -->
+    <div class="profile-card-wrapper">
       <div class="profile-card">
         <div class="banner" id="banner">
           <div class="banner-overlay"></div>
@@ -251,9 +285,6 @@ background-attachment: fixed;
   <div class="toast" id="toast"></div>
 
   <script>
-    // =====================================================
-    // YOUR DATA — update follower counts & add image URLs
-    // =====================================================
     const profiles = {
       github: {
         name: 'Aditya Srivastav',
@@ -261,7 +292,7 @@ background-attachment: fixed;
         url: 'https://github.com/Aditya1809-08',
         bio: 'Future dev in the making 🖥️ | 12th grader | Learning HTML & CSS in public | Building one commit at a time 🚀',
         following: 7, followers: 0,
-        avatarUrl: 'wz18DY7-_400x400.jpg',   // paste GitHub avatar URL
+        avatarUrl: 'wz18DY7-_400x400.jpg',   
         bannerUrl: 'c469fbdfd185bf0dcbcda532c28b414b.jpg',
         bannerColor: 'linear-gradient(135deg,#1a2e1a,#4a7c3f)',
         label: 'GitHub',
@@ -275,36 +306,31 @@ background-attachment: fixed;
         bio: '12th grader exploring tech & dev 🚀 | Learning HTML & CSS in public | From Gorakhpur 🇮🇳 | Building my digital presence one commit at a time ✨',
         following: 5, followers: 0,
         avatarUrl: 'wz18DY7-_400x400.jpg',
-        bannerUrl: '1500x500.jpeg',   // paste your X "Ready to Hustle" banner URL
+        bannerUrl: '1500x500.jpeg',   
         bannerColor: 'linear-gradient(135deg,#000,#222)',
         label: 'X',
         iconColor: '#000',
         iconSvg: `<svg viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`
       },
       linkedin: {
-  name: 'Aditya Srivastava',
-  handle: 'linkedin.com/in/aditya-srivastav',
-  url: 'https://www.linkedin.com/in/aditya-srivastav-0a247634b/',
-  bio: '12th Grade Student | Aspiring Web Developer | Learning HTML & CSS | Building in Public 🚀 | Gorakhpur, Uttar Pradesh, India',
-
-  connections: 19,
-
-  avatarUrl: 'wz18DY7-_400x400.jpg',
-  bannerUrl: '1778961582983.jpeg',
-
-  bannerColor: 'linear-gradient(135deg, #0A66C2, #004182)',
-  label: 'LinkedIn',
-  iconColor: '#0A66C2',
-
-  iconSvg: `
-    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-      <rect x="2" y="9" width="4" height="12"></rect>
-      <circle cx="4" cy="4" r="2"></circle>
-    </svg>
-
-  `
-},
+        name: 'Aditya Srivastava',
+        handle: 'linkedin.com/in/aditya-srivastav',
+        url: 'https://www.linkedin.com/in/aditya-srivastav-0a247634b/',
+        bio: '12th Grade Student | Aspiring Web Developer | Learning HTML & CSS | Building in Public 🚀 | Gorakhpur, Uttar Pradesh, India',
+        connections: 19,
+        avatarUrl: 'wz18DY7-_400x400.jpg',
+        bannerUrl: '1778961582983.jpeg',
+        bannerColor: 'linear-gradient(135deg, #0A66C2, #004182)',
+        label: 'LinkedIn',
+        iconColor: '#0A66C2',
+        iconSvg: `
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+            <rect x="2" y="9" width="4" height="12"></rect>
+            <circle cx="4" cy="4" r="2"></circle>
+          </svg>
+        `
+      },
       instagram: {
         name: 'Aditya srivastav',
         handle: '@aditya.srivastav._18',
@@ -318,7 +344,6 @@ background-attachment: fixed;
         iconColor: '#e1306c',
         iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>`
       },
-
       email: {
         name: 'Aditya Srivastav',
         handle: 'aditya.123.22.111@gmail.com',
@@ -340,11 +365,9 @@ background-attachment: fixed;
           </svg>
         `
       }
-
     };
 
     let current = 'github';
-    
 
     function buildPlatformList() {
       const list = document.getElementById('platformList');
@@ -364,59 +387,59 @@ background-attachment: fixed;
 
     function updateCard() {
       const card = document.querySelector('.profile-card');
-card.style.opacity = '0';
-card.style.transform = 'translateY(8px)';
-setTimeout(() => {
-  card.style.transition = 'opacity 0.3s, transform 0.3s';
-  card.style.opacity = '1';
-  card.style.transform = 'translateY(0)';
-}, 50);
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        card.style.transition = 'opacity 0.3s, transform 0.3s';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, 50);
       const p = profiles[current];
       document.getElementById('cardName').textContent = p.name;
       document.getElementById('cardHandle').textContent = p.handle;
       document.getElementById('cardBio').textContent = p.bio;
       const stats = document.getElementById('cardStats');
 
-if (current === 'linkedin') {
-  stats.innerHTML = `
-    <div>
-      <div class="stat-num">${p.connections}</div>
-      <div class="stat-lbl">Connections</div>
-    </div>
-  `;
-}
-else if (current === 'email') {
-  stats.innerHTML = `
-    <div>
-      <div class="stat-num">${p.responseTime}</div>
-      <div class="stat-lbl">Response Time</div>
-    </div>
-    <div>
-      <div class="stat-num">${p.status}</div>
-      <div class="stat-lbl">Status</div>
-    </div>
-  `;
-}
-else {
-  stats.innerHTML = `
-    <div>
-      <div class="stat-num">${p.following}</div>
-      <div class="stat-lbl">Following</div>
-    </div>
-    <div>
-      <div class="stat-num">${p.followers}</div>
-      <div class="stat-lbl">Followers</div>
-    </div>
-  `;
-}
+      if (current === 'linkedin') {
+        stats.innerHTML = `
+          <div>
+            <div class="stat-num">${p.connections}</div>
+            <div class="stat-lbl">Connections</div>
+          </div>
+        `;
+      }
+      else if (current === 'email') {
+        stats.innerHTML = `
+          <div>
+            <div class="stat-num">${p.responseTime}</div>
+            <div class="stat-lbl">Response Time</div>
+          </div>
+          <div>
+            <div class="stat-num">${p.status}</div>
+            <div class="stat-lbl">Status</div>
+          </div>
+        `;
+      }
+      else {
+        stats.innerHTML = `
+          <div>
+            <div class="stat-num">${p.following}</div>
+            <div class="stat-lbl">Following</div>
+          </div>
+          <div>
+            <div class="stat-num">${p.followers}</div>
+            <div class="stat-lbl">Followers</div>
+          </div>
+        `;
+      }
       const banner = document.getElementById('banner');
-if (p.bannerUrl) {
-  banner.style.backgroundImage = `url('${p.bannerUrl}')`;
-  banner.style.backgroundSize = 'cover';
-  banner.style.backgroundPosition = 'center';
-} else {
-  banner.style.background = p.bannerColor;
-}
+      if (p.bannerUrl) {
+        banner.style.backgroundImage = `url('${p.bannerUrl}')`;
+        banner.style.backgroundSize = 'cover';
+        banner.style.backgroundPosition = 'center';
+      } else {
+        banner.style.background = p.bannerColor;
+      }
       const avatar = document.getElementById('avatar');
       if (p.avatarUrl) {
         avatar.innerHTML = `<img src="${p.avatarUrl}" alt="avatar"/>`;
