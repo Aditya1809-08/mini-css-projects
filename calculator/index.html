@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aesthetic Glassmorphic Calculator & History</title>
+    <title>Sleek Glassmorphic Calculator & History</title>
     <style>
         * {
             box-sizing: border-box;
@@ -102,7 +102,7 @@
            ========================================== */
         .history-panel {
             width: 380px;
-            height: 520px; /* Aligns with proportional desktop heights */
+            height: 520px; 
             padding: 35px 28px;
             justify-content: flex-start;
         }
@@ -613,13 +613,13 @@
     <script>
         // ==========================================
         // ⚙️ CUSTOMIZE BACKGROUND IMAGE HERE ⚙️
-        // Paste any online image URL inside the quotes:
-        const CUSTOM_BACKGROUND_URL = ''; 
+        // Path adjusted to your local repository directory configuration
+        const CUSTOM_BACKGROUND_URL = './97f11a9e8437c9f1885ddedf9822bf2b.webp'; 
         // ==========================================
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (CUSTOM_BACKGROUND_URL.trim() !== '97f11a9e8437c9f1885ddedf9822bf2b.webp') {
-                document.body.style.backgroundImage = `url('97f11a9e8437c9f1885ddedf9822bf2b.webp}')`;
+            if (CUSTOM_BACKGROUND_URL.trim() !== '') {
+                document.body.style.backgroundImage = `url('${CUSTOM_BACKGROUND_URL}')`;
             }
         });
 
