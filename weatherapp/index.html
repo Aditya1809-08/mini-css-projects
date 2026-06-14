@@ -7,19 +7,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-    :root {
-      /* =========================================================================
-         CUSTOM BACKGROUND CONFIGURATION:
-         Paste any direct image URL inside the url('...') below.
-         This changes the main background of the entire page.
-         ========================================================================= */
-      --app-bg-url: url('https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=1920&q=80');
-      
-      --text-white: #ffffff;
-      --text-muted: rgba(255, 255, 255, 0.7);
-      --accent-warm: #ffb74d; /* Golden accent matching sunset glows */
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -28,7 +15,7 @@
     }
 
     body {
-      background: var(--app-bg-url);
+      background-color: #0b111e; /* Dark fallback background */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -37,9 +24,35 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      color: var(--text-white);
+      color: #ffffff;
       overflow-x: hidden;
       transition: background 0.8s ease;
+    }
+
+    /* Ambient overlay to ensure absolute legibility over dynamic backgrounds */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Smoothly covering video background element */
+    .background-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -2;
+      pointer-events: none;
+      transition: opacity 1s ease-in-out;
     }
 
     /* Transparent Navigation Bar */
@@ -61,13 +74,17 @@
     .nav-btn {
       background: transparent;
       border: none;
-      color: var(--text-white);
+      color: #ffffff;
       font-size: 14px;
       font-weight: 500;
       padding: 6px 18px;
       cursor: pointer;
       border-radius: 20px;
       transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .nav-btn.active {
@@ -85,7 +102,7 @@
     .search-form {
       display: flex;
       align-items: center;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.35);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -95,7 +112,7 @@
     }
 
     .search-form:focus-within {
-      background: rgba(0, 0, 0, 0.45);
+      background: rgba(0, 0, 0, 0.5);
       border-color: rgba(255, 255, 255, 0.2);
     }
 
@@ -105,7 +122,7 @@
       background: transparent;
       width: 100%;
       font-size: 13px;
-      color: var(--text-white);
+      color: #ffffff;
     }
 
     .search-input::placeholder {
@@ -122,7 +139,7 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      color: var(--text-white);
+      color: #ffffff;
       transition: background 0.2s ease;
     }
 
@@ -152,14 +169,13 @@
     /* Wide Glassmorphism Card (Scaled Up & Glass-Finished) */
     .weather-card {
       width: 90%;
-      max-width: 620px; /* Scaled up from 520px */
+      max-width: 620px; /* Large cinematic size */
       border-radius: 32px;
-      padding: 48px 52px; /* Generous roomier padding */
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45);
+      padding: 48px 52px; /* Generous padding */
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 380px; /* Height increased from 290px */
+      min-height: 380px; /* Scaled up balance */
       animation: zoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       backdrop-filter: blur(50px) saturate(140%);
       -webkit-backdrop-filter: blur(50px) saturate(140%);
@@ -168,10 +184,7 @@
                   box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* =========================================================================
-       DYNAMIC CARD BACKGROUNDS (ACCORDING TO WEATHER)
-       These apply custom glass reflections, borders, and ambient glows 
-       ========================================================================= */
+    /* Dynamic Card Background Themes */
     .theme-clear {
       background: linear-gradient(135deg, rgba(255, 179, 0, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
       border: 1px solid rgba(255, 215, 0, 0.3);
@@ -228,7 +241,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 20px; /* Scaled up from 18px */
+      font-size: 20px;
       font-weight: 500;
       letter-spacing: 0.3px;
     }
@@ -246,7 +259,7 @@
       border-radius: 16px;
       font-size: 11px;
       font-weight: 500;
-      color: var(--text-white);
+      color: #ffffff;
       cursor: pointer;
       transition: all 0.2s ease;
       backdrop-filter: blur(5px);
@@ -264,14 +277,14 @@
     }
 
     .temp-value {
-      font-size: 96px; /* Scaled up from 80px */
+      font-size: 96px;
       font-weight: 600;
       line-height: 1;
       letter-spacing: -2px;
     }
 
     .weather-status {
-      font-size: 20px; /* Scaled up from 18px */
+      font-size: 20px;
       font-weight: 400;
       margin-top: 10px;
       letter-spacing: 0.4px;
@@ -293,24 +306,24 @@
     }
 
     .stat-label {
-      font-size: 13px; /* Scaled up from 12px */
-      color: var(--text-muted);
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
       font-weight: 400;
       margin-bottom: 6px;
     }
 
     .stat-value {
-      font-size: 17px; /* Scaled up from 15px */
+      font-size: 17px;
       font-weight: 500;
-      color: var(--text-white);
+      color: #ffffff;
     }
 
     /* Color highlight on feels-like stats */
     .stat-item.feels-like .stat-value {
-      color: var(--accent-warm);
+      color: #ffb74d;
     }
 
-    /* About Modal Overlay */
+    /* Modal Overlay (About & Settings) */
     .modal {
       display: none;
       position: fixed;
@@ -331,7 +344,7 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
       padding: 32px;
       border-radius: 24px;
-      max-width: 420px;
+      max-width: 450px;
       width: 90%;
       box-shadow: 0 20px 50px rgba(0,0,0,0.5);
       position: relative;
@@ -343,11 +356,11 @@
       right: 20px;
       font-size: 24px;
       cursor: pointer;
-      color: var(--text-muted);
+      color: rgba(255, 255, 255, 0.7);
     }
 
     .close-btn:hover {
-      color: var(--text-white);
+      color: #ffffff;
     }
 
     .modal h2 {
@@ -358,8 +371,70 @@
     .modal p {
       font-size: 13.5px;
       line-height: 1.6;
-      color: var(--text-muted);
-      margin-bottom: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 14px;
+    }
+
+    /* Settings Form Control Styles */
+    .settings-group {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .settings-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .settings-input {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+
+    .settings-input:focus {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .settings-checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    .settings-checkbox {
+      width: 16px;
+      height: 16px;
+      accent-color: #ffb74d;
+      cursor: pointer;
+    }
+
+    .save-btn {
+      background: #ffb74d;
+      color: #0b111e;
+      border: none;
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 13px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 18px;
+      width: 100%;
+      transition: opacity 0.2s;
+    }
+
+    .save-btn:hover {
+      opacity: 0.9;
     }
 
     /* Layout Footer */
@@ -391,10 +466,16 @@
 </head>
 <body>
 
+  <!-- Background video container -->
+  <video id="bg-video" autoplay loop muted playsinline class="background-video">
+    <source id="bg-video-source" src="" type="video/mp4">
+  </video>
+
   <header class="header">
     <nav class="nav">
       <button class="nav-btn active" id="home-btn">Home</button>
       <button class="nav-btn" id="about-btn">About</button>
+      <button class="nav-btn" id="settings-btn">Settings</button>
     </nav>
     <div class="search-container">
       <form class="search-form" id="search-form">
@@ -411,7 +492,6 @@
   </header>
 
   <main class="main-content">
-    <!-- Card defaults to theme-cloudy on initial setup -->
     <div class="weather-card theme-cloudy" id="weather-card">
       
       <!-- Top Section -->
@@ -451,12 +531,34 @@
     </div>
   </main>
 
+  <!-- About Modal -->
   <div class="modal" id="about-modal">
     <div class="modal-content">
-      <span class="close-btn" id="modal-close">&times;</span>
+      <span class="close-btn" id="about-modal-close">&times;</span>
       <h2>About Premium Weather</h2>
       <p>This customized interface presents weather information utilizing precise geolocation services combined with real-time open weather statistics.</p>
       <p>The unit switch is calculated mathematically on user demand, allowing for a clean visual representation.</p>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="settings-modal">
+    <div class="modal-content">
+      <span class="close-btn" id="settings-modal-close">&times;</span>
+      <h2>Background Settings</h2>
+      <p>Configure custom backgrounds using direct media links, or toggle automated weather backgrounds.</p>
+      
+      <div class="settings-group">
+        <label class="settings-label" for="custom-bg-input">Background URL (Direct Video or Image Link):</label>
+        <input class="settings-input" type="text" id="custom-bg-input" placeholder="e.g. bg1121.mp4">
+      </div>
+
+      <div class="settings-checkbox-container" id="toggle-dynamic-container">
+        <input type="checkbox" class="settings-checkbox" id="dynamic-bg-checkbox">
+        <label class="settings-label" style="cursor: pointer;" for="dynamic-bg-checkbox">Enable automated weather-based backgrounds</label>
+      </div>
+
+      <button class="save-btn" id="save-settings-btn">Save Changes</button>
     </div>
   </div>
 
@@ -465,7 +567,31 @@
   </footer>
 
   <script>
-    // Map weather codes to custom layout names and matching dynamic themes
+    // =========================================================================
+    // DEFAULT CONFIGURATION:
+    // If no custom preferences are saved locally, the app loads these options.
+    // =========================================================================
+    const DEFAULT_CONFIG = {
+      // Disabled by default so 'bg1121.mp4' plays unconditionally until checked.
+      useDynamicWeatherBackgrounds: false,
+
+      // Default URL configured to load your custom background file
+      customBgUrl: 'bg1121.mp4',
+
+      // Backup dynamic weather preview videos
+      weatherBgVideos: {
+        clear: 'https://assets.mixkit.co/videos/preview/mixkit-timelapse-of-clouds-in-a-blue-sky-23841-large.mp4',
+        cloudy: 'https://assets.mixkit.co/videos/preview/mixkit-clouds-moving-fast-in-a-sunset-sky-41618-large.mp4',
+        rainy: 'https://assets.mixkit.co/videos/preview/mixkit-raindrops-hitting-a-metal-roof-40058-large.mp4',
+        snowy: 'https://assets.mixkit.co/videos/preview/mixkit-snow-falling-on-a-spruce-forest-track-42171-large.mp4',
+        thunderstorm: 'https://assets.mixkit.co/videos/preview/mixkit-lightning-strikes-in-the-night-sky-40344-large.mp4'
+      }
+    };
+
+    // Load active settings from LocalStorage or fall back to defaults
+    let activeConfig = JSON.parse(localStorage.getItem('weather_app_config')) || { ...DEFAULT_CONFIG };
+
+    // Map weather codes to layout names and matching themes
     function getWeatherInfo(code) {
       if (code === 0) return { label: "Clear Sky", theme: "clear" };
       if ([1, 2].includes(code)) return { label: "Partly Cloudy", theme: "cloudy" };
@@ -480,6 +606,9 @@
     }
 
     // UI elements references
+    const bgVideo = document.getElementById('bg-video');
+    const bgVideoSource = document.getElementById('bg-video-source');
+
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
     const statusMsg = document.getElementById('status-msg');
@@ -496,8 +625,16 @@
 
     const aboutBtn = document.getElementById('about-btn');
     const homeBtn = document.getElementById('home-btn');
+    const settingsBtn = document.getElementById('settings-btn');
+
     const aboutModal = document.getElementById('about-modal');
-    const modalClose = document.getElementById('modal-close');
+    const aboutModalClose = document.getElementById('about-modal-close');
+
+    const settingsModal = document.getElementById('settings-modal');
+    const settingsModalClose = document.getElementById('settings-modal-close');
+    const customBgInput = document.getElementById('custom-bg-input');
+    const dynamicBgCheckbox = document.getElementById('dynamic-bg-checkbox');
+    const saveSettingsBtn = document.getElementById('save-settings-btn');
 
     // Central state values stored in Metric standards (Celsius)
     let currentUnit = 'C';
@@ -511,17 +648,44 @@
       theme: "cloudy"
     };
 
-    // Card background class theme updater
-    function updateCardTheme(themeClass) {
-      weatherCard.className = `weather-card theme-${themeClass}`;
+    // Shifting background media files
+    function updatePageBackground(url) {
+      if (!url) return;
+
+      const isVideo = url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.ogg') || url.includes('video') || url.includes('mixkit');
+      
+      if (isVideo) {
+        document.body.style.backgroundImage = 'none';
+        bgVideo.style.display = 'block';
+        if (bgVideoSource.src !== url) {
+          bgVideoSource.src = url;
+          bgVideo.load();
+          bgVideo.play().catch(e => console.log("Video autoplay restrictions prevented instant play:", e));
+        }
+      } else {
+        bgVideo.style.display = 'none';
+        bgVideo.pause();
+        document.body.style.backgroundImage = `url('${url}')`;
+      }
     }
 
-    // Rendering method to calculate calculations
+    // Handles the card's theme class updates
+    function updateCardTheme(themeClass) {
+      weatherCard.className = `weather-card theme-${themeClass}`;
+      
+      if (activeConfig.useDynamicWeatherBackgrounds) {
+        const dynamicVideoUrl = activeConfig.weatherBgVideos[themeClass] || activeConfig.weatherBgVideos.cloudy;
+        updatePageBackground(dynamicVideoUrl);
+      }
+    }
+
+    // Rendering method
     function renderWeather() {
       locNameEl.textContent = weatherData.location;
       weatherStatusEl.textContent = weatherData.condition;
       humidityValEl.textContent = `${weatherData.humidity}%`;
       windValEl.textContent = `${weatherData.windSpeed} km/h`;
+      
       updateCardTheme(weatherData.theme);
 
       if (currentUnit === 'C') {
@@ -591,28 +755,67 @@
       }
     }
 
-    // Modal view handlers
+    // Initialize background state
+    function initBackground() {
+      if (!activeConfig.useDynamicWeatherBackgrounds) {
+        updatePageBackground(activeConfig.customBgUrl);
+      }
+    }
+
+    // Modal navigation actions
     aboutBtn.addEventListener('click', () => {
       aboutModal.style.display = 'flex';
       aboutBtn.classList.add('active');
       homeBtn.classList.remove('active');
+      settingsBtn.classList.remove('active');
     });
 
-    const closeModal = () => {
+    settingsBtn.addEventListener('click', () => {
+      // Pre-fill inputs with current configuration values
+      customBgInput.value = activeConfig.customBgUrl;
+      dynamicBgCheckbox.checked = activeConfig.useDynamicWeatherBackgrounds;
+      
+      settingsModal.style.display = 'flex';
+      settingsBtn.classList.add('active');
+      homeBtn.classList.remove('active');
+      aboutBtn.classList.remove('active');
+    });
+
+    const closeAllModals = () => {
       aboutModal.style.display = 'none';
+      settingsModal.style.display = 'none';
       homeBtn.classList.add('active');
       aboutBtn.classList.remove('active');
+      settingsBtn.classList.remove('active');
     };
 
-    modalClose.addEventListener('click', closeModal);
-    window.addEventListener('click', (e) => {
-      if (e.target === aboutModal) closeModal();
+    // Settings persistence handler
+    saveSettingsBtn.addEventListener('click', () => {
+      activeConfig.customBgUrl = customBgInput.value.trim() || DEFAULT_CONFIG.customBgUrl;
+      activeConfig.useDynamicWeatherBackgrounds = dynamicBgCheckbox.checked;
+
+      // Persist configuration settings in the browser
+      localStorage.setItem('weather_app_config', JSON.stringify(activeConfig));
+      
+      initBackground();
+      renderWeather();
+      closeAllModals();
     });
 
-    homeBtn.addEventListener('click', closeModal);
+    aboutModalClose.addEventListener('click', closeAllModals);
+    settingsModalClose.addEventListener('click', closeAllModals);
+
+    window.addEventListener('click', (e) => {
+      if (e.target === aboutModal || e.target === settingsModal) {
+        closeAllModals();
+      }
+    });
+
+    homeBtn.addEventListener('click', closeAllModals);
     searchForm.addEventListener('submit', handleSearch);
 
     // Initial render
+    initBackground();
     renderWeather();
   </script>
 </body>
