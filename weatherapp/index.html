@@ -8,13 +8,16 @@
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
     :root {
-      /* CONFIGURATION: Paste your desired background image URL inside the url() below,
-         or replace it with a color value (e.g., #111) */
-      --bg-image: url('https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=1920&q=80');
+      /* =========================================================================
+         CUSTOM BACKGROUND CONFIGURATION:
+         Paste any direct image URL inside the url('...') below.
+         This changes the main background of the entire page.
+         ========================================================================= */
+      --app-bg-url: url('https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=1920&q=80');
       
       --text-white: #ffffff;
       --text-muted: rgba(255, 255, 255, 0.7);
-      --accent-warm: #ffb74d; /* Golden accent matching the sunset clouds glow */
+      --accent-warm: #ffb74d; /* Golden accent matching sunset glows */
     }
 
     * {
@@ -25,7 +28,7 @@
     }
 
     body {
-      background: var(--bg-image);
+      background: var(--app-bg-url);
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -42,8 +45,8 @@
     /* Transparent Navigation Bar */
     .header {
       width: 100%;
-      max-width: 1200px;
-      padding: 24px 32px;
+      max-width: 1400px;
+      padding: 32px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -76,13 +79,13 @@
 
     /* Low-Profile Glass Search Container */
     .search-container {
-      width: 280px;
+      width: 320px;
     }
 
     .search-form {
       display: flex;
       align-items: center;
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -92,7 +95,7 @@
     }
 
     .search-form:focus-within {
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 0, 0, 0.45);
       border-color: rgba(255, 255, 255, 0.2);
     }
 
@@ -143,26 +146,70 @@
       justify-content: center;
       align-items: center;
       width: 100%;
-      padding: 20px;
+      padding: 40px 20px;
     }
 
-    /* Wide Horizontal Classy Glassmorphism Card */
+    /* Wide Glassmorphism Card (Scaled Up & Glass-Finished) */
     .weather-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(40px) saturate(135%);
-      -webkit-backdrop-filter: blur(40px) saturate(135%);
-      width: 100%;
-      max-width: 520px;
-      border-radius: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 32px 36px;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3), 
-                  inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      width: 90%;
+      max-width: 620px; /* Scaled up from 520px */
+      border-radius: 32px;
+      padding: 48px 52px; /* Generous roomier padding */
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 290px;
+      min-height: 380px; /* Height increased from 290px */
       animation: zoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(50px) saturate(140%);
+      -webkit-backdrop-filter: blur(50px) saturate(140%);
+      transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                  border-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                  box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* =========================================================================
+       DYNAMIC CARD BACKGROUNDS (ACCORDING TO WEATHER)
+       These apply custom glass reflections, borders, and ambient glows 
+       ========================================================================= */
+    .theme-clear {
+      background: linear-gradient(135deg, rgba(255, 179, 0, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
+                  0 0 40px rgba(255, 165, 0, 0.15),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .theme-cloudy {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
+                  0 0 30px rgba(255, 255, 255, 0.05),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .theme-rainy {
+      background: linear-gradient(135deg, rgba(0, 191, 255, 0.08) 0%, rgba(0, 0, 50, 0.15) 100%);
+      border: 1px solid rgba(0, 191, 255, 0.3);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
+                  0 0 40px rgba(0, 191, 255, 0.15),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .theme-snowy {
+      background: linear-gradient(135deg, rgba(224, 247, 250, 0.15) 0%, rgba(255, 255, 255, 0.04) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
+                  0 0 40px rgba(224, 247, 250, 0.15),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .theme-thunderstorm {
+      background: linear-gradient(135deg, rgba(147, 112, 219, 0.12) 0%, rgba(10, 10, 30, 0.3) 100%);
+      border: 1px solid rgba(147, 112, 219, 0.35);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), 
+                  0 0 45px rgba(147, 112, 219, 0.22),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
 
     @keyframes zoomIn {
@@ -181,21 +228,21 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 18px;
+      font-size: 20px; /* Scaled up from 18px */
       font-weight: 500;
       letter-spacing: 0.3px;
     }
 
     .pin-icon {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
     }
 
     /* Unit toggle button */
     .unit-toggle {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 6px 14px;
+      padding: 6px 16px;
       border-radius: 16px;
       font-size: 11px;
       font-weight: 500;
@@ -210,23 +257,23 @@
       border-color: rgba(255, 255, 255, 0.25);
     }
 
-    /* Center layout elements */
+    /* Center elements */
     .card-center {
       text-align: center;
-      margin: 18px 0;
+      margin: 24px 0;
     }
 
     .temp-value {
-      font-size: 80px;
+      font-size: 96px; /* Scaled up from 80px */
       font-weight: 600;
       line-height: 1;
       letter-spacing: -2px;
     }
 
     .weather-status {
-      font-size: 18px;
+      font-size: 20px; /* Scaled up from 18px */
       font-weight: 400;
-      margin-top: 8px;
+      margin-top: 10px;
       letter-spacing: 0.4px;
     }
 
@@ -234,7 +281,7 @@
     .card-footer {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      padding-top: 18px;
+      padding-top: 24px;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
@@ -246,19 +293,19 @@
     }
 
     .stat-label {
-      font-size: 12px;
+      font-size: 13px; /* Scaled up from 12px */
       color: var(--text-muted);
       font-weight: 400;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .stat-value {
-      font-size: 15px;
+      font-size: 17px; /* Scaled up from 15px */
       font-weight: 500;
       color: var(--text-white);
     }
 
-    /* Distinct color logic targeting feels-like parameter */
+    /* Color highlight on feels-like stats */
     .stat-item.feels-like .stat-value {
       color: var(--accent-warm);
     }
@@ -315,9 +362,9 @@
       margin-bottom: 10px;
     }
 
-    /* Tiny subtle layout footer */
+    /* Layout Footer */
     .footer {
-      padding: 16px;
+      padding: 24px;
       font-size: 11px;
       color: rgba(255, 255, 255, 0.35);
       letter-spacing: 0.5px;
@@ -333,7 +380,7 @@
         width: 100%;
       }
       .weather-card {
-        padding: 24px;
+        padding: 32px 24px;
         min-height: auto;
       }
       .temp-value {
@@ -364,7 +411,8 @@
   </header>
 
   <main class="main-content">
-    <div class="weather-card">
+    <!-- Card defaults to theme-cloudy on initial setup -->
+    <div class="weather-card theme-cloudy" id="weather-card">
       
       <!-- Top Section -->
       <div class="card-header">
@@ -417,18 +465,18 @@
   </footer>
 
   <script>
-    // Map of standard weather codes to layout strings
-    function getWeatherLabel(code) {
-      if (code === 0) return "Clear Sky";
-      if ([1, 2].includes(code)) return "Partly Cloudy";
-      if (code === 3) return "Overcast";
-      if ([45, 48].includes(code)) return "Foggy";
-      if ([51, 53, 55, 56, 57].includes(code)) return "Light Drizzle";
-      if ([61, 63, 65, 66, 67].includes(code)) return "Rainy";
-      if ([71, 73, 75, 77].includes(code)) return "Snowy";
-      if ([80, 81, 82].includes(code)) return "Rain Showers";
-      if ([95, 96, 99].includes(code)) return "Thunderstorm";
-      return "Partly Cloudy";
+    // Map weather codes to custom layout names and matching dynamic themes
+    function getWeatherInfo(code) {
+      if (code === 0) return { label: "Clear Sky", theme: "clear" };
+      if ([1, 2].includes(code)) return { label: "Partly Cloudy", theme: "cloudy" };
+      if (code === 3) return { label: "Overcast", theme: "cloudy" };
+      if ([45, 48].includes(code)) return { label: "Foggy", theme: "cloudy" };
+      if ([51, 53, 55, 56, 57].includes(code)) return { label: "Light Drizzle", theme: "rainy" };
+      if ([61, 63, 65, 66, 67].includes(code)) return { label: "Rainy", theme: "rainy" };
+      if ([71, 73, 75, 77].includes(code)) return { label: "Snowy", theme: "snowy" };
+      if ([80, 81, 82].includes(code)) return { label: "Rain Showers", theme: "rainy" };
+      if ([95, 96, 99].includes(code)) return { label: "Thunderstorm", theme: "thunderstorm" };
+      return { label: "Partly Cloudy", theme: "cloudy" };
     }
 
     // UI elements references
@@ -436,6 +484,7 @@
     const searchInput = document.getElementById('search-input');
     const statusMsg = document.getElementById('status-msg');
 
+    const weatherCard = document.getElementById('weather-card');
     const locNameEl = document.getElementById('loc-name');
     const tempValEl = document.getElementById('temp-val');
     const weatherStatusEl = document.getElementById('weather-status');
@@ -458,8 +507,14 @@
       feelsLikeC: 24,
       humidity: 55,
       windSpeed: 15,
-      condition: "Partly Cloudy"
+      condition: "Partly Cloudy",
+      theme: "cloudy"
     };
+
+    // Card background class theme updater
+    function updateCardTheme(themeClass) {
+      weatherCard.className = `weather-card theme-${themeClass}`;
+    }
 
     // Rendering method to calculate calculations
     function renderWeather() {
@@ -467,6 +522,7 @@
       weatherStatusEl.textContent = weatherData.condition;
       humidityValEl.textContent = `${weatherData.humidity}%`;
       windValEl.textContent = `${weatherData.windSpeed} km/h`;
+      updateCardTheme(weatherData.theme);
 
       if (currentUnit === 'C') {
         tempValEl.textContent = `${weatherData.tempC}°C`;
@@ -512,6 +568,8 @@
         const forecastRes = await fetch(forecastUrl);
         const forecastData = await forecastRes.json();
 
+        const weatherInfo = getWeatherInfo(forecastData.current.weather_code);
+
         // Step 3: Populate local state variables
         weatherData = {
           location: `${name}, ${country_code}`,
@@ -519,7 +577,8 @@
           feelsLikeC: Math.round(forecastData.current.apparent_temperature),
           humidity: forecastData.current.relative_humidity_2m,
           windSpeed: Math.round(forecastData.current.wind_speed_10m),
-          condition: getWeatherLabel(forecastData.current.weather_code)
+          condition: weatherInfo.label,
+          theme: weatherInfo.theme
         };
 
         statusMsg.textContent = "";
