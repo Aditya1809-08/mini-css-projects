@@ -7,6 +7,12 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+    :root {
+      --text-white: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.7);
+      --accent-warm: #ffb74d;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -15,51 +21,33 @@
     }
 
     body {
-      background-color: #0b111e; /* Dark fallback background */
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      color: #ffffff;
+      color: var(--text-white);
       overflow-x: hidden;
-      transition: background 0.8s ease;
+      position: relative;
     }
 
-    /* Ambient overlay to ensure absolute legibility over dynamic backgrounds */
-    body::before {
-      content: "";
+    /* ── Video Background ── */
+    #bg-video {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.25);
+      object-fit: cover;
       z-index: -1;
       pointer-events: none;
-    }
-
-    /* Smoothly covering video background element */
-    .background-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: -2;
-      pointer-events: none;
-      transition: opacity 1s ease-in-out;
     }
 
     /* Transparent Navigation Bar */
     .header {
       width: 100%;
-      max-width: 1400px;
-      padding: 32px 40px;
+      max-width: 1200px;
+      padding: 24px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -74,17 +62,13 @@
     .nav-btn {
       background: transparent;
       border: none;
-      color: #ffffff;
+      color: var(--text-white);
       font-size: 14px;
       font-weight: 500;
       padding: 6px 18px;
       cursor: pointer;
       border-radius: 20px;
       transition: all 0.3s ease;
-    }
-
-    .nav-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
     }
 
     .nav-btn.active {
@@ -94,15 +78,14 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    /* Low-Profile Glass Search Container */
     .search-container {
-      width: 320px;
+      width: 280px;
     }
 
     .search-form {
       display: flex;
       align-items: center;
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 0, 0, 0.25);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -112,7 +95,7 @@
     }
 
     .search-form:focus-within {
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.35);
       border-color: rgba(255, 255, 255, 0.2);
     }
 
@@ -122,7 +105,7 @@
       background: transparent;
       width: 100%;
       font-size: 13px;
-      color: #ffffff;
+      color: var(--text-white);
     }
 
     .search-input::placeholder {
@@ -139,7 +122,7 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      color: #ffffff;
+      color: var(--text-white);
       transition: background 0.2s ease;
     }
 
@@ -156,73 +139,31 @@
       padding-right: 12px;
     }
 
-    /* Main Area */
     .main-content {
       flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
       width: 100%;
-      padding: 40px 20px;
+      padding: 20px;
     }
 
-    /* Wide Glassmorphism Card (Scaled Up & Glass-Finished) */
     .weather-card {
-      width: 90%;
-      max-width: 620px; /* Large cinematic size */
-      border-radius: 32px;
-      padding: 48px 52px; /* Generous padding */
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(40px) saturate(135%);
+      -webkit-backdrop-filter: blur(40px) saturate(135%);
+      width: 100%;
+      max-width: 520px;
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 32px 36px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3), 
+                  inset 0 1px 0 rgba(255, 255, 255, 0.15);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 380px; /* Scaled up balance */
+      min-height: 290px;
       animation: zoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-      backdrop-filter: blur(50px) saturate(140%);
-      -webkit-backdrop-filter: blur(50px) saturate(140%);
-      transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-                  border-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-                  box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    /* Dynamic Card Background Themes */
-    .theme-clear {
-      background: linear-gradient(135deg, rgba(255, 179, 0, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
-      border: 1px solid rgba(255, 215, 0, 0.3);
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
-                  0 0 40px rgba(255, 165, 0, 0.15),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    }
-
-    .theme-cloudy {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
-                  0 0 30px rgba(255, 255, 255, 0.05),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    }
-
-    .theme-rainy {
-      background: linear-gradient(135deg, rgba(0, 191, 255, 0.08) 0%, rgba(0, 0, 50, 0.15) 100%);
-      border: 1px solid rgba(0, 191, 255, 0.3);
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
-                  0 0 40px rgba(0, 191, 255, 0.15),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    }
-
-    .theme-snowy {
-      background: linear-gradient(135deg, rgba(224, 247, 250, 0.15) 0%, rgba(255, 255, 255, 0.04) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
-                  0 0 40px rgba(224, 247, 250, 0.15),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.35);
-    }
-
-    .theme-thunderstorm {
-      background: linear-gradient(135deg, rgba(147, 112, 219, 0.12) 0%, rgba(10, 10, 30, 0.3) 100%);
-      border: 1px solid rgba(147, 112, 219, 0.35);
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), 
-                  0 0 45px rgba(147, 112, 219, 0.22),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
 
     @keyframes zoomIn {
@@ -230,7 +171,6 @@
       to { opacity: 1; transform: scale(1); }
     }
 
-    /* Card Layout Grids */
     .card-header {
       display: flex;
       justify-content: space-between;
@@ -241,25 +181,24 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 500;
       letter-spacing: 0.3px;
     }
 
     .pin-icon {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
     }
 
-    /* Unit toggle button */
     .unit-toggle {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 6px 16px;
+      padding: 6px 14px;
       border-radius: 16px;
       font-size: 11px;
       font-weight: 500;
-      color: #ffffff;
+      color: var(--text-white);
       cursor: pointer;
       transition: all 0.2s ease;
       backdrop-filter: blur(5px);
@@ -270,31 +209,29 @@
       border-color: rgba(255, 255, 255, 0.25);
     }
 
-    /* Center elements */
     .card-center {
       text-align: center;
-      margin: 24px 0;
+      margin: 18px 0;
     }
 
     .temp-value {
-      font-size: 96px;
+      font-size: 80px;
       font-weight: 600;
       line-height: 1;
       letter-spacing: -2px;
     }
 
     .weather-status {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 400;
-      margin-top: 10px;
+      margin-top: 8px;
       letter-spacing: 0.4px;
     }
 
-    /* Card Footer Stats Section */
     .card-footer {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      padding-top: 24px;
+      padding-top: 18px;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
@@ -306,24 +243,22 @@
     }
 
     .stat-label {
-      font-size: 13px;
-      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+      color: var(--text-muted);
       font-weight: 400;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .stat-value {
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 500;
-      color: #ffffff;
+      color: var(--text-white);
     }
 
-    /* Color highlight on feels-like stats */
     .stat-item.feels-like .stat-value {
-      color: #ffb74d;
+      color: var(--accent-warm);
     }
 
-    /* Modal Overlay (About & Settings) */
     .modal {
       display: none;
       position: fixed;
@@ -344,7 +279,7 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
       padding: 32px;
       border-radius: 24px;
-      max-width: 450px;
+      max-width: 420px;
       width: 90%;
       box-shadow: 0 20px 50px rgba(0,0,0,0.5);
       position: relative;
@@ -356,11 +291,11 @@
       right: 20px;
       font-size: 24px;
       cursor: pointer;
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--text-muted);
     }
 
     .close-btn:hover {
-      color: #ffffff;
+      color: var(--text-white);
     }
 
     .modal h2 {
@@ -371,74 +306,12 @@
     .modal p {
       font-size: 13.5px;
       line-height: 1.6;
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: 14px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
     }
 
-    /* Settings Control Form Styles */
-    .settings-group {
-      margin-top: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .settings-label {
-      font-size: 13px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .settings-input {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 10px 14px;
-      border-radius: 12px;
-      color: #ffffff;
-      font-size: 13px;
-      outline: none;
-      width: 100%;
-    }
-
-    .settings-input:focus {
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .settings-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .btn {
-      padding: 12px 20px;
-      font-weight: 600;
-      font-size: 13px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      flex: 1;
-      border: none;
-    }
-
-    .btn-save {
-      background: #ffb74d;
-      color: #0b111e;
-    }
-
-    .btn-reset {
-      background: rgba(255, 255, 255, 0.12);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    .btn:hover {
-      opacity: 0.9;
-    }
-
-    /* Layout Footer */
     .footer {
-      padding: 24px;
+      padding: 16px;
       font-size: 11px;
       color: rgba(255, 255, 255, 0.35);
       letter-spacing: 0.5px;
@@ -454,7 +327,7 @@
         width: 100%;
       }
       .weather-card {
-        padding: 32px 24px;
+        padding: 24px;
         min-height: auto;
       }
       .temp-value {
@@ -465,16 +338,15 @@
 </head>
 <body>
 
-  <!-- Background video container -->
-  <video id="bg-video" autoplay loop muted playsinline class="background-video">
-    <source id="bg-video-source" src="" type="video/mp4">
+  <!-- ── Video Background ── -->
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="bg1121.mp4" type="video/mp4">
   </video>
 
   <header class="header">
     <nav class="nav">
       <button class="nav-btn active" id="home-btn">Home</button>
       <button class="nav-btn" id="about-btn">About</button>
-      <button class="nav-btn" id="settings-btn">Settings</button>
     </nav>
     <div class="search-container">
       <form class="search-form" id="search-form">
@@ -491,9 +363,7 @@
   </header>
 
   <main class="main-content">
-    <div class="weather-card theme-cloudy" id="weather-card">
-      
-      <!-- Top Section -->
+    <div class="weather-card">
       <div class="card-header">
         <div class="location-container">
           <svg class="pin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -505,13 +375,11 @@
         <button class="unit-toggle" id="unit-toggle-btn">°C / °F</button>
       </div>
 
-      <!-- Center Section -->
       <div class="card-center">
         <div class="temp-value" id="temp-val">22°C</div>
         <div class="weather-status" id="weather-status">Partly Cloudy</div>
       </div>
 
-      <!-- Bottom Stats Section -->
       <div class="card-footer">
         <div class="stat-item">
           <span class="stat-label">Humidity</span>
@@ -526,36 +394,15 @@
           <span class="stat-value" id="feels-like-val">24°C</span>
         </div>
       </div>
-
     </div>
   </main>
 
-  <!-- About Modal -->
   <div class="modal" id="about-modal">
     <div class="modal-content">
-      <span class="close-btn" id="about-modal-close">&times;</span>
+      <span class="close-btn" id="modal-close">&times;</span>
       <h2>About Premium Weather</h2>
       <p>This customized interface presents weather information utilizing precise geolocation services combined with real-time open weather statistics.</p>
       <p>The unit switch is calculated mathematically on user demand, allowing for a clean visual representation.</p>
-    </div>
-  </div>
-
-  <!-- Settings Modal -->
-  <div class="modal" id="settings-modal">
-    <div class="modal-content">
-      <span class="close-btn" id="settings-modal-close">&times;</span>
-      <h2>Background Settings</h2>
-      <p>Customize your background by pasting any direct video URL (.mp4) or image URL (.jpg, .png, .webp) below.</p>
-      
-      <div class="settings-group">
-        <label class="settings-label" for="custom-bg-input">Background URL Link:</label>
-        <input class="settings-input" type="text" id="custom-bg-input" placeholder="e.g. bg1121.mp4">
-      </div>
-
-      <div class="settings-actions">
-        <button class="btn btn-reset" id="reset-settings-btn">Reset to Default</button>
-        <button class="btn btn-save" id="save-settings-btn">Save Changes</button>
-      </div>
     </div>
   </div>
 
@@ -564,64 +411,34 @@
   </footer>
 
   <script>
-    // =========================================================================
-    // DEFAULT CONFIGURATION:
-    // If no custom user choices are saved, the code loads this default video file.
-    // =========================================================================
-    const DEFAULT_CONFIG = {
-      // Default URL configured to run your video file in the background
-      customBgUrl: 'bg1121.mp4'
-    };
-
-    // Load saved settings from LocalStorage or fall back to default
-    let activeConfig = JSON.parse(localStorage.getItem('weather_app_config')) || { ...DEFAULT_CONFIG };
-
-    // Map weather codes to layout names and matching card themes
-    function getWeatherInfo(code) {
-      if (code === 0) return { label: "Clear Sky", theme: "clear" };
-      if ([1, 2].includes(code)) return { label: "Partly Cloudy", theme: "cloudy" };
-      if (code === 3) return { label: "Overcast", theme: "cloudy" };
-      if ([45, 48].includes(code)) return { label: "Foggy", theme: "cloudy" };
-      if ([51, 53, 55, 56, 57].includes(code)) return { label: "Light Drizzle", theme: "rainy" };
-      if ([61, 63, 65, 66, 67].includes(code)) return { label: "Rainy", theme: "rainy" };
-      if ([71, 73, 75, 77].includes(code)) return { label: "Snowy", theme: "snowy" };
-      if ([80, 81, 82].includes(code)) return { label: "Rain Showers", theme: "rainy" };
-      if ([95, 96, 99].includes(code)) return { label: "Thunderstorm", theme: "thunderstorm" };
-      return { label: "Partly Cloudy", theme: "cloudy" };
+    function getWeatherLabel(code) {
+      if (code === 0) return "Clear Sky";
+      if ([1, 2].includes(code)) return "Partly Cloudy";
+      if (code === 3) return "Overcast";
+      if ([45, 48].includes(code)) return "Foggy";
+      if ([51, 53, 55, 56, 57].includes(code)) return "Light Drizzle";
+      if ([61, 63, 65, 66, 67].includes(code)) return "Rainy";
+      if ([71, 73, 75, 77].includes(code)) return "Snowy";
+      if ([80, 81, 82].includes(code)) return "Rain Showers";
+      if ([95, 96, 99].includes(code)) return "Thunderstorm";
+      return "Partly Cloudy";
     }
-
-    // UI elements references
-    const bgVideo = document.getElementById('bg-video');
-    const bgVideoSource = document.getElementById('bg-video-source');
 
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
     const statusMsg = document.getElementById('status-msg');
-
-    const weatherCard = document.getElementById('weather-card');
     const locNameEl = document.getElementById('loc-name');
     const tempValEl = document.getElementById('temp-val');
     const weatherStatusEl = document.getElementById('weather-status');
-
     const humidityValEl = document.getElementById('humidity-val');
     const windValEl = document.getElementById('wind-val');
     const feelsLikeValEl = document.getElementById('feels-like-val');
     const unitToggleBtn = document.getElementById('unit-toggle-btn');
-
     const aboutBtn = document.getElementById('about-btn');
     const homeBtn = document.getElementById('home-btn');
-    const settingsBtn = document.getElementById('settings-btn');
-
     const aboutModal = document.getElementById('about-modal');
-    const aboutModalClose = document.getElementById('about-modal-close');
+    const modalClose = document.getElementById('modal-close');
 
-    const settingsModal = document.getElementById('settings-modal');
-    const settingsModalClose = document.getElementById('settings-modal-close');
-    const customBgInput = document.getElementById('custom-bg-input');
-    const saveSettingsBtn = document.getElementById('save-settings-btn');
-    const resetSettingsBtn = document.getElementById('reset-settings-btn');
-
-    // Central state values stored in Metric standards (Celsius)
     let currentUnit = 'C';
     let weatherData = {
       location: "New York",
@@ -629,44 +446,14 @@
       feelsLikeC: 24,
       humidity: 55,
       windSpeed: 15,
-      condition: "Partly Cloudy",
-      theme: "cloudy"
+      condition: "Partly Cloudy"
     };
 
-    // Shifting background media files between Image and Video
-    function updatePageBackground(url) {
-      if (!url) return;
-
-      const isVideo = url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.ogg') || url.includes('video') || url.includes('mixkit');
-      
-      if (isVideo) {
-        document.body.style.backgroundImage = 'none';
-        bgVideo.style.display = 'block';
-        if (bgVideoSource.src !== url) {
-          bgVideoSource.src = url;
-          bgVideo.load();
-          bgVideo.play().catch(e => console.log("Video autoplay restrictions prevented instant play:", e));
-        }
-      } else {
-        bgVideo.style.display = 'none';
-        bgVideo.pause();
-        document.body.style.backgroundImage = `url('${url}')`;
-      }
-    }
-
-    // Handles the card's theme class updates
-    function updateCardTheme(themeClass) {
-      weatherCard.className = `weather-card theme-${themeClass}`;
-    }
-
-    // Rendering method
     function renderWeather() {
       locNameEl.textContent = weatherData.location;
       weatherStatusEl.textContent = weatherData.condition;
       humidityValEl.textContent = `${weatherData.humidity}%`;
       windValEl.textContent = `${weatherData.windSpeed} km/h`;
-      
-      updateCardTheme(weatherData.theme);
 
       if (currentUnit === 'C') {
         tempValEl.textContent = `${weatherData.tempC}°C`;
@@ -679,13 +466,11 @@
       }
     }
 
-    // Toggle unit trigger
     unitToggleBtn.addEventListener('click', () => {
       currentUnit = currentUnit === 'C' ? 'F' : 'C';
       renderWeather();
     });
 
-    // Handle incoming search queries
     async function handleSearch(e) {
       e.preventDefault();
       const query = searchInput.value.trim();
@@ -694,7 +479,6 @@
       statusMsg.textContent = "Searching...";
 
       try {
-        // Step 1: Query location metrics
         const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`;
         const geoRes = await fetch(geoUrl);
         const geoData = await geoRes.json();
@@ -707,22 +491,17 @@
         const location = geoData.results[0];
         const { latitude, longitude, name, country_code } = location;
 
-        // Step 2: Query real-time metrics including apparent feel values
         const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,apparent_temperature&timezone=auto`;
         const forecastRes = await fetch(forecastUrl);
         const forecastData = await forecastRes.json();
 
-        const weatherInfo = getWeatherInfo(forecastData.current.weather_code);
-
-        // Step 3: Populate local state variables
         weatherData = {
           location: `${name}, ${country_code}`,
           tempC: Math.round(forecastData.current.temperature_2m),
           feelsLikeC: Math.round(forecastData.current.apparent_temperature),
           humidity: forecastData.current.relative_humidity_2m,
           windSpeed: Math.round(forecastData.current.wind_speed_10m),
-          condition: weatherInfo.label,
-          theme: weatherInfo.theme
+          condition: getWeatherLabel(forecastData.current.weather_code)
         };
 
         statusMsg.textContent = "";
@@ -735,72 +514,26 @@
       }
     }
 
-    // Initialize background state
-    function initBackground() {
-      updatePageBackground(activeConfig.customBgUrl);
-    }
-
-    // Modal navigation actions
     aboutBtn.addEventListener('click', () => {
       aboutModal.style.display = 'flex';
       aboutBtn.classList.add('active');
       homeBtn.classList.remove('active');
-      settingsBtn.classList.remove('active');
     });
 
-    settingsBtn.addEventListener('click', () => {
-      // Pre-fill input with active configuration values
-      customBgInput.value = activeConfig.customBgUrl;
-      
-      settingsModal.style.display = 'flex';
-      settingsBtn.classList.add('active');
-      homeBtn.classList.remove('active');
-      aboutBtn.classList.remove('active');
-    });
-
-    const closeAllModals = () => {
+    const closeModal = () => {
       aboutModal.style.display = 'none';
-      settingsModal.style.display = 'none';
       homeBtn.classList.add('active');
       aboutBtn.classList.remove('active');
-      settingsBtn.classList.remove('active');
     };
 
-    // Settings persistence handler
-    saveSettingsBtn.addEventListener('click', () => {
-      activeConfig.customBgUrl = customBgInput.value.trim() || DEFAULT_CONFIG.customBgUrl;
-
-      // Persist configuration settings in browser memory
-      localStorage.setItem('weather_app_config', JSON.stringify(activeConfig));
-      
-      initBackground();
-      closeAllModals();
-    });
-
-    // Reset settings back to default bg1121.mp4 video file
-    resetSettingsBtn.addEventListener('click', () => {
-      activeConfig = { ...DEFAULT_CONFIG };
-      localStorage.setItem('weather_app_config', JSON.stringify(activeConfig));
-      customBgInput.value = DEFAULT_CONFIG.customBgUrl;
-      
-      initBackground();
-      closeAllModals();
-    });
-
-    aboutModalClose.addEventListener('click', closeAllModals);
-    settingsModalClose.addEventListener('click', closeAllModals);
-
+    modalClose.addEventListener('click', closeModal);
     window.addEventListener('click', (e) => {
-      if (e.target === aboutModal || e.target === settingsModal) {
-        closeAllModals();
-      }
+      if (e.target === aboutModal) closeModal();
     });
 
-    homeBtn.addEventListener('click', closeAllModals);
+    homeBtn.addEventListener('click', closeModal);
     searchForm.addEventListener('submit', handleSearch);
 
-    // Initial render
-    initBackground();
     renderWeather();
   </script>
 </body>
