@@ -375,7 +375,7 @@
       margin-bottom: 14px;
     }
 
-    /* Settings Form Control Styles */
+    /* Settings Control Form Styles */
     .settings-group {
       margin-top: 16px;
       display: flex;
@@ -404,36 +404,35 @@
       border-color: rgba(255, 255, 255, 0.3);
     }
 
-    .settings-checkbox-container {
+    .settings-actions {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 12px;
-      cursor: pointer;
+      gap: 12px;
+      margin-top: 20px;
     }
 
-    .settings-checkbox {
-      width: 16px;
-      height: 16px;
-      accent-color: #ffb74d;
-      cursor: pointer;
-    }
-
-    .save-btn {
-      background: #ffb74d;
-      color: #0b111e;
-      border: none;
-      padding: 10px 20px;
+    .btn {
+      padding: 12px 20px;
       font-weight: 600;
       font-size: 13px;
       border-radius: 12px;
       cursor: pointer;
-      margin-top: 18px;
-      width: 100%;
       transition: opacity 0.2s;
+      flex: 1;
+      border: none;
     }
 
-    .save-btn:hover {
+    .btn-save {
+      background: #ffb74d;
+      color: #0b111e;
+    }
+
+    .btn-reset {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn:hover {
       opacity: 0.9;
     }
 
@@ -546,19 +545,17 @@
     <div class="modal-content">
       <span class="close-btn" id="settings-modal-close">&times;</span>
       <h2>Background Settings</h2>
-      <p>Configure custom backgrounds using direct media links, or toggle automated weather backgrounds.</p>
+      <p>Customize your background by pasting any direct video URL (.mp4) or image URL (.jpg, .png, .webp) below.</p>
       
       <div class="settings-group">
-        <label class="settings-label" for="custom-bg-input">Background URL (Direct Video or Image Link):</label>
+        <label class="settings-label" for="custom-bg-input">Background URL Link:</label>
         <input class="settings-input" type="text" id="custom-bg-input" placeholder="e.g. bg1121.mp4">
       </div>
 
-      <div class="settings-checkbox-container" id="toggle-dynamic-container">
-        <input type="checkbox" class="settings-checkbox" id="dynamic-bg-checkbox">
-        <label class="settings-label" style="cursor: pointer;" for="dynamic-bg-checkbox">Enable automated weather-based backgrounds</label>
+      <div class="settings-actions">
+        <button class="btn btn-reset" id="reset-settings-btn">Reset to Default</button>
+        <button class="btn btn-save" id="save-settings-btn">Save Changes</button>
       </div>
-
-      <button class="save-btn" id="save-settings-btn">Save Changes</button>
     </div>
   </div>
 
@@ -569,29 +566,17 @@
   <script>
     // =========================================================================
     // DEFAULT CONFIGURATION:
-    // If no custom preferences are saved locally, the app loads these options.
+    // If no custom user choices are saved, the code loads this default video file.
     // =========================================================================
     const DEFAULT_CONFIG = {
-      // Disabled by default so 'bg1121.mp4' plays unconditionally until checked.
-      useDynamicWeatherBackgrounds: false,
-
-      // Default URL configured to load your custom background file
-      customBgUrl: 'bg1121.mp4',
-
-      // Backup dynamic weather preview videos
-      weatherBgVideos: {
-        clear: 'https://assets.mixkit.co/videos/preview/mixkit-timelapse-of-clouds-in-a-blue-sky-23841-large.mp4',
-        cloudy: 'https://assets.mixkit.co/videos/preview/mixkit-clouds-moving-fast-in-a-sunset-sky-41618-large.mp4',
-        rainy: 'https://assets.mixkit.co/videos/preview/mixkit-raindrops-hitting-a-metal-roof-40058-large.mp4',
-        snowy: 'https://assets.mixkit.co/videos/preview/mixkit-snow-falling-on-a-spruce-forest-track-42171-large.mp4',
-        thunderstorm: 'https://assets.mixkit.co/videos/preview/mixkit-lightning-strikes-in-the-night-sky-40344-large.mp4'
-      }
+      // Default URL configured to run your video file in the background
+      customBgUrl: 'bg1121.mp4'
     };
 
-    // Load active settings from LocalStorage or fall back to defaults
+    // Load saved settings from LocalStorage or fall back to default
     let activeConfig = JSON.parse(localStorage.getItem('weather_app_config')) || { ...DEFAULT_CONFIG };
 
-    // Map weather codes to layout names and matching themes
+    // Map weather codes to layout names and matching card themes
     function getWeatherInfo(code) {
       if (code === 0) return { label: "Clear Sky", theme: "clear" };
       if ([1, 2].includes(code)) return { label: "Partly Cloudy", theme: "cloudy" };
@@ -633,8 +618,8 @@
     const settingsModal = document.getElementById('settings-modal');
     const settingsModalClose = document.getElementById('settings-modal-close');
     const customBgInput = document.getElementById('custom-bg-input');
-    const dynamicBgCheckbox = document.getElementById('dynamic-bg-checkbox');
     const saveSettingsBtn = document.getElementById('save-settings-btn');
+    const resetSettingsBtn = document.getElementById('reset-settings-btn');
 
     // Central state values stored in Metric standards (Celsius)
     let currentUnit = 'C';
@@ -648,7 +633,7 @@
       theme: "cloudy"
     };
 
-    // Shifting background media files
+    // Shifting background media files between Image and Video
     function updatePageBackground(url) {
       if (!url) return;
 
@@ -672,11 +657,6 @@
     // Handles the card's theme class updates
     function updateCardTheme(themeClass) {
       weatherCard.className = `weather-card theme-${themeClass}`;
-      
-      if (activeConfig.useDynamicWeatherBackgrounds) {
-        const dynamicVideoUrl = activeConfig.weatherBgVideos[themeClass] || activeConfig.weatherBgVideos.cloudy;
-        updatePageBackground(dynamicVideoUrl);
-      }
     }
 
     // Rendering method
@@ -757,9 +737,7 @@
 
     // Initialize background state
     function initBackground() {
-      if (!activeConfig.useDynamicWeatherBackgrounds) {
-        updatePageBackground(activeConfig.customBgUrl);
-      }
+      updatePageBackground(activeConfig.customBgUrl);
     }
 
     // Modal navigation actions
@@ -771,9 +749,8 @@
     });
 
     settingsBtn.addEventListener('click', () => {
-      // Pre-fill inputs with current configuration values
+      // Pre-fill input with active configuration values
       customBgInput.value = activeConfig.customBgUrl;
-      dynamicBgCheckbox.checked = activeConfig.useDynamicWeatherBackgrounds;
       
       settingsModal.style.display = 'flex';
       settingsBtn.classList.add('active');
@@ -792,13 +769,21 @@
     // Settings persistence handler
     saveSettingsBtn.addEventListener('click', () => {
       activeConfig.customBgUrl = customBgInput.value.trim() || DEFAULT_CONFIG.customBgUrl;
-      activeConfig.useDynamicWeatherBackgrounds = dynamicBgCheckbox.checked;
 
-      // Persist configuration settings in the browser
+      // Persist configuration settings in browser memory
       localStorage.setItem('weather_app_config', JSON.stringify(activeConfig));
       
       initBackground();
-      renderWeather();
+      closeAllModals();
+    });
+
+    // Reset settings back to default bg1121.mp4 video file
+    resetSettingsBtn.addEventListener('click', () => {
+      activeConfig = { ...DEFAULT_CONFIG };
+      localStorage.setItem('weather_app_config', JSON.stringify(activeConfig));
+      customBgInput.value = DEFAULT_CONFIG.customBgUrl;
+      
+      initBackground();
       closeAllModals();
     });
 
