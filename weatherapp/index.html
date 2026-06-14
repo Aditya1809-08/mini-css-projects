@@ -7,12 +7,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-    :root {
-      --text-white: #ffffff;
-      --text-muted: rgba(255, 255, 255, 0.7);
-      --accent-warm: #ffb74d;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -21,24 +15,30 @@
     }
 
     body {
+      background-color: #0b111e;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      color: var(--text-white);
+      color: #ffffff;
       overflow-x: hidden;
-      position: relative;
+      transition: background-image 0.8s ease-in-out;
     }
 
-    /* ── Video Background ── */
-    #bg-video {
+    /* Soft dimming overlay to guarantee contrast for text and cards */
+    body::before {
+      content: "";
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      background: rgba(0, 0, 0, 0.25);
       z-index: -1;
       pointer-events: none;
     }
@@ -46,8 +46,8 @@
     /* Transparent Navigation Bar */
     .header {
       width: 100%;
-      max-width: 1200px;
-      padding: 24px 32px;
+      max-width: 1400px;
+      padding: 32px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -62,13 +62,17 @@
     .nav-btn {
       background: transparent;
       border: none;
-      color: var(--text-white);
+      color: #ffffff;
       font-size: 14px;
       font-weight: 500;
       padding: 6px 18px;
       cursor: pointer;
       border-radius: 20px;
       transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .nav-btn.active {
@@ -78,14 +82,15 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
+    /* Low-Profile Glass Search Container */
     .search-container {
-      width: 280px;
+      width: 320px;
     }
 
     .search-form {
       display: flex;
       align-items: center;
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -95,7 +100,7 @@
     }
 
     .search-form:focus-within {
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 0, 0, 0.45);
       border-color: rgba(255, 255, 255, 0.2);
     }
 
@@ -105,7 +110,7 @@
       background: transparent;
       width: 100%;
       font-size: 13px;
-      color: var(--text-white);
+      color: #ffffff;
     }
 
     .search-input::placeholder {
@@ -122,7 +127,7 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      color: var(--text-white);
+      color: #ffffff;
       transition: background 0.2s ease;
     }
 
@@ -139,31 +144,73 @@
       padding-right: 12px;
     }
 
+    /* Main Content Area */
     .main-content {
       flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
       width: 100%;
-      padding: 20px;
+      padding: 40px 20px;
     }
 
+    /* Glassmorphic Weather Display Card */
     .weather-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(40px) saturate(135%);
-      -webkit-backdrop-filter: blur(40px) saturate(135%);
-      width: 100%;
-      max-width: 520px;
-      border-radius: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 32px 36px;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3), 
-                  inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      width: 90%;
+      max-width: 620px;
+      border-radius: 32px;
+      padding: 48px 52px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 290px;
+      min-height: 380px;
       animation: zoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(50px) saturate(140%);
+      -webkit-backdrop-filter: blur(50px) saturate(140%);
+      transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                  border-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                  box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Glass styles designed to blend with the specific weather background */
+    .theme-clear {
+      background: linear-gradient(135deg, rgba(255, 179, 0, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
+                  0 0 40px rgba(255, 165, 0, 0.15),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .theme-cloudy {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
+                  0 0 30px rgba(255, 255, 255, 0.05),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .theme-rainy {
+      background: linear-gradient(135deg, rgba(0, 191, 255, 0.08) 0%, rgba(0, 0, 50, 0.15) 100%);
+      border: 1px solid rgba(0, 191, 255, 0.3);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
+                  0 0 40px rgba(0, 191, 255, 0.15),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .theme-snowy {
+      background: linear-gradient(135deg, rgba(224, 247, 250, 0.15) 0%, rgba(255, 255, 255, 0.04) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45), 
+                  0 0 40px rgba(224, 247, 250, 0.15),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .theme-thunderstorm {
+      background: linear-gradient(135deg, rgba(147, 112, 219, 0.12) 0%, rgba(10, 10, 30, 0.3) 100%);
+      border: 1px solid rgba(147, 112, 219, 0.35);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), 
+                  0 0 45px rgba(147, 112, 219, 0.22),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
 
     @keyframes zoomIn {
@@ -171,6 +218,7 @@
       to { opacity: 1; transform: scale(1); }
     }
 
+    /* Card Top Elements */
     .card-header {
       display: flex;
       justify-content: space-between;
@@ -181,24 +229,25 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 500;
       letter-spacing: 0.3px;
     }
 
     .pin-icon {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
     }
 
+    /* Unit toggle button */
     .unit-toggle {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 6px 14px;
+      padding: 6px 16px;
       border-radius: 16px;
       font-size: 11px;
       font-weight: 500;
-      color: var(--text-white);
+      color: #ffffff;
       cursor: pointer;
       transition: all 0.2s ease;
       backdrop-filter: blur(5px);
@@ -209,29 +258,31 @@
       border-color: rgba(255, 255, 255, 0.25);
     }
 
+    /* Center Info */
     .card-center {
       text-align: center;
-      margin: 18px 0;
+      margin: 24px 0;
     }
 
     .temp-value {
-      font-size: 80px;
+      font-size: 96px;
       font-weight: 600;
       line-height: 1;
       letter-spacing: -2px;
     }
 
     .weather-status {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 400;
-      margin-top: 8px;
+      margin-top: 10px;
       letter-spacing: 0.4px;
     }
 
+    /* Bottom Information Grid */
     .card-footer {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      padding-top: 18px;
+      padding-top: 24px;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
@@ -243,22 +294,23 @@
     }
 
     .stat-label {
-      font-size: 12px;
-      color: var(--text-muted);
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
       font-weight: 400;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .stat-value {
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 500;
-      color: var(--text-white);
+      color: #ffffff;
     }
 
     .stat-item.feels-like .stat-value {
-      color: var(--accent-warm);
+      color: #ffb74d;
     }
 
+    /* Modals */
     .modal {
       display: none;
       position: fixed;
@@ -291,11 +343,11 @@
       right: 20px;
       font-size: 24px;
       cursor: pointer;
-      color: var(--text-muted);
+      color: rgba(255, 255, 255, 0.7);
     }
 
     .close-btn:hover {
-      color: var(--text-white);
+      color: #ffffff;
     }
 
     .modal h2 {
@@ -306,12 +358,12 @@
     .modal p {
       font-size: 13.5px;
       line-height: 1.6;
-      color: var(--text-muted);
+      color: rgba(255, 255, 255, 0.7);
       margin-bottom: 10px;
     }
 
     .footer {
-      padding: 16px;
+      padding: 24px;
       font-size: 11px;
       color: rgba(255, 255, 255, 0.35);
       letter-spacing: 0.5px;
@@ -327,7 +379,7 @@
         width: 100%;
       }
       .weather-card {
-        padding: 24px;
+        padding: 32px 24px;
         min-height: auto;
       }
       .temp-value {
@@ -337,11 +389,6 @@
   </style>
 </head>
 <body>
-
-  <!-- ── Video Background ── -->
-  <video id="bg-video" autoplay muted loop playsinline>
-    <source src="bg1121.mp4" type="video/mp4">
-  </video>
 
   <header class="header">
     <nav class="nav">
@@ -363,7 +410,9 @@
   </header>
 
   <main class="main-content">
-    <div class="weather-card">
+    <div class="weather-card theme-cloudy" id="weather-card">
+      
+      <!-- Top Section -->
       <div class="card-header">
         <div class="location-container">
           <svg class="pin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -375,11 +424,13 @@
         <button class="unit-toggle" id="unit-toggle-btn">°C / °F</button>
       </div>
 
+      <!-- Center Section -->
       <div class="card-center">
         <div class="temp-value" id="temp-val">22°C</div>
         <div class="weather-status" id="weather-status">Partly Cloudy</div>
       </div>
 
+      <!-- Bottom Stats Section -->
       <div class="card-footer">
         <div class="stat-item">
           <span class="stat-label">Humidity</span>
@@ -394,12 +445,14 @@
           <span class="stat-value" id="feels-like-val">24°C</span>
         </div>
       </div>
+
     </div>
   </main>
 
+  <!-- About Modal -->
   <div class="modal" id="about-modal">
     <div class="modal-content">
-      <span class="close-btn" id="modal-close">&times;</span>
+      <span class="close-btn" id="about-modal-close">&times;</span>
       <h2>About Premium Weather</h2>
       <p>This customized interface presents weather information utilizing precise geolocation services combined with real-time open weather statistics.</p>
       <p>The unit switch is calculated mathematically on user demand, allowing for a clean visual representation.</p>
@@ -411,34 +464,53 @@
   </footer>
 
   <script>
-    function getWeatherLabel(code) {
-      if (code === 0) return "Clear Sky";
-      if ([1, 2].includes(code)) return "Partly Cloudy";
-      if (code === 3) return "Overcast";
-      if ([45, 48].includes(code)) return "Foggy";
-      if ([51, 53, 55, 56, 57].includes(code)) return "Light Drizzle";
-      if ([61, 63, 65, 66, 67].includes(code)) return "Rainy";
-      if ([71, 73, 75, 77].includes(code)) return "Snowy";
-      if ([80, 81, 82].includes(code)) return "Rain Showers";
-      if ([95, 96, 99].includes(code)) return "Thunderstorm";
-      return "Partly Cloudy";
+    // =========================================================================
+    // DYNAMIC BACKGROUND IMAGES:
+    // Curated high-resolution landscapes mapping directly to forecast states
+    // =========================================================================
+    const WEATHER_BACKGROUNDS = {
+      clear: 'https://images.unsplash.com/photo-1541675154750-0444c7d51e8e?auto=format&fit=crop&w=1920&q=80',
+      cloudy: 'https://images.unsplash.com/photo-1499346030926-9a72daac6c63?auto=format&fit=crop&w=1920&q=80',
+      rainy: 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=1920&q=80',
+      snowy: 'https://images.unsplash.com/photo-1482531007909-192ac913980a?auto=format&fit=crop&w=1920&q=80',
+      thunderstorm: 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=1920&q=80'
+    };
+
+    // Map weather codes to layout names and matching card themes
+    function getWeatherInfo(code) {
+      if (code === 0) return { label: "Clear Sky", theme: "clear" };
+      if ([1, 2].includes(code)) return { label: "Partly Cloudy", theme: "cloudy" };
+      if (code === 3) return { label: "Overcast", theme: "cloudy" };
+      if ([45, 48].includes(code)) return { label: "Foggy", theme: "cloudy" };
+      if ([51, 53, 55, 56, 57].includes(code)) return { label: "Light Drizzle", theme: "rainy" };
+      if ([61, 63, 65, 66, 67].includes(code)) return { label: "Rainy", theme: "rainy" };
+      if ([71, 73, 75, 77].includes(code)) return { label: "Snowy", theme: "snowy" };
+      if ([80, 81, 82].includes(code)) return { label: "Rain Showers", theme: "rainy" };
+      if ([95, 96, 99].includes(code)) return { label: "Thunderstorm", theme: "thunderstorm" };
+      return { label: "Partly Cloudy", theme: "cloudy" };
     }
 
+    // UI elements references
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
     const statusMsg = document.getElementById('status-msg');
+
+    const weatherCard = document.getElementById('weather-card');
     const locNameEl = document.getElementById('loc-name');
     const tempValEl = document.getElementById('temp-val');
     const weatherStatusEl = document.getElementById('weather-status');
+
     const humidityValEl = document.getElementById('humidity-val');
     const windValEl = document.getElementById('wind-val');
     const feelsLikeValEl = document.getElementById('feels-like-val');
     const unitToggleBtn = document.getElementById('unit-toggle-btn');
+
     const aboutBtn = document.getElementById('about-btn');
     const homeBtn = document.getElementById('home-btn');
     const aboutModal = document.getElementById('about-modal');
-    const modalClose = document.getElementById('modal-close');
+    const aboutModalClose = document.getElementById('about-modal-close');
 
+    // Central state values stored in Metric standards (Celsius)
     let currentUnit = 'C';
     let weatherData = {
       location: "New York",
@@ -446,14 +518,31 @@
       feelsLikeC: 24,
       humidity: 55,
       windSpeed: 15,
-      condition: "Partly Cloudy"
+      condition: "Partly Cloudy",
+      theme: "cloudy"
     };
 
+    // Smoothly updates page background image
+    function updatePageBackground(themeClass) {
+      const bgUrl = WEATHER_BACKGROUNDS[themeClass] || WEATHER_BACKGROUNDS.cloudy;
+      document.body.style.backgroundImage = `url('${bgUrl}')`;
+    }
+
+    // Handles theme shifting for the card and background
+    function updateTheme(themeClass) {
+      weatherCard.className = `weather-card theme-${themeClass}`;
+      updatePageBackground(themeClass);
+    }
+
+    // Rendering method
     function renderWeather() {
       locNameEl.textContent = weatherData.location;
       weatherStatusEl.textContent = weatherData.condition;
       humidityValEl.textContent = `${weatherData.humidity}%`;
       windValEl.textContent = `${weatherData.windSpeed} km/h`;
+      
+      // Synchronize overall interface presentation with active forecast status
+      updateTheme(weatherData.theme);
 
       if (currentUnit === 'C') {
         tempValEl.textContent = `${weatherData.tempC}°C`;
@@ -466,11 +555,13 @@
       }
     }
 
+    // Toggle unit trigger
     unitToggleBtn.addEventListener('click', () => {
       currentUnit = currentUnit === 'C' ? 'F' : 'C';
       renderWeather();
     });
 
+    // Handle incoming search queries
     async function handleSearch(e) {
       e.preventDefault();
       const query = searchInput.value.trim();
@@ -479,6 +570,7 @@
       statusMsg.textContent = "Searching...";
 
       try {
+        // Step 1: Query location coordinates
         const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`;
         const geoRes = await fetch(geoUrl);
         const geoData = await geoRes.json();
@@ -491,17 +583,22 @@
         const location = geoData.results[0];
         const { latitude, longitude, name, country_code } = location;
 
+        // Step 2: Query weather metrics based on those coordinates
         const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,apparent_temperature&timezone=auto`;
         const forecastRes = await fetch(forecastUrl);
         const forecastData = await forecastRes.json();
 
+        const weatherInfo = getWeatherInfo(forecastData.current.weather_code);
+
+        // Step 3: Populate local state variables
         weatherData = {
           location: `${name}, ${country_code}`,
           tempC: Math.round(forecastData.current.temperature_2m),
           feelsLikeC: Math.round(forecastData.current.apparent_temperature),
           humidity: forecastData.current.relative_humidity_2m,
           windSpeed: Math.round(forecastData.current.wind_speed_10m),
-          condition: getWeatherLabel(forecastData.current.weather_code)
+          condition: weatherInfo.label,
+          theme: weatherInfo.theme
         };
 
         statusMsg.textContent = "";
@@ -514,26 +611,30 @@
       }
     }
 
-    aboutBtn.addEventListener('click', () => {
-      aboutModal.style.display = 'flex';
-      aboutBtn.classList.add('active');
-      homeBtn.classList.remove('active');
-    });
-
+    // Modal close controls
     const closeModal = () => {
       aboutModal.style.display = 'none';
       homeBtn.classList.add('active');
       aboutBtn.classList.remove('active');
     };
 
-    modalClose.addEventListener('click', closeModal);
+    aboutBtn.addEventListener('click', () => {
+      aboutModal.style.display = 'flex';
+      aboutBtn.classList.add('active');
+      homeBtn.classList.remove('active');
+    });
+
+    aboutModalClose.addEventListener('click', closeModal);
     window.addEventListener('click', (e) => {
-      if (e.target === aboutModal) closeModal();
+      if (e.target === aboutModal) {
+        closeModal();
+      }
     });
 
     homeBtn.addEventListener('click', closeModal);
     searchForm.addEventListener('submit', handleSearch);
 
+    // Initial render
     renderWeather();
   </script>
 </body>
