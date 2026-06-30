@@ -23,7 +23,7 @@
 
     /* HEADER */
     .site-header {
-      max-width: 1100px; width: 100%; margin: 0 auto;
+      max-width: 1200px; width: 100%; margin: 0 auto;
       display: flex; justify-content: space-between; align-items: center;
       font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
       color: #888; padding-bottom: 16px;
@@ -33,20 +33,21 @@
 
     /* MAIN */
     main {
-      max-width: 1100px; width: 100%; margin: auto;
-      display: grid; grid-template-columns: 1fr 1fr;
+      max-width: 1200px; width: 100%; margin: auto;
+      display: grid; grid-template-columns: 1.1fr 1fr;
       gap: 48px; align-items: flex-start; padding: 32px 0; /* Aligns to top grid boundaries */
     }
 
     /* PROFILE CARD & WRAPPER */
     .profile-card-wrapper {
-      display: flex; 
-      justify-content: center; 
+      display: flex;
+      justify-content: center;
       width: 100%;
+      perspective: 1200px; /* enables the 3D tilt on the card inside */
     }
 
     .profile-card {
-      width: 100%; max-width: 380px;
+      width: 100%; max-width: 460px;
       margin: 0 auto;
       border-radius: 48px;
       overflow: hidden;
@@ -54,13 +55,20 @@
       box-shadow: 0 24px 50px rgba(0,0,0,0.06);
       border: 1px solid rgba(255,255,255,0.6);
       position: relative;
-      transition: all 0.4s;
+      transition: transform 0.15s ease-out, box-shadow 0.3s ease;
       display: flex;
       flex-direction: column;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .profile-card.is-hovering {
+      box-shadow: 0 32px 70px rgba(0,0,0,0.16);
+      transition: box-shadow 0.3s ease;
     }
 
     .banner {
-      height: 200px;
+      height: 230px;
       position: relative;
       transition: background 0.4s;
       background-size: cover;
@@ -71,16 +79,16 @@
     .banner-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.1); }
 
     .overlap-row {
-      position: relative; height: 0; padding: 0 32px; z-index: 20;
+      position: relative; height: 0; padding: 0 36px; z-index: 20;
     }
 
     .avatar {
-      position: absolute; left: 32px; top: -40px;
-      width: 80px; height: 80px;
+      position: absolute; left: 36px; top: -46px;
+      width: 92px; height: 92px;
       border-radius: 50%; border: 6px solid white;
       background: #111; overflow: hidden;
       display: flex; align-items: center; justify-content: center;
-      font-size: 24px; font-weight: 800; color: white;
+      font-size: 26px; font-weight: 800; color: white;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       transition: all 0.3s;
     }
@@ -88,8 +96,8 @@
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
     .follow-btn {
-      position: absolute; right: 32px; top: -22px;
-      padding: 10px 24px; border-radius: 99px;
+      position: absolute; right: 36px; top: -24px;
+      padding: 11px 26px; border-radius: 99px;
       font-size: 12px; font-weight: 700; letter-spacing: 0.03em;
       cursor: pointer; border: none;
       background: #111; color: white;
@@ -100,39 +108,39 @@
     .follow-btn.following { background: #f0f0f0; color: #1a1a1a; }
     .follow-btn:active { transform: scale(0.97); }
 
-    .card-body { 
-      background: white; 
-      padding: 56px 32px 32px; 
+    .card-body {
+      background: white;
+      padding: 62px 36px 36px;
     }
 
     .card-name {
       display: flex; align-items: center; gap: 6px;
-      font-size: 20px; font-weight: 800; color: #111;
+      font-size: 22px; font-weight: 800; color: #111;
       margin-bottom: 2px;
     }
 
     .verified {
-      width: 20px; height: 20px;
+      width: 21px; height: 21px;
       background: #1d9bf0; border-radius: 50%;
       display: inline-flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
 
-    .verified svg { width: 12px; height: 12px; fill: white; }
+    .verified svg { width: 13px; height: 13px; fill: white; }
 
-    .card-handle { font-size: 12px; color: #888; margin-bottom: 12px; font-family: monospace; }
+    .card-handle { font-size: 13px; color: #888; margin-bottom: 14px; font-family: monospace; }
 
     .card-bio {
-      font-size: 12px; color: #555; line-height: 1.6;
-      margin-bottom: 20px; min-height: 58px;
+      font-size: 13px; color: #555; line-height: 1.65;
+      margin-bottom: 22px; min-height: 64px;
     }
 
     .card-stats {
-      display: flex; gap: 20px;
-      border-top: 1px solid #f0f0f0; padding-top: 16px;
+      display: flex; gap: 22px;
+      border-top: 1px solid #f0f0f0; padding-top: 18px;
     }
 
-    .stat-num { font-size: 15px; font-weight: 700; color: #111; }
+    .stat-num { font-size: 16px; font-weight: 700; color: #111; }
     .stat-lbl { font-size: 11px; color: #999; }
 
     /* ==========================================
@@ -143,13 +151,13 @@
         margin-top: 54px; /* Matches the vertical space of the right side header text */
       }
       .profile-card {
-        height: 478px; /* Matches the exact total height of the 5 platform cards */
+        height: 540px; /* Matches the exact total height of the 5 platform cards */
       }
       .card-body {
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        padding: 56px 32px 28px;
+        padding: 62px 36px 32px;
       }
       .card-stats {
         margin-top: auto; /* Solid bottom alignment anchor */
@@ -222,7 +230,7 @@
 
     /* FOOTER */
     .site-footer {
-      max-width: 1100px; width: 100%; margin: 0 auto;
+      max-width: 1200px; width: 100%; margin: 0 auto;
       display: flex; justify-content: space-between; align-items: center;
       font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
       color: #aaa; padding-top: 16px;
@@ -232,6 +240,7 @@
     @media (max-width: 768px) {
       main { grid-template-columns: 1fr; gap: 32px; }
       .profile-card { margin: 0 auto; }
+      .profile-card-wrapper { perspective: none; }
     }
   </style>
 </head>
@@ -245,8 +254,8 @@
 
   <main>
     <!-- PROFILE CARD (Centered and adjusted vertical offset for desktop top alignment) -->
-    <div class="profile-card-wrapper">
-      <div class="profile-card">
+    <div class="profile-card-wrapper" id="cardWrapper">
+      <div class="profile-card" id="profileCard">
         <div class="banner" id="banner">
           <div class="banner-overlay"></div>
         </div>
@@ -292,7 +301,7 @@
         url: 'https://github.com/Aditya1809-08',
         bio: 'Future dev in the making 🖥️ | 12th grader | Learning HTML & CSS in public | Building one commit at a time 🚀',
         following: 7, followers: 0,
-        avatarUrl: 'wz18DY7-_400x400.jpg',   
+        avatarUrl: 'wz18DY7-_400x400.jpg',
         bannerUrl: 'github.png',
         bannerColor: 'linear-gradient(135deg,#1a2e1a,#4a7c3f)',
         label: 'GitHub',
@@ -306,7 +315,7 @@
         bio: '12th grader exploring tech & dev 🚀 | Learning HTML & CSS in public | From Gorakhpur 🇮🇳 | Building my digital presence one commit at a time ✨',
         following: 5, followers: 0,
         avatarUrl: 'wz18DY7-_400x400.jpg',
-        bannerUrl: 'X.banner.png',   
+        bannerUrl: 'X.banner.png',
         bannerColor: 'linear-gradient(135deg,#000,#222)',
         label: 'X',
         iconColor: '#000',
@@ -478,6 +487,96 @@
 
     buildPlatformList();
     updateCard();
+
+    /* ============================================
+       CURSOR-REACTIVE TILT + MAGNETIC MOVEMENT
+       Card tilts in 3D toward the cursor and gently
+       shifts position toward it, like it's being
+       pulled. Resets smoothly when the mouse leaves.
+       ============================================ */
+    (function initCardTilt() {
+      const wrapper = document.getElementById('cardWrapper');
+      const card = document.getElementById('profileCard');
+
+      const MAX_TILT = 10;      // degrees of rotation at the edge of the card
+      const MAX_LIFT = 10;      // px the card "floats" toward the cursor
+      const MAX_SCALE = 1.025;  // subtle scale-up while hovering
+
+      let rafId = null;
+      let targetX = 0, targetY = 0; // -1 to 1 range, relative to card center
+      let currentX = 0, currentY = 0;
+
+      function applyTransform() {
+        // Smoothly ease current values toward target values (magnetic feel)
+        currentX += (targetX - currentX) * 0.12;
+        currentY += (targetY - currentY) * 0.12;
+
+        const rotateY = currentX * MAX_TILT;       // left/right tilt
+        const rotateX = -currentY * MAX_TILT;      // up/down tilt
+        const liftX = currentX * MAX_LIFT;
+        const liftY = currentY * MAX_LIFT;
+
+        card.style.transform =
+          `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) ` +
+          `translate3d(${liftX}px, ${liftY}px, 0) scale(${1 + (Math.abs(currentX) + Math.abs(currentY)) * (MAX_SCALE - 1)})`;
+
+        if (Math.abs(targetX - currentX) > 0.001 || Math.abs(targetY - currentY) > 0.001) {
+          rafId = requestAnimationFrame(applyTransform);
+        } else {
+          rafId = null;
+        }
+      }
+
+      function startLoop() {
+        if (!rafId) rafId = requestAnimationFrame(applyTransform);
+      }
+
+      wrapper.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+
+        // Normalize cursor offset from card center to a -1..1 range,
+        // using the wrapper's size so the effect feels reactive even
+        // when the cursor is near but not directly over the card.
+        const wrapRect = wrapper.getBoundingClientRect();
+        const dx = (e.clientX - cx) / (wrapRect.width / 2);
+        const dy = (e.clientY - cy) / (wrapRect.height / 2);
+
+        targetX = Math.max(-1, Math.min(1, dx));
+        targetY = Math.max(-1, Math.min(1, dy));
+
+        card.classList.add('is-hovering');
+        startLoop();
+      });
+
+      wrapper.addEventListener('mouseleave', () => {
+        targetX = 0;
+        targetY = 0;
+        card.classList.remove('is-hovering');
+        startLoop();
+      });
+
+      // Touch support: a light tilt based on touch position, reset on release
+      wrapper.addEventListener('touchmove', (e) => {
+        const touch = e.touches[0];
+        const rect = card.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const wrapRect = wrapper.getBoundingClientRect();
+        targetX = Math.max(-1, Math.min(1, (touch.clientX - cx) / (wrapRect.width / 2)));
+        targetY = Math.max(-1, Math.min(1, (touch.clientY - cy) / (wrapRect.height / 2)));
+        card.classList.add('is-hovering');
+        startLoop();
+      }, { passive: true });
+
+      wrapper.addEventListener('touchend', () => {
+        targetX = 0;
+        targetY = 0;
+        card.classList.remove('is-hovering');
+        startLoop();
+      });
+    })();
   </script>
 
 </body>
