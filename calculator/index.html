@@ -1,820 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sleek Glassmorphic Calculator & History</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            user-select: none;
-        }
+<meta charset="UTF-8">
+<title>Calculator</title>
+<style>
+  * { box-sizing: border-box; }
 
-        :root {
-            --text-primary: #1d2d3a;
-            --text-secondary: #506275;
-            --bg-color: #dbe6f2;
-            --glass-card-light: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.15) 100%);
-            --glass-card-dark: linear-gradient(135deg, rgba(25, 33, 44, 0.65) 0%, rgba(10, 14, 20, 0.75) 100%);
-            --border-light: rgba(255, 255, 255, 0.5);
-            --border-dark: rgba(255, 255, 255, 0.08);
-            --btn-glass-light: rgba(255, 255, 255, 0.32);
-            --btn-glass-dark: rgba(255, 255, 255, 0.06);
-            --history-hover-light: rgba(255, 255, 255, 0.4);
-            --history-hover-dark: rgba(255, 255, 255, 0.08);
-        }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(160deg, #05070d 0%, #0d1220 30%, #1b2a45 65%, #2f4a6b 100%);
+    padding: 32px 16px;
+  }
 
-        [data-theme="dark"] {
-            --text-primary: #ffffff;
-            --text-secondary: #8fa0b0;
-            --bg-color: #0b1116;
-        }
+  .phone {
+    width: 340px;
+    background: linear-gradient(180deg, #05060a 0%, #0b1120 55%, #16223a 100%);
+    border-radius: 44px;
+    padding: 18px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+  }
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--bg-color);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            padding: 40px 20px;
-            overflow-x: hidden;
-            transition: background-color 0.3s ease;
-        }
+  .status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #f4f6fa;
+  }
 
-        /* Top Theme Toggle */
-        .controls {
-            margin-bottom: 25px;
-            z-index: 10;
-        }
+  .status .icons { display: flex; gap: 5px; align-items: center; }
+  .status .icons span { width: 4px; height: 10px; background: #f4f6fa; border-radius: 1px; display: inline-block; }
 
-        .toggle-btn {
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            color: #2c3e50;
-            padding: 10px 24px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s ease;
-        }
+  .card {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 28px;
+    padding: 22px 20px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
 
-        .toggle-btn:hover {
-            transform: translateY(-1px);
-            background: rgba(255, 255, 255, 0.65);
-        }
+  .label {
+    font-size: 13px;
+    color: #8ea0bd;
+    font-weight: 500;
+    margin: 0 0 6px;
+  }
 
-        /* ==========================================
-           WEB CORE LAYOUT CONTAINER
-           ========================================== */
-        .web-layout {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 60px;
-            width: 100%;
-            max-width: 1100px;
-            z-index: 2;
-        }
+  .display {
+    text-align: right;
+    padding: 4px 4px 18px;
+    word-break: break-all;
+  }
 
-        /* Common Glassmorphic Card Settings */
-        .glass-panel {
-            backdrop-filter: blur(40px) saturate(210%);
-            -webkit-backdrop-filter: blur(40px) saturate(210%);
-            border-radius: 46px;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+  .expression {
+    font-size: 15px;
+    color: #7f92b0;
+    min-height: 20px;
+    font-weight: 500;
+  }
 
-        /* ==========================================
-           LEFT PANEL: CALCULATION HISTORY
-           ========================================== */
-        .history-panel {
-            width: 380px;
-            height: 520px; 
-            padding: 35px 28px;
-            justify-content: flex-start;
-        }
+  .result {
+    font-size: 40px;
+    font-weight: 600;
+    color: #f4f6fa;
+    line-height: 1.15;
+    margin-top: 2px;
+  }
 
-        .history-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 25px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-        }
+  .pad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
 
-        .history-header h2 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
+  button {
+    border: none;
+    font-size: 19px;
+    font-weight: 500;
+    border-radius: 18px;
+    height: 60px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.06s ease, filter 0.15s ease;
+    color: #f4f6fa;
+  }
 
-        .clear-history-btn {
-            background: none;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 6px 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-            transition: all 0.2s ease;
-        }
+  button:active { transform: scale(0.94); }
 
-        .clear-history-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-        }
+  .num {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .num:hover { background: rgba(255, 255, 255, 0.16); }
 
-        /* Scrolling Area */
-        .history-list {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding-right: 5px;
-        }
+  .op {
+    background: rgba(111, 168, 186, 0.2);
+    color: #bcd6e6;
+  }
+  .op:hover { background: rgba(111, 168, 186, 0.32); }
 
-        /* Entry Elements */
-        .history-item {
-            padding: 12px 16px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.15s ease;
-            text-align: right;
-        }
+  .op.active {
+    background: #f4f6fa;
+    color: #0b1120;
+  }
 
-        .history-item:hover {
-            transform: translateY(-2px);
-        }
+  .fn {
+    background: rgba(255, 255, 255, 0.06);
+    color: #9fb0c8;
+    font-size: 17px;
+  }
+  .fn:hover { background: rgba(255, 255, 255, 0.12); }
 
-        .history-item .hist-expr {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-            letter-spacing: 0.5px;
-        }
+  .equals {
+    background: #f4f6fa;
+    color: #0b1120;
+    grid-column: span 2;
+  }
+  .equals:hover { filter: brightness(0.92); }
 
-        .history-item .hist-res {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-        }
-
-        .empty-history-text {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            text-align: center;
-            margin: auto;
-            opacity: 0.7;
-        }
-
-        /* Styled scrollbars mimicking Big Sur OS UI */
-        .history-list::-webkit-scrollbar {
-            width: 5px;
-        }
-        .history-list::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .history-list::-webkit-scrollbar-thumb {
-            background: rgba(120, 120, 120, 0.2);
-            border-radius: 10px;
-        }
-        .history-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(120, 120, 120, 0.4);
-        }
-
-        /* ==========================================
-           RIGHT PANEL: THE CALCULATOR
-           ========================================== */
-        .artboard {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 550px;
-        }
-
-        .backdrop-circle {
-            position: absolute;
-            width: 520px;
-            height: 520px;
-            background-color: #1073e5; 
-            border-radius: 50%;
-            z-index: 1;
-            box-shadow: 0 15px 45px rgba(16, 115, 229, 0.25);
-            pointer-events: none;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transition: all 0.3s ease;
-        }
-
-        /* Floating background keycaps */
-        .floating-cap {
-            position: absolute;
-            width: 52px;
-            height: 52px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.2rem;
-            font-weight: 600;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .cap-3 { top: 8%; left: -15px; transform: rotate(15deg); animation: drift 6s ease-in-out infinite alternate; }
-        .cap-0 { bottom: 12%; left: -40px; transform: rotate(-12deg); animation: drift 5s ease-in-out infinite alternate-reverse; }
-        .cap-8 { top: 15%; right: -25px; transform: rotate(20deg); animation: drift 7s ease-in-out infinite alternate; }
-
-        @keyframes drift {
-            0% { transform: translateY(0) rotate(var(--rot, 15deg)); }
-            100% { transform: translateY(-15px) rotate(calc(var(--rot, 15deg) + 8deg)); }
-        }
-
-        .calculator-wrapper {
-            position: relative;
-            z-index: 3;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transform-origin: center center;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .calc-card {
-            width: 380px; 
-            height: 680px; 
-            padding: 40px 30px 30px 30px;
-            justify-content: space-between;
-        }
-
-        /* Display Panel */
-        .display {
-            text-align: right;
-            padding: 10px 15px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            min-height: 180px; 
-        }
-
-        .expression {
-            font-size: 1.3rem;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            min-height: 1.8rem;
-            font-weight: 400;
-        }
-
-        .result {
-            font-size: 3.3rem;
-            font-weight: 600;
-            letter-spacing: -1px;
-            min-height: 4rem;
-        }
-
-        /* Grid */
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-
-        .btn {
-            aspect-ratio: 1;
-            border: none;
-            border-radius: 22px;
-            font-size: 1.25rem;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.15s ease;
-        }
-
-        .btn:active {
-            transform: scale(0.93);
-        }
-
-        .btn.pill {
-            border-radius: 28px;
-        }
-
-        .btn.accent-blue {
-            background: linear-gradient(180deg, #1d82f5 0%, #1066cc 100%);
-            color: #ffffff;
-            box-shadow: 
-                0 4px 15px rgba(17, 108, 214, 0.3),
-                inset 0 1px 1px rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        /* ==========================================
-           THEME MODIFICATIONS
-           ========================================== */
-        /* Light Theme Values */
-        .calc-light, .history-light {
-            background: var(--glass-card-light);
-            border: 1px solid var(--border-light);
-            box-shadow: 
-                0 30px 60px rgba(15, 35, 60, 0.1),
-                inset 0 1px 1px rgba(255, 255, 255, 0.4);
-        }
-
-        .calc-light .expression { color: rgba(29, 45, 58, 0.6); }
-        .calc-light .result { color: #1d2d3a; }
-
-        .calc-light .btn {
-            background: var(--btn-glass-light);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: #4b5d6e;
-            box-shadow: 
-                0 4px 10px rgba(0, 0, 0, 0.03),
-                inset 0 1px 1px rgba(255, 255, 255, 0.3);
-        }
-
-        .calc-light .btn:hover { background: rgba(255, 255, 255, 0.45); }
-        .calc-light .btn.num { color: #1e2a38; font-weight: 600; }
-        
-        .history-light .history-item:hover {
-            background-color: var(--history-hover-light);
-        }
-
-        /* Dark Theme Values */
-        .calc-dark, .history-dark {
-            background: var(--glass-card-dark);
-            border: 1px solid var(--border-dark);
-            box-shadow: 
-                0 30px 60px rgba(0, 0, 0, 0.35),
-                inset 0 1px 1px rgba(255, 255, 255, 0.06);
-        }
-
-        .calc-dark .expression { color: #7c8e9f; }
-        .calc-dark .result { color: #ffffff; }
-
-        .calc-dark .btn {
-            background: var(--btn-glass-dark);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: #8fa0b0;
-            box-shadow: 
-                0 4px 10px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0px rgba(255, 255, 255, 0.02);
-        }
-
-        .calc-dark .btn:hover { background: rgba(255, 255, 255, 0.12); }
-        .calc-dark .btn.num { color: #e0e6ed; font-weight: 600; }
-
-        .history-dark .history-item:hover {
-            background-color: var(--history-hover-dark);
-        }
-
-        /* Displays Visibility Map */
-        body[data-active-theme="light"] .calc-dark, 
-        body[data-active-theme="light"] .history-dark {
-            display: none !important;
-        }
-
-        body[data-active-theme="dark"] .calc-light, 
-        body[data-active-theme="dark"] .history-light {
-            display: none !important;
-        }
-
-        /* ==========================================
-           HEIGHT-AWARE RESPONSIVENESS
-           ========================================== */
-        @media (max-height: 820px) {
-            .calculator-wrapper { transform: scale(0.85); }
-            .history-panel { height: 440px; transform: scale(0.9); }
-        }
-
-        @media (max-height: 700px) {
-            .calculator-wrapper { transform: scale(0.7); }
-            .history-panel { height: 380px; transform: scale(0.78); }
-        }
-
-        @media (max-height: 580px) {
-            .calculator-wrapper { transform: scale(0.55); }
-            .history-panel { height: 300px; transform: scale(0.65); }
-        }
-
-        /* ==========================================
-           WIDTH-BASED ADAPTIVE SYSTEM
-           ========================================== */
-        @media (max-width: 950px) {
-            .web-layout {
-                flex-direction: column;
-                gap: 40px;
-            }
-            .floating-cap {
-                display: none; 
-            }
-            .history-panel {
-                width: 380px;
-                height: 380px;
-                transform: scale(1) !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .backdrop-circle {
-                width: 340px;
-                height: 340px;
-            }
-            .calculator-wrapper {
-                transform: scale(1) !important; 
-            }
-            .calc-card {
-                width: 310px;
-                height: 570px;
-                padding: 30px 20px 20px 20px;
-                border-radius: 36px;
-            }
-            .display {
-                min-height: 120px;
-            }
-            .result {
-                font-size: 2.3rem;
-            }
-            .keypad {
-                gap: 12px;
-            }
-            .btn {
-                border-radius: 16px;
-                font-size: 1.1rem;
-            }
-            .history-panel {
-                width: 310px;
-                height: 340px;
-                border-radius: 36px;
-                padding: 24px;
-            }
-        }
-    </style>
+  .zero { grid-column: span 2; }
+</style>
 </head>
-<body data-active-theme="light">
+<body>
 
-    <!-- Theme Toggle -->
-    <div class="controls">
-        <button class="toggle-btn" onclick="toggleTheme()" id="toggle-text">
-            Switch to Dark Theme 🌙
-        </button>
+<div class="phone">
+  <div class="status">
+    <span id="clock">19:30</span>
+    <div class="icons"><span></span><span></span><span></span><span style="height:12px"></span></div>
+  </div>
+
+  <div class="card">
+    <p class="label">Calculator</p>
+    <div class="display">
+      <div class="expression" id="expression">&nbsp;</div>
+      <div class="result" id="result">0</div>
     </div>
 
-    <div class="web-layout">
-        
-        <!-- ==========================================
-             LEFT SIDEBAR PANEL: CALCULATION HISTORY
-             ========================================== -->
-        <!-- Light Theme History Panel -->
-        <div class="glass-panel history-panel history-light" id="history-light">
-            <div class="history-header">
-                <h2>History</h2>
-                <button class="clear-history-btn" onclick="clearHistory()">Clear</button>
-            </div>
-            <div class="history-list" id="list-light">
-                <div class="empty-history-text">No calculations recorded.</div>
-            </div>
-        </div>
+    <div class="pad">
+      <button class="fn" data-action="clear">AC</button>
+      <button class="fn" data-action="sign">+/-</button>
+      <button class="fn" data-action="percent">%</button>
+      <button class="op" data-op="÷">÷</button>
 
-        <!-- Dark Theme History Panel -->
-        <div class="glass-panel history-panel history-dark" id="history-dark">
-            <div class="history-header">
-                <h2>History</h2>
-                <button class="clear-history-btn" onclick="clearHistory()">Clear</button>
-            </div>
-            <div class="history-list" id="list-dark">
-                <div class="empty-history-text">No calculations recorded.</div>
-            </div>
-        </div>
+      <button class="num" data-num="7">7</button>
+      <button class="num" data-num="8">8</button>
+      <button class="num" data-num="9">9</button>
+      <button class="op" data-op="×">×</button>
 
-        <!-- ==========================================
-             RIGHT PANEL: THE CALCULATOR
-             ========================================== -->
-        <div class="artboard">
-            <div class="backdrop-circle"></div>
+      <button class="num" data-num="4">4</button>
+      <button class="num" data-num="5">5</button>
+      <button class="num" data-num="6">6</button>
+      <button class="op" data-op="−">−</button>
 
-            <!-- Floating Translucent ambient blocks -->
-            <div class="floating-cap cap-3" style="--rot: 15deg;">3</div>
-            <div class="floating-cap cap-0" style="--rot: -12deg;">0</div>
-            <div class="floating-cap cap-8" style="--rot: 20deg;">8</div>
+      <button class="num" data-num="1">1</button>
+      <button class="num" data-num="2">2</button>
+      <button class="num" data-num="3">3</button>
+      <button class="op" data-op="+">+</button>
 
-            <div class="calculator-wrapper">
-                
-                <!-- LIGHT TEMPLATE DEVICE -->
-                <div class="glass-panel calc-card calc-light" id="calc-light">
-                    <div class="display">
-                        <div class="expression" id="light-expr"></div>
-                        <div class="result" id="light-res">0</div>
-                    </div>
-                    <div class="keypad">
-                        <!-- Row 1 -->
-                        <button class="btn" onclick="pressLight('Ac')">Ac</button>
-                        <button class="btn" onclick="pressLight('±')">±</button>
-                        <button class="btn" onclick="pressLight('%')">%</button>
-                        <button class="btn" onclick="pressLight('%')">%</button>
-                        
-                        <!-- Row 2 -->
-                        <button class="btn" onclick="pressLight('Ac')">Ac</button>
-                        <button class="btn num" onclick="pressLight('8')">8</button>
-                        <button class="btn num" onclick="pressLight('9')">9</button>
-                        <button class="btn" onclick="pressLight('/')">÷</button>
-                        
-                        <!-- Row 3 -->
-                        <button class="btn num" onclick="pressLight('4')">4</button>
-                        <button class="btn num" onclick="pressLight('5')">5</button>
-                        <button class="btn num" onclick="pressLight('6')">6</button>
-                        <button class="btn" onclick="pressLight('*')">×</button>
-                        
-                        <!-- Row 4 -->
-                        <button class="btn num" onclick="pressLight('1')">1</button>
-                        <button class="btn num" onclick="pressLight('2')">2</button>
-                        <button class="btn num" onclick="pressLight('3')">3</button>
-                        <button class="btn" onclick="pressLight('-')">−</button>
-                        
-                        <!-- Row 5 -->
-                        <button class="btn num" onclick="pressLight('0')">0</button>
-                        <button class="btn" onclick="pressLight('.')">.</button>
-                        <button class="btn" onclick="pressLight('+')">+</button>
-                        <button class="btn accent-blue pill" onclick="pressLight('=')">=</button>
-                    </div>
-                </div>
-
-                <!-- DARK TEMPLATE DEVICE -->
-                <div class="glass-panel calc-card calc-dark" id="calc-dark">
-                    <div class="display">
-                        <div class="expression" id="dark-expr"></div>
-                        <div class="result" id="dark-res">0</div>
-                    </div>
-                    <div class="keypad">
-                        <!-- Row 1 -->
-                        <button class="btn" onclick="pressDark('sc')">sc</button>
-                        <button class="btn" onclick="pressDark('sin')">sin</button>
-                        <button class="btn" onclick="pressDark('deg')">deg</button>
-                        <button class="btn" onclick="pressDark('%')">%</button>
-                        
-                        <!-- Row 2 -->
-                        <button class="btn num" onclick="pressDark('7')">7</button>
-                        <button class="btn num" onclick="pressDark('8')">8</button>
-                        <button class="btn num" onclick="pressDark('9')">9</button>
-                        <button class="btn accent-blue" onclick="pressDark('/')">÷</button>
-                        
-                        <!-- Row 3 -->
-                        <button class="btn num" onclick="pressDark('4')">4</button>
-                        <button class="btn num" onclick="pressDark('5')">5</button>
-                        <button class="btn num" onclick="pressDark('6')">6</button>
-                        <button class="btn accent-blue" onclick="pressDark('*')">×</button>
-                        
-                        <!-- Row 4 -->
-                        <button class="btn num" onclick="pressDark('1')">1</button>
-                        <button class="btn num" onclick="pressDark('2')">2</button>
-                        <button class="btn num" onclick="pressDark('3')">3</button>
-                        <button class="btn accent-blue" onclick="pressDark('+')">+</button>
-                        
-                        <!-- Row 5 -->
-                        <button class="btn num" onclick="pressDark('0')">0</button>
-                        <button class="btn" onclick="pressDark('.')">.</button>
-                        <button class="btn" onclick="pressDark('=')">=</button>
-                        <button class="btn accent-blue pill" onclick="pressDark('=')">=</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+      <button class="num zero" data-num="0">0</button>
+      <button class="num" data-action="decimal">.</button>
+      <button class="equals" data-action="equals">=</button>
     </div>
+  </div>
+</div>
 
-    <script>
-        // ==========================================
-        // ⚙️ CUSTOMIZE BACKGROUND IMAGE HERE ⚙️
-        // Path adjusted to your local repository directory configuration
-        const CUSTOM_BACKGROUND_URL = './bg112.png'; 
-        // ==========================================
+<script>
+  const resultEl = document.getElementById('result');
+  const expressionEl = document.getElementById('expression');
 
-        window.addEventListener('DOMContentLoaded', () => {
-            if (CUSTOM_BACKGROUND_URL.trim() !== '') {
-                document.body.style.backgroundImage = `url('${CUSTOM_BACKGROUND_URL}')`;
-            }
-        });
+  let current = '0';
+  let previous = null;
+  let operator = null;
+  let overwrite = true;
 
-        const body = document.body;
-        const toggleText = document.getElementById('toggle-text');
+  function updateDisplay() {
+    resultEl.textContent = formatNumber(current);
+    expressionEl.textContent = previous !== null
+      ? `${formatNumber(previous)} ${operator}`
+      : '\u00A0';
+    document.querySelectorAll('.op').forEach(b =>
+      b.classList.toggle('active', b.dataset.op === operator)
+    );
+  }
 
-        function toggleTheme() {
-            const currentTheme = body.getAttribute('data-active-theme');
-            if (currentTheme === 'light') {
-                body.setAttribute('data-active-theme', 'dark');
-                body.setAttribute('data-theme', 'dark');
-                toggleText.innerHTML = 'Switch to Light Theme ☀️';
-            } else {
-                body.setAttribute('data-active-theme', 'light');
-                body.removeAttribute('data-theme');
-                toggleText.innerHTML = 'Switch to Dark Theme 🌙';
-            }
-        }
+  function formatNumber(numStr) {
+    if (numStr === 'Error') return numStr;
+    const [intPart, decPart] = numStr.split('.');
+    const withCommas = Number(intPart).toLocaleString('en-US');
+    return decPart !== undefined ? `${withCommas}.${decPart}` : withCommas;
+  }
 
-        // Realtime logs storage
-        let historyRecords = [];
+  function inputNum(n) {
+    if (overwrite) {
+      current = n === '.' ? '0.' : n;
+      overwrite = false;
+    } else {
+      if (n === '.' && current.includes('.')) return;
+      current = current === '0' && n !== '.' ? n : current + n;
+    }
+  }
 
-        // Calculator configurations
-        let lightState = { expression: '', isFresh: true };
-        let darkState = { expression: '', isFresh: true };
+  function compute(a, b, op) {
+    a = parseFloat(a);
+    b = parseFloat(b);
+    switch (op) {
+      case '+': return a + b;
+      case '−': return a - b;
+      case '×': return a * b;
+      case '÷': return b === 0 ? NaN : a / b;
+      default: return b;
+    }
+  }
 
-        const lightExprEl = document.getElementById('light-expr');
-        const lightResEl = document.getElementById('light-res');
-        const darkExprEl = document.getElementById('dark-expr');
-        const darkResEl = document.getElementById('dark-res');
+  function setOperator(op) {
+    if (operator && !overwrite) {
+      const res = compute(previous, current, operator);
+      current = isNaN(res) ? 'Error' : String(res);
+    }
+    previous = current;
+    operator = op;
+    overwrite = true;
+  }
 
-        const listLight = document.getElementById('list-light');
-        const listDark = document.getElementById('list-dark');
+  function equals() {
+    if (operator === null) return;
+    const res = compute(previous, current, operator);
+    current = isNaN(res) ? 'Error' : String(res);
+    previous = null;
+    operator = null;
+    overwrite = true;
+  }
 
-        // Light Interface Inputs
-        function pressLight(val) {
-            if (lightState.isFresh) {
-                lightState.expression = '';
-                lightState.isFresh = false;
-            }
-            if (val === 'Ac') {
-                lightState.expression = '';
-                lightExprEl.textContent = '';
-                lightResEl.textContent = '0';
-                return;
-            }
-            if (val === '=') {
-                evaluate(lightState, lightExprEl, lightResEl);
-                return;
-            }
-            if (val === '±') {
-                if (lightState.expression) {
-                    if (lightState.expression.startsWith('-')) {
-                        lightState.expression = lightState.expression.substring(1);
-                    } else {
-                        lightState.expression = '-' + lightState.expression;
-                    }
-                    updateUi(lightState, lightExprEl);
-                }
-                return;
-            }
-            appendInput(lightState, val);
-            updateUi(lightState, lightExprEl);
-        }
+  function clearAll() {
+    current = '0';
+    previous = null;
+    operator = null;
+    overwrite = true;
+  }
 
-        // Dark Interface Inputs
-        function pressDark(val) {
-            if (darkState.isFresh) {
-                darkState.expression = '';
-                darkState.isFresh = false;
-            }
-            if (val === 'sc') {
-                darkState.expression = '';
-                darkExprEl.textContent = '';
-                darkResEl.textContent = '0';
-                return;
-            }
-            if (val === 'sin') {
-                try {
-                    let currentVal = eval(darkState.expression || '0');
-                    let sinVal = Math.sin(currentVal);
-                    darkResEl.textContent = '=' + formatNumber(sinVal);
-                    darkState.expression = sinVal.toString();
-                } catch {
-                    darkResEl.textContent = 'Error';
-                }
-                return;
-            }
-            if (val === '=') {
-                evaluate(darkState, darkExprEl, darkResEl);
-                return;
-            }
-            appendInput(darkState, val);
-            updateUi(darkState, darkExprEl);
-        }
+  document.querySelectorAll('[data-num]').forEach(btn =>
+    btn.addEventListener('click', () => { inputNum(btn.dataset.num); updateDisplay(); })
+  );
 
-        function appendInput(state, val) {
-            const last = state.expression.slice(-1);
-            if (['+', '-', '*', '/', '%', '.'].includes(val) && ['+', '-', '*', '/', '%', '.'].includes(last)) {
-                state.expression = state.expression.slice(0, -1) + val;
-            } else {
-                state.expression += val;
-            }
-        }
+  document.querySelectorAll('[data-op]').forEach(btn =>
+    btn.addEventListener('click', () => { setOperator(btn.dataset.op); updateDisplay(); })
+  );
 
-        function updateUi(state, exprElement) {
-            let formatted = state.expression
-                .replace(/\*/g, '×')
-                .replace(/\//g, '÷')
-                .replace(/\+/g, '+')
-                .replace(/\-/g, '−');
-            exprElement.textContent = formatted;
-        }
+  document.querySelector('[data-action="equals"]').addEventListener('click', () => {
+    equals(); updateDisplay();
+  });
 
-        function evaluate(state, exprElement, resElement) {
-            if (!state.expression) return;
-            try {
-                const sanitized = state.expression.replace(/[^0-9+\-*/%.()]/g, '');
-                let rawRes = Function(`"use strict"; return (${sanitized})`)();
-                
-                if (rawRes === Infinity || isNaN(rawRes)) {
-                    resElement.textContent = 'Error';
-                } else {
-                    let equationText = exprElement.textContent;
-                    let resultText = '=' + formatNumber(rawRes);
-                    
-                    resElement.textContent = resultText;
-                    
-                    // Add result to history panel
-                    addHistoryRecord(equationText, resultText, rawRes);
-                    
-                    state.expression = rawRes.toString();
-                    state.isFresh = true; // Set flag so the next press starts a new equation
-                }
-            } catch {
-                resElement.textContent = 'Error';
-            }
-        }
+  document.querySelector('[data-action="clear"]').addEventListener('click', () => {
+    clearAll(); updateDisplay();
+  });
 
-        function formatNumber(num) {
-            return Number(num.toFixed(8)).toLocaleString(undefined, {
-                maximumFractionDigits: 3
-            });
-        }
+  document.querySelector('[data-action="decimal"]').addEventListener('click', () => {
+    inputNum('.'); updateDisplay();
+  });
 
-        // History list update handlers
-        function addHistoryRecord(expr, res, rawVal) {
-            historyRecords.unshift({ expr, res, rawVal });
-            renderHistory();
-        }
+  document.querySelector('[data-action="sign"]').addEventListener('click', () => {
+    if (current !== '0' && current !== 'Error') current = String(parseFloat(current) * -1);
+    updateDisplay();
+  });
 
-        function clearHistory() {
-            historyRecords = [];
-            renderHistory();
-        }
+  document.querySelector('[data-action="percent"]').addEventListener('click', () => {
+    if (current !== 'Error') current = String(parseFloat(current) / 100);
+    updateDisplay();
+  });
 
-        // Render history items for both containers
-        function renderHistory() {
-            const placeholder = '<div class="empty-history-text">No calculations recorded.</div>';
-            
-            if (historyRecords.length === 0) {
-                listLight.innerHTML = placeholder;
-                listDark.innerHTML = placeholder;
-                return;
-            }
+  window.addEventListener('keydown', (e) => {
+    if (e.key >= '0' && e.key <= '9') { inputNum(e.key); updateDisplay(); }
+    else if (e.key === '.') { inputNum('.'); updateDisplay(); }
+    else if (e.key === '+') { setOperator('+'); updateDisplay(); }
+    else if (e.key === '-') { setOperator('−'); updateDisplay(); }
+    else if (e.key === '*') { setOperator('×'); updateDisplay(); }
+    else if (e.key === '/') { e.preventDefault(); setOperator('÷'); updateDisplay(); }
+    else if (e.key === 'Enter' || e.key === '=') { equals(); updateDisplay(); }
+    else if (e.key === 'Escape') { clearAll(); updateDisplay(); }
+    else if (e.key === 'Backspace') {
+      current = current.length > 1 ? current.slice(0, -1) : '0';
+      updateDisplay();
+    }
+  });
 
-            let htmlString = '';
-            historyRecords.forEach((item, index) => {
-                htmlString += `
-                    <div class="history-item" onclick="loadHistoryValue(${item.rawVal})">
-                        <div class="hist-expr">${item.expr}</div>
-                        <div class="hist-res">${item.res}</div>
-                    </div>
-                `;
-            });
+  function setClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('clock').textContent = `${h}:${m}`;
+  }
+  setClock();
+  setInterval(setClock, 30000);
 
-            listLight.innerHTML = htmlString;
-            listDark.innerHTML = htmlString;
-        }
+  updateDisplay();
+</script>
 
-        // Selecting a history entry restores its result into the calculator display
-        function loadHistoryValue(val) {
-            const currentTheme = body.getAttribute('data-active-theme') || 'light';
-            if (currentTheme === 'light') {
-                lightState.expression = val.toString();
-                lightState.isFresh = false;
-                lightExprEl.textContent = '';
-                lightResEl.textContent = formatNumber(val);
-            } else {
-                darkState.expression = val.toString();
-                darkState.isFresh = false;
-                darkExprEl.textContent = '';
-                darkResEl.textContent = formatNumber(val);
-            }
-        }
-    </script>
 </body>
 </html>
