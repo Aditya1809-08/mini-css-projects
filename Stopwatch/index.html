@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-fallback: #eef1f5;
+    --card-bg-1: #ffffff;
+    --card-bg-2: #f3f5f8;
+    --card-border: rgba(15,23,42,0.08);
+    --pill-idle-bg: rgba(15,23,42,0.04);
+    --pill-idle-text: #575b64;
+    --pill-idle-border: rgba(15,23,42,0.09);
+    --pill-active-bg: #dcf3fa;
+    --pill-active-text: #0c7a9e;
+    --pill-active-border: rgba(12,122,158,0.3);
+    --ring-track: rgba(15,23,42,0.08);
+    --ring-fill-a: #0ea5c4;
+    --ring-fill-b: #4fd6f2;
+    --panel-teal-1: #cdeefa;
+    --panel-teal-2: #a6dcee;
+    --stop-bg: rgba(15,23,42,0.045);
+    --stop-border: rgba(15,23,42,0.1);
+    --pause-bg: rgba(14,165,196,0.1);
+    --pause-text: #0c7a9e;
+    --pause-border: rgba(14,165,196,0.28);
+    --ink: #181b20;
+    --toggle-bg: #ffffff;
+    --toggle-bg-hover: #f1f5f8;
+    --muted: #8a8e97;
+  }
+
+  *{ box-sizing: border-box; }
+  html, body{ height: 100%; margin: 0; }
+
+  body{
+    font-family: 'Inter', -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(20px, 4vw, 32px);
+    padding: 32px 16px;
+    background:
+      radial-gradient(circle at 18% 15%, rgba(47,208,245,0.10), transparent 45%),
+      radial-gradient(circle at 85% 82%, rgba(47,208,245,0.06), transparent 40%),
+      var(--bg-fallback);
+    background-image: var(--bg-url, none), radial-gradient(circle at 18% 15%, rgba(47,208,245,0.10), transparent 45%), radial-gradient(circle at 85% 82%, rgba(47,208,245,0.06), transparent 40%);
+    background-size: cover, auto, auto;
+    background-position: center, center, center;
+    background-repeat: no-repeat;
+  }
+
+  /* ---------- Preset pills ---------- */
+  .presets{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pill{
+    border: 1px solid var(--pill-idle-border);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--pill-idle-bg);
+    color: var(--pill-idle-text);
+    backdrop-filter: blur(8px);
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    line-height: 1;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  }
+  .pill:hover{ border-color: rgba(255,255,255,0.18); color: var(--white); }
+  .pill:active{ transform: scale(0.96); }
+  .pill.active{
+    background: var(--pill-active-bg);
+    color: var(--pill-active-text);
+    border-color: var(--pill-active-border);
+  }
+
+  .pill.custom-pill{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px 16px 10px 18px;
+  }
+  .pill.custom-pill input{
+    width: 2.4ch;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    text-align: center;
+    padding: 0;
+  }
+  .pill.custom-pill input::placeholder{ color: inherit; opacity: 0.65; }
+  .pill.custom-pill span.unit{ font-size: 13px; opacity: 0.75; }
+
+  /* ---------- Card ---------- */
+  .card{
+    width: min(94vw, 460px);
+    background:
+      linear-gradient(155deg, var(--card-bg-1), var(--card-bg-2) 65%);
+    border: 1px solid var(--card-border);
+    border-radius: 30px;
+    padding: clamp(18px, 4vw, 24px);
+    display: flex;
+    align-items: stretch;
+    gap: 18px;
+    box-shadow:
+      0 24px 60px rgba(0,0,0,0.45),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+    position: relative;
+  }
+
+  .card-left{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .card-label{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .status-dot{
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .status-dot.live{
+    background: var(--ring-fill-a);
+    box-shadow: 0 0 0 3px rgba(47,208,245,0.18);
+    animation: pulseDot 1.6s ease-in-out infinite;
+  }
+  @keyframes pulseDot{
+    0%, 100%{ box-shadow: 0 0 0 3px rgba(47,208,245,0.18); }
+    50%{ box-shadow: 0 0 0 6px rgba(47,208,245,0.08); }
+  }
+
+  .clock{
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    color: var(--white);
+    font-size: clamp(38px, 9vw, 54px);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  .btn-row{ display: flex; gap: 8px; flex-wrap: wrap; width: 100%; }
+
+  .stop-btn, .pause-btn{
+    flex: 1 1 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: inherit;
+    border: 1px solid var(--stop-border);
+    padding: 10px 16px;
+    border-radius: 13px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  }
+  .stop-btn{ background: var(--stop-bg); color: var(--white); }
+  .stop-btn:hover:not(:disabled){ background: rgba(255,255,255,0.1); }
+  .pause-btn{ background: var(--pause-bg); color: var(--pause-text); border-color: var(--pause-border); }
+  .pause-btn:hover:not(:disabled){ background: rgba(79,216,251,0.2); }
+  .stop-btn:active:not(:disabled), .pause-btn:active:not(:disabled){ transform: scale(0.96); }
+  .stop-btn:disabled, .pause-btn:disabled{ opacity: 0.35; cursor: not-allowed; }
+  .stop-btn svg, .pause-btn svg{ width: 14px; height: 14px; flex-shrink: 0; }
+
+  .card-right{
+    width: 42%;
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(160deg, var(--panel-teal-1), var(--panel-teal-2) 80%);
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.4s ease;
+  }
+  .card-right.running{
+    box-shadow: inset 0 0 40px rgba(47,208,245,0.18), 0 0 30px rgba(47,208,245,0.12);
+  }
+  .card-right::before{
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.08), transparent 55%);
+    pointer-events: none;
+  }
+
+  .ring-wrap{ position: relative; width: 76%; height: 76%; }
+  .ring-wrap > svg{ width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+  .ring-track{ fill: none; stroke: var(--ring-track); stroke-width: 9; }
+  .ring-fill{
+    fill: none;
+    stroke: url(#ringGradient);
+    stroke-width: 9;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.3s linear;
+  }
+
+  .toggle-btn{
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 46%; height: 46%;
+    border-radius: 50%;
+    background: #0b0d12;
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+  .toggle-btn:hover:not(:disabled){ background: #14181f; }
+  .toggle-btn:active:not(:disabled){ transform: translate(-50%, -50%) scale(0.94); }
+  .toggle-btn:disabled{ cursor: not-allowed; opacity: 0.6; }
+  .toggle-btn svg{ width: 32%; height: 32%; }
+
+  .hint{
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+    max-width: 380px;
+    padding: 0 12px;
+  }
+
+  /* ---------- Mobile layout ---------- */
+  @media (max-width: 480px){
+    .card{ flex-direction: column; align-items: center; text-align: center; gap: 20px; }
+    .card-left{ align-items: center; order: 2; width: 100%; }
+    .card-right{ order: 1; width: 62%; max-width: 220px; }
+    .btn-row{ justify-content: center; }
+    .card-label{ justify-content: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .ring-fill, .pill, .stop-btn, .pause-btn, .status-dot{ transition: none; animation: none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="presets" id="presets">
+    <button class="pill" data-mins="5">5 mins</button>
+    <button class="pill" data-mins="10">10 mins</button>
+    <button class="pill" data-mins="20">20 mins</button>
+    <label class="pill custom-pill" id="customPill">
+      <input id="customInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="—">
+      <span class="unit">mins</span>
+    </label>
+  </div>
+
+  <div class="card">
+    <div class="card-left">
+      <div class="card-label"><span class="status-dot" id="statusDot"></span>Timer</div>
+      <div class="clock" id="clockDisplay">00:00</div>
+      <div class="btn-row">
+        <button class="pause-btn" id="pauseBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none"><path id="pauseBtnIconPath" d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>
+          <span id="pauseBtnLabel">Pause</span>
+        </button>
+        <button class="stop-btn" id="stopBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          Stop
+        </button>
+      </div>
+    </div>
+
+    <div class="card-right" id="cardRight">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2fd0f5"/>
+              <stop offset="100%" stop-color="#6ee7ff"/>
+            </linearGradient>
+          </defs>
+          <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+          <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="52"
+                  stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
+        </svg>
+        <button class="toggle-btn" id="toggleBtn" disabled>
+          <svg id="toggleIcon" viewBox="0 0 24 24" fill="none">
+            <path d="M8 5v14l11-7z" fill="#f5f7fa"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hint">Pick a preset or type a custom number of minutes to start the timer.</div>
+
+<script>
+(function(){
+
+  /* =========================================================
+     BACKGROUND IMAGE — DEV-ONLY SETTING.
+     There is no on-page control for this on purpose: only
+     someone editing this file's code can change it. Just
+     replace the URL string below and reload the page.
+  ========================================================= */
+  const BACKGROUND_IMAGE_URL = ""; // e.g. "https://images.unsplash.com/photo-XXXX"
+
+  const body = document.body;
+
+  function setBackground(url){
+    if (url){
+      body.style.setProperty('--bg-url', `url("${url}")`);
+    } else {
+      body.style.setProperty('--bg-url', 'none');
+    }
+  }
+
+  setBackground(BACKGROUND_IMAGE_URL);
+
+  /* =========================================================
+     TIMER LOGIC — starts at zero, presets + custom minutes.
+  ========================================================= */
+  const clockDisplay = document.getElementById('clockDisplay');
+  const stopBtn = document.getElementById('stopBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const pauseBtnLabel = document.getElementById('pauseBtnLabel');
+  const pauseBtnIconPath = document.getElementById('pauseBtnIconPath');
+  const toggleBtn = document.getElementById('toggleBtn');
+  const toggleIcon = document.getElementById('toggleIcon');
+  const ringFill = document.getElementById('ringFill');
+  const presetsWrap = document.getElementById('presets');
+  const customPill = document.getElementById('customPill');
+  const customInput = document.getElementById('customInput');
+  const cardRight = document.getElementById('cardRight');
+  const statusDot = document.getElementById('statusDot');
+
+  const CIRC = 2 * Math.PI * 52; // matches r=52 on the SVG circle
+  ringFill.setAttribute('stroke-dasharray', CIRC.toFixed(1));
+
+  const PLAY_PATH = "M8 5v14l11-7z";
+  const PAUSE_PATH = "M7 5h4v14H7zM13 5h4v14h-4z";
+  const PAUSE_ICON_PAUSE = "M7 5h4v14H7zM13 5h4v14h-4z";
+  const PAUSE_ICON_PLAY = "M8 5v14l11-7z";
+
+  let totalSeconds = 0;   // full duration of the current timer
+  let remaining = 0;      // seconds left
+  let intervalId = null;
+  let running = false;
+
+  function formatTime(sec){
+    const m = Math.floor(sec / 60).toString().padStart(2, '0');
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  function renderClock(){
+    clockDisplay.textContent = formatTime(remaining);
+  }
+
+  function renderRing(){
+    const progress = totalSeconds > 0 ? remaining / totalSeconds : 0;
+    const offset = CIRC * (1 - progress);
+    ringFill.style.strokeDashoffset = offset.toFixed(1);
+  }
+
+  function setToggleIcon(isPlaying){
+    toggleIcon.querySelector('path').setAttribute('d', isPlaying ? PAUSE_PATH : PLAY_PATH);
+    pauseBtnLabel.textContent = isPlaying ? 'Pause' : 'Resume';
+    pauseBtnIconPath.setAttribute('d', isPlaying ? PAUSE_ICON_PAUSE : PAUSE_ICON_PLAY);
+    cardRight.classList.toggle('running', isPlaying);
+    statusDot.classList.toggle('live', isPlaying);
+  }
+
+  function setActivePill(btn){
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+
+  function resetToZero(){
+    clearInterval(intervalId);
+    intervalId = null;
+    running = false;
+    totalSeconds = 0;
+    remaining = 0;
+    renderClock();
+    renderRing();
+    setToggleIcon(false);
+    toggleBtn.disabled = true;
+    stopBtn.disabled = true;
+    pauseBtn.disabled = true;
+    setActivePill(null);
+  }
+
+  function tick(){
+    remaining -= 1;
+    if (remaining <= 0){
+      remaining = 0;
+      renderClock();
+      renderRing();
+      pause();
+      return;
+    }
+    renderClock();
+    renderRing();
+  }
+
+  function play(){
+    if (totalSeconds <= 0) return;
+    running = true;
+    setToggleIcon(true);
+    intervalId = setInterval(tick, 1000);
+  }
+
+  function pause(){
+    running = false;
+    clearInterval(intervalId);
+    intervalId = null;
+    setToggleIcon(false);
+  }
+
+  function startTimer(minutes, sourcePill){
+    if (!minutes || minutes <= 0) return;
+    clearInterval(intervalId);
+    totalSeconds = Math.round(minutes * 60);
+    remaining = totalSeconds;
+    renderClock();
+    renderRing();
+    toggleBtn.disabled = false;
+    stopBtn.disabled = false;
+    pauseBtn.disabled = false;
+    setActivePill(sourcePill);
+    play();
+  }
+
+  // Preset buttons
+  presetsWrap.querySelectorAll('.pill[data-mins]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      customInput.value = "";
+      startTimer(Number(btn.dataset.mins), btn);
+    });
+  });
+
+  // Custom minutes input
+  function commitCustom(){
+    const val = Number(customInput.value);
+    if (val > 0){
+      startTimer(val, customPill);
+    }
+  }
+  // Keep the custom minutes field numeric-only (it's a text input to avoid
+  // the browser's native number-input spin-button width quirks)
+  customInput.addEventListener('input', () => {
+    customInput.value = customInput.value.replace(/[^0-9]/g, '').slice(0, 3);
+  });
+  customInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') commitCustom();
+  });
+  customInput.addEventListener('change', commitCustom);
+
+  // Play / pause toggle (ring button)
+  toggleBtn.addEventListener('click', () => {
+    if (totalSeconds <= 0) return;
+    if (running) pause(); else play();
+  });
+
+  // Pause / Resume button (left side of card)
+  pauseBtn.addEventListener('click', () => {
+    if (totalSeconds <= 0) return;
+    if (running) pause(); else play();
+  });
+
+  // Stop button — returns everything to zero
+  stopBtn.addEventListener('click', resetToZero);
+
+  // Initial state: zero, nothing selected
+  resetToZero();
+
+})();
+</script>
+</body>
+</html>
