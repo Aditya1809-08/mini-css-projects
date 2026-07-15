@@ -2,92 +2,172 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Timer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-fallback: #eef1f5;
-    --card-bg-1: #ffffff;
-    --card-bg-2: #f3f5f8;
-    --card-border: rgba(15,23,42,0.08);
-    --pill-idle-bg: rgba(15,23,42,0.04);
-    --pill-idle-text: #575b64;
-    --pill-idle-border: rgba(15,23,42,0.09);
-    --pill-active-bg: #dcf3fa;
-    --pill-active-text: #0c7a9e;
-    --pill-active-border: rgba(12,122,158,0.3);
-    --ring-track: rgba(15,23,42,0.08);
-    --ring-fill-a: #0ea5c4;
-    --ring-fill-b: #4fd6f2;
-    --panel-teal-1: #cdeefa;
-    --panel-teal-2: #a6dcee;
-    --stop-bg: rgba(15,23,42,0.045);
-    --stop-border: rgba(15,23,42,0.1);
-    --pause-bg: rgba(14,165,196,0.1);
-    --pause-text: #0c7a9e;
-    --pause-border: rgba(14,165,196,0.28);
-    --ink: #181b20;
-    --toggle-bg: #ffffff;
-    --toggle-bg-hover: #f1f5f8;
-    --muted: #8a8e97;
+    --bg-1: #3fd0c9;
+    --bg-2: #ffb15e;
+    --bg-3: #ff5f6d;
+
+    --ink: #e8542c;
+    --ink-strong: #d1451f;
+    --muted: #b56a4a;
+
+    --pill-idle-bg: #ffffff;
+    --pill-idle-text: #b8531f;
+    --pill-active-bg: #ff7a3d;
+    --pill-active-text: #ffffff;
+    --pill-shadow: rgba(150,70,20,0.18);
+
+    --tile-bg-top: #ffab5c;
+    --tile-bg-mid: #ff7a3d;
+    --tile-bg-bottom: #ee5a34;
+    --tile-text: #ffffff;
+    --tile-shadow: rgba(150,50,10,0.4);
+    --tile-hinge: rgba(0,0,0,0.28);
+    --tile-dot: rgba(255,255,255,0.6);
+
+    --stop-bg: #ffffff;
+    --stop-text: #e8542c;
+    --stop-shadow: rgba(150,50,10,0.28);
+
+    --pause-bg: rgba(255,255,255,0.2);
+    --pause-text: #ffffff;
+    --pause-border: rgba(255,255,255,0.4);
+
+    --label-text: rgba(255,255,255,0.9);
+    --hint-text: rgba(255,255,255,0.8);
+
+    --sun-color: #ffe27a;
+    --palm-color: rgba(30,60,45,0.4);
+    --wave-color: rgba(255,255,255,0.22);
   }
 
   *{ box-sizing: border-box; }
   html, body{ height: 100%; margin: 0; }
 
+  html, body{ height: 100%; margin: 0; overflow-x: hidden; }
+
   body{
     font-family: 'Inter', -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-    min-height: 100vh;
+    min-height: 100svh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(20px, 4vw, 32px);
-    padding: 32px 16px;
-    background:
-      radial-gradient(circle at 18% 15%, rgba(47,208,245,0.10), transparent 45%),
-      radial-gradient(circle at 85% 82%, rgba(47,208,245,0.06), transparent 40%),
-      var(--bg-fallback);
-    background-image: var(--bg-url, none), radial-gradient(circle at 18% 15%, rgba(47,208,245,0.10), transparent 45%), radial-gradient(circle at 85% 82%, rgba(47,208,245,0.06), transparent 40%);
-    background-size: cover, auto, auto;
-    background-position: center, center, center;
+    gap: clamp(24px, 4vw, 36px);
+    padding: max(28px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
+    background-image: var(--bg-url, none), linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
+    background-size: cover, auto;
+    background-position: center, center;
     background-repeat: no-repeat;
+    position: relative;
   }
 
-  /* ---------- Preset pills ---------- */
+  /* ---------- Decorative summer elements (behind the content) ---------- */
+  .sun-decor{
+    position: fixed;
+    top: -80px; right: -60px;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--sun-color) 0%, rgba(255,226,122,0.55) 45%, rgba(255,226,122,0) 72%);
+    filter: blur(1px);
+    z-index: 0;
+    pointer-events: none;
+    animation: sunPulse 6s ease-in-out infinite;
+  }
+  @keyframes sunPulse{
+    0%, 100%{ opacity: 0.9; transform: scale(1); }
+    50%{ opacity: 1; transform: scale(1.05); }
+  }
+
+  .cloud-decor{
+    position: fixed;
+    width: 140px; height: auto;
+    fill: rgba(255,255,255,0.55);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .cloud-decor.cloud-1{ top: 8%; left: -10%; animation: driftRight 46s linear infinite; }
+  .cloud-decor.cloud-2{ top: 16%; left: -30%; width: 100px; opacity: 0.8; animation: driftRight 60s linear infinite 4s; }
+  @keyframes driftRight{
+    0%{ transform: translateX(0); }
+    100%{ transform: translateX(130vw); }
+  }
+
+  .palm-decor{
+    position: fixed;
+    bottom: -10px;
+    width: clamp(90px, 20vw, 170px);
+    height: auto;
+    fill: var(--palm-color);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .palm-decor.palm-left{ left: -20px; transform: scaleX(-1) rotate(6deg); }
+  .palm-decor.palm-right{ right: -20px; transform: rotate(-6deg); }
+
+  .wave-decor{
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    width: 100%; height: clamp(50px, 9vh, 90px);
+    fill: var(--wave-color);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* keep real content above the decorations */
+  .presets, .clock-wrap, .home-indicator, .hint{
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 560px){
+    .sun-decor{ width: 190px; height: 190px; top: -60px; right: -50px; }
+    .palm-decor{ display: none; }
+  }
+
+  @media (max-height: 560px){
+    .cloud-decor, .palm-decor{ display: none; }
+  }
+
+  /* ---------- Preset pills (unchanged) ---------- */
   .presets{
     display: flex;
-    gap: 8px;
+    gap: clamp(8px, 2vw, 10px);
     flex-wrap: wrap;
     justify-content: center;
+    padding: 0 4px;
   }
 
   .pill{
-    border: 1px solid var(--pill-idle-border);
+    border: none;
     cursor: pointer;
     font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 10px 18px;
-    border-radius: 999px;
+    font-size: clamp(13.5px, 3.4vw, 15px);
+    font-weight: 600;
+    padding: 12px clamp(14px, 4vw, 20px);
+    border-radius: 16px;
     background: var(--pill-idle-bg);
     color: var(--pill-idle-text);
-    backdrop-filter: blur(8px);
     display: inline-flex;
     align-items: center;
-    min-height: 40px;
+    min-height: 44px;
     line-height: 1;
-    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 6px 16px var(--pill-shadow);
+    transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
   }
-  .pill:hover{ border-color: rgba(255,255,255,0.18); color: var(--white); }
-  .pill:active{ transform: scale(0.96); }
+  .pill:hover{ transform: translateY(-1px); box-shadow: 0 8px 20px var(--pill-shadow); }
+  .pill:active{ transform: translateY(0) scale(0.97); }
   .pill.active{
     background: var(--pill-active-bg);
     color: var(--pill-active-text);
-    border-color: var(--pill-active-border);
+    box-shadow: 0 8px 20px rgba(230,100,40,0.4);
   }
 
   .pill.custom-pill{
@@ -95,89 +175,184 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
-    padding: 10px 16px 10px 18px;
+    padding: 12px 18px;
   }
   .pill.custom-pill input{
-    width: 2.4ch;
+    width: 5.6ch;
     background: transparent;
     border: none;
     outline: none;
     color: inherit;
     font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
     line-height: 1;
     text-align: center;
     padding: 0;
   }
-  .pill.custom-pill input::placeholder{ color: inherit; opacity: 0.65; }
-  .pill.custom-pill span.unit{ font-size: 13px; opacity: 0.75; }
+  .pill.custom-pill input::placeholder{ color: inherit; opacity: 0.55; }
+  .pill.custom-pill span.unit{ font-size: 14px; opacity: 0.75; }
 
-  /* ---------- Card ---------- */
-  .card{
-    width: min(94vw, 460px);
-    background:
-      linear-gradient(155deg, var(--card-bg-1), var(--card-bg-2) 65%);
-    border: 1px solid var(--card-border);
-    border-radius: 30px;
-    padding: clamp(18px, 4vw, 24px);
-    display: flex;
-    align-items: stretch;
-    gap: 18px;
-    box-shadow:
-      0 24px 60px rgba(0,0,0,0.45),
-      inset 0 1px 0 rgba(255,255,255,0.05);
-    position: relative;
-  }
-
-  .card-left{
-    flex: 1;
+  /* ---------- Flip clock ---------- */
+  .clock-wrap{
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 16px;
-    min-width: 0;
+    align-items: center;
+    gap: clamp(16px, 3.5vw, 22px);
+    width: min(94vw, 480px);
   }
 
-  .card-label{
+  .clock-label{
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--muted);
+    color: var(--label-text);
     font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   .status-dot{
     width: 7px; height: 7px;
     border-radius: 50%;
-    background: var(--muted);
+    background: rgba(255,255,255,0.5);
     transition: background 0.2s ease, box-shadow 0.2s ease;
   }
   .status-dot.live{
-    background: var(--ring-fill-a);
-    box-shadow: 0 0 0 3px rgba(47,208,245,0.18);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.25);
     animation: pulseDot 1.6s ease-in-out infinite;
   }
   @keyframes pulseDot{
-    0%, 100%{ box-shadow: 0 0 0 3px rgba(47,208,245,0.18); }
-    50%{ box-shadow: 0 0 0 6px rgba(47,208,245,0.08); }
+    0%, 100%{ box-shadow: 0 0 0 3px rgba(255,255,255,0.22); }
+    50%{ box-shadow: 0 0 0 6px rgba(255,255,255,0.08); }
   }
 
-  .clock{
+  .flip-clock{
+    display: flex;
+    justify-content: center;
+    gap: clamp(10px, 3vw, 20px);
+  }
+
+  .flip-unit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .flip-caption{
+    font-size: clamp(10.5px, 2.6vw, 12.5px);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--label-text);
+  }
+
+  /* ----- tile: two static halves + two animated flap leaves ----- */
+  .flip-tile{
+    position: relative;
+    width: clamp(56px, 18vw, 84px);
+    aspect-ratio: 1 / 1;
+    border-radius: clamp(10px, 2.4vw, 14px);
+    box-shadow: 0 14px 26px var(--tile-shadow);
+    overflow: hidden;
+    perspective: 240px;
+  }
+
+  .flip-half-box{
+    position: absolute;
+    left: 0; right: 0;
+    height: 50%;
+    overflow: hidden;
+    z-index: 1;
+  }
+  .flip-half-box.pos-top{ top: 0; background: linear-gradient(180deg, var(--tile-bg-top), var(--tile-bg-mid)); }
+  .flip-half-box.pos-bottom{ bottom: 0; background: linear-gradient(180deg, var(--tile-bg-mid), var(--tile-bg-bottom)); }
+
+  .digit-inner{
+    position: absolute;
+    left: 0; right: 0;
+    height: 200%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: 'Space Grotesk', 'Inter', sans-serif;
-    color: var(--white);
-    font-size: clamp(38px, 9vw, 54px);
-    font-weight: 600;
+    font-weight: 700;
+    font-size: clamp(26px, 8vw, 40px);
+    color: var(--tile-text);
+    line-height: 1;
     letter-spacing: 0.01em;
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    line-height: 1;
+  }
+  .pos-top .digit-inner{ top: 0; }
+  .pos-bottom .digit-inner{ top: -100%; }
+  .digit-inner.long{ font-size: clamp(15px, 4.2vw, 22px); }
+
+  .flip-leaf{
+    position: absolute;
+    left: 0; right: 0;
+    height: 50%;
+    overflow: hidden;
+    backface-visibility: hidden;
+    z-index: 3;
+    box-shadow: inset 0 -6px 10px rgba(0,0,0,0.08);
+  }
+  .flip-leaf.pos-top{
+    top: 0;
+    transform-origin: bottom center;
+    background: linear-gradient(180deg, var(--tile-bg-top), var(--tile-bg-mid));
+    transform: rotateX(0deg);
+  }
+  .flip-leaf.pos-bottom{
+    bottom: 0;
+    transform-origin: top center;
+    background: linear-gradient(180deg, var(--tile-bg-mid), var(--tile-bg-bottom));
+    transform: rotateX(0deg);
   }
 
-  .btn-row{ display: flex; gap: 8px; flex-wrap: wrap; width: 100%; }
+  .flip-tile::before{
+    /* diagonal sheen, echoes the reference tiles */
+    content: "";
+    position: absolute;
+    inset: -20%;
+    background: linear-gradient(115deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 34%);
+    pointer-events: none;
+    z-index: 4;
+  }
+  .flip-tile::after{
+    /* center hinge line, always on top so it reads through the flip */
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 50%;
+    height: 2px;
+    background: var(--tile-hinge);
+    transform: translateY(-1px);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+    z-index: 5;
+  }
+
+  .hinge-dot{
+    position: absolute;
+    top: 50%;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--tile-dot);
+    transform: translateY(-50%);
+    z-index: 6;
+  }
+  .hinge-dot.left{ left: 6px; }
+  .hinge-dot.right{ right: 6px; }
+
+  .btn-row{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 320px;
+  }
 
   .stop-btn, .pause-btn{
     flex: 1 1 0;
@@ -186,147 +361,110 @@
     justify-content: center;
     gap: 6px;
     font-family: inherit;
-    border: 1px solid var(--stop-border);
-    padding: 10px 16px;
-    border-radius: 13px;
-    font-size: 14px;
-    font-weight: 500;
+    border: 1px solid transparent;
+    padding: 12px 16px;
+    border-radius: 15px;
+    font-size: 15px;
+    font-weight: 600;
     white-space: nowrap;
     cursor: pointer;
-    transition: background 0.2s ease, opacity 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    transition: background 0.2s ease, opacity 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
   }
-  .stop-btn{ background: var(--stop-bg); color: var(--white); }
-  .stop-btn:hover:not(:disabled){ background: rgba(255,255,255,0.1); }
-  .pause-btn{ background: var(--pause-bg); color: var(--pause-text); border-color: var(--pause-border); }
-  .pause-btn:hover:not(:disabled){ background: rgba(79,216,251,0.2); }
+  .stop-btn{ background: var(--stop-bg); color: var(--stop-text); box-shadow: 0 10px 22px var(--stop-shadow); }
+  .stop-btn:hover:not(:disabled){ filter: brightness(0.98); }
+  .pause-btn{ background: var(--pause-bg); color: var(--pause-text); border-color: var(--pause-border); backdrop-filter: blur(6px); }
+  .pause-btn:hover:not(:disabled){ background: rgba(255,255,255,0.24); }
   .stop-btn:active:not(:disabled), .pause-btn:active:not(:disabled){ transform: scale(0.96); }
-  .stop-btn:disabled, .pause-btn:disabled{ opacity: 0.35; cursor: not-allowed; }
+  .stop-btn:disabled, .pause-btn:disabled{ opacity: 0.4; cursor: not-allowed; box-shadow: none; }
   .stop-btn svg, .pause-btn svg{ width: 14px; height: 14px; flex-shrink: 0; }
 
-  .card-right{
-    width: 42%;
-    aspect-ratio: 1 / 1;
-    background: linear-gradient(160deg, var(--panel-teal-1), var(--panel-teal-2) 80%);
-    border-radius: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    transition: box-shadow 0.4s ease;
+  .home-indicator{
+    width: 130px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.5);
   }
-  .card-right.running{
-    box-shadow: inset 0 0 40px rgba(47,208,245,0.18), 0 0 30px rgba(47,208,245,0.12);
-  }
-  .card-right::before{
-    content: "";
-    position: absolute;
-    inset: -40%;
-    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.08), transparent 55%);
-    pointer-events: none;
-  }
-
-  .ring-wrap{ position: relative; width: 76%; height: 76%; }
-  .ring-wrap > svg{ width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
-  .ring-track{ fill: none; stroke: var(--ring-track); stroke-width: 9; }
-  .ring-fill{
-    fill: none;
-    stroke: url(#ringGradient);
-    stroke-width: 9;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.3s linear;
-  }
-
-  .toggle-btn{
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 46%; height: 46%;
-    border-radius: 50%;
-    background: #0b0d12;
-    border: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.1s ease;
-  }
-  .toggle-btn:hover:not(:disabled){ background: #14181f; }
-  .toggle-btn:active:not(:disabled){ transform: translate(-50%, -50%) scale(0.94); }
-  .toggle-btn:disabled{ cursor: not-allowed; opacity: 0.6; }
-  .toggle-btn svg{ width: 32%; height: 32%; }
 
   .hint{
-    color: var(--muted);
-    font-size: 12px;
+    color: var(--hint-text);
+    font-size: 13px;
+    font-weight: 500;
     text-align: center;
     max-width: 380px;
     padding: 0 12px;
   }
 
-  /* ---------- Mobile layout ---------- */
-  @media (max-width: 480px){
-    .card{ flex-direction: column; align-items: center; text-align: center; gap: 20px; }
-    .card-left{ align-items: center; order: 2; width: 100%; }
-    .card-right{ order: 1; width: 62%; max-width: 220px; }
-    .btn-row{ justify-content: center; }
-    .card-label{ justify-content: center; }
+  /* ---------- Small phones: tighten tile spacing ---------- */
+  @media (max-width: 380px){
+    .flip-clock{ gap: 8px; }
+    .flip-tile{ width: clamp(50px, 20vw, 70px); }
+  }
+
+  /* ---------- Short / landscape viewports ---------- */
+  @media (max-height: 560px){
+    body{ justify-content: flex-start; gap: 16px; padding-top: max(18px, env(safe-area-inset-top)); padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+    .flip-tile{ width: clamp(44px, 10vw, 60px); }
+    .digit-inner{ font-size: clamp(20px, 5vw, 28px); }
+    .home-indicator{ display: none; }
+    .hint{ display: none; }
   }
 
   @media (prefers-reduced-motion: reduce){
-    .ring-fill, .pill, .stop-btn, .pause-btn, .status-dot{ transition: none; animation: none; }
+    .pill, .stop-btn, .pause-btn, .status-dot, .flip-leaf{ transition: none; animation: none; }
   }
 </style>
 </head>
 <body>
+
+  <div class="sun-decor" aria-hidden="true"></div>
+  <svg class="cloud-decor cloud-1" aria-hidden="true" viewBox="0 0 120 50">
+    <ellipse cx="30" cy="30" rx="28" ry="16"/>
+    <ellipse cx="60" cy="22" rx="24" ry="20"/>
+    <ellipse cx="88" cy="30" rx="22" ry="14"/>
+  </svg>
+  <svg class="cloud-decor cloud-2" aria-hidden="true" viewBox="0 0 120 50">
+    <ellipse cx="30" cy="30" rx="28" ry="16"/>
+    <ellipse cx="60" cy="22" rx="24" ry="20"/>
+    <ellipse cx="88" cy="30" rx="22" ry="14"/>
+  </svg>
+  <svg class="palm-decor palm-left" aria-hidden="true" viewBox="0 0 200 220">
+    <path d="M20 220 C 30 150, 40 90, 55 40 C 20 55, -10 45, -25 15 C 5 30, 35 25, 55 40 C 15 15, 0 -15, 5 -40 C 30 -15, 45 15, 55 40 C 60 5, 85 -15, 115 -20 C 95 5, 75 30, 55 40 C 90 30, 120 40, 140 65 C 105 55, 75 55, 55 40 L 45 220 Z" />
+  </svg>
+  <svg class="palm-decor palm-right" aria-hidden="true" viewBox="0 0 200 220">
+    <path d="M20 220 C 30 150, 40 90, 55 40 C 20 55, -10 45, -25 15 C 5 30, 35 25, 55 40 C 15 15, 0 -15, 5 -40 C 30 -15, 45 15, 55 40 C 60 5, 85 -15, 115 -20 C 95 5, 75 30, 55 40 C 90 30, 120 40, 140 65 C 105 55, 75 55, 55 40 L 45 220 Z" />
+  </svg>
+  <svg class="wave-decor" aria-hidden="true" viewBox="0 0 800 80" preserveAspectRatio="none">
+    <path d="M0 40 C 100 10, 200 70, 300 40 S 500 10, 600 40 S 750 60, 800 40 V80 H0 Z"/>
+  </svg>
 
   <div class="presets" id="presets">
     <button class="pill" data-mins="5">5 mins</button>
     <button class="pill" data-mins="10">10 mins</button>
     <button class="pill" data-mins="20">20 mins</button>
     <label class="pill custom-pill" id="customPill">
-      <input id="customInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="—">
+      <input id="customInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="—">
       <span class="unit">mins</span>
     </label>
   </div>
 
-  <div class="card">
-    <div class="card-left">
-      <div class="card-label"><span class="status-dot" id="statusDot"></span>Timer</div>
-      <div class="clock" id="clockDisplay">00:00</div>
-      <div class="btn-row">
-        <button class="pause-btn" id="pauseBtn" disabled>
-          <svg viewBox="0 0 24 24" fill="none"><path id="pauseBtnIconPath" d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>
-          <span id="pauseBtnLabel">Pause</span>
-        </button>
-        <button class="stop-btn" id="stopBtn" disabled>
-          <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
-          Stop
-        </button>
-      </div>
-    </div>
+  <div class="clock-wrap">
+    <div class="clock-label"><span class="status-dot" id="statusDot"></span>Timer</div>
 
-    <div class="card-right" id="cardRight">
-      <div class="ring-wrap">
-        <svg viewBox="0 0 120 120">
-          <defs>
-            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#2fd0f5"/>
-              <stop offset="100%" stop-color="#6ee7ff"/>
-            </linearGradient>
-          </defs>
-          <circle class="ring-track" cx="60" cy="60" r="52"></circle>
-          <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="52"
-                  stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
-        </svg>
-        <button class="toggle-btn" id="toggleBtn" disabled>
-          <svg id="toggleIcon" viewBox="0 0 24 24" fill="none">
-            <path d="M8 5v14l11-7z" fill="#f5f7fa"/>
-          </svg>
-        </button>
-      </div>
+    <div class="flip-clock" id="flipClock"></div>
+
+    <div class="btn-row">
+      <button class="pause-btn" id="pauseBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="none"><path id="pauseBtnIconPath" d="M8 5v14l11-7z" fill="currentColor"/></svg>
+        <span id="pauseBtnLabel">Pause</span>
+      </button>
+      <button class="stop-btn" id="stopBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+        Stop
+      </button>
     </div>
   </div>
+
+  <div class="home-indicator"></div>
 
   <div class="hint">Pick a preset or type a custom number of minutes to start the timer.</div>
 
@@ -339,7 +477,7 @@
      someone editing this file's code can change it. Just
      replace the URL string below and reload the page.
   ========================================================= */
-  const BACKGROUND_IMAGE_URL = "4b05811633ca657e65e685dc0ac353b5.jpg"; // e.g. "https://images.unsplash.com/photo-XXXX"
+  const BACKGROUND_IMAGE_URL = ""; // e.g. "https://images.unsplash.com/photo-XXXX"
 
   const body = document.body;
 
@@ -354,56 +492,154 @@
   setBackground(BACKGROUND_IMAGE_URL);
 
   /* =========================================================
+     FLIP TILES — build the 4 units (Days/Hours/Minutes/Seconds)
+     Each tile = 2 static halves (always show the current value)
+     + 2 animated "leaf" halves that flip to reveal a new value,
+     mimicking a real mechanical split-flap display.
+  ========================================================= */
+  const UNITS = [
+    { key: 'days', label: 'Days' },
+    { key: 'hours', label: 'Hours' },
+    { key: 'minutes', label: 'Minutes' },
+    { key: 'seconds', label: 'Seconds' },
+  ];
+
+  const flipClockEl = document.getElementById('flipClock');
+  const tiles = {};
+
+  UNITS.forEach(({ key, label }) => {
+    const unit = document.createElement('div');
+    unit.className = 'flip-unit';
+    unit.innerHTML = `
+      <div class="flip-tile" data-key="${key}">
+        <div class="flip-half-box pos-top"><div class="digit-inner" data-role="static-top">00</div></div>
+        <div class="flip-half-box pos-bottom"><div class="digit-inner" data-role="static-bottom">00</div></div>
+        <div class="flip-leaf pos-top" data-role="leaf-top"><div class="digit-inner" data-role="leaf-top-text">00</div></div>
+        <div class="flip-leaf pos-bottom" data-role="leaf-bottom"><div class="digit-inner" data-role="leaf-bottom-text">00</div></div>
+        <span class="hinge-dot left"></span><span class="hinge-dot right"></span>
+      </div>
+      <div class="flip-caption">${label}</div>
+    `;
+    flipClockEl.appendChild(unit);
+
+    const tileEl = unit.querySelector('.flip-tile');
+    const staticTop = tileEl.querySelector('[data-role="static-top"]');
+    const staticBottom = tileEl.querySelector('[data-role="static-bottom"]');
+    const leafTopText = tileEl.querySelector('[data-role="leaf-top-text"]');
+    const leafBottomText = tileEl.querySelector('[data-role="leaf-bottom-text"]');
+    tiles[key] = {
+      value: null,
+      staticTop, staticBottom,
+      leafTop: tileEl.querySelector('[data-role="leaf-top"]'),
+      leafTopText,
+      leafBottom: tileEl.querySelector('[data-role="leaf-bottom"]'),
+      leafBottomText,
+      allTextEls: [staticTop, staticBottom, leafTopText, leafBottomText],
+      timers: [],
+    };
+  });
+
+  const FLIP_MS = 300; // duration of each half-flip phase
+
+  function setLongClass(key, value){
+    const t = tiles[key];
+    const isLong = value.length > 2;
+    t.allTextEls.forEach(el => el.classList.toggle('long', isLong));
+  }
+
+  function setTileInstant(key, value){
+    const t = tiles[key];
+    t.timers.forEach(id => clearTimeout(id));
+    t.timers = [];
+    setLongClass(key, value);
+    t.staticTop.textContent = value;
+    t.staticBottom.textContent = value;
+    t.leafTopText.textContent = value;
+    t.leafBottomText.textContent = value;
+    t.leafTop.style.transition = 'none';
+    t.leafTop.style.transform = 'rotateX(0deg)';
+    t.leafBottom.style.transition = 'none';
+    t.leafBottom.style.transform = 'rotateX(0deg)';
+    t.value = value;
+  }
+
+  function flipTileTo(key, value){
+    const t = tiles[key];
+    if (t.value === value) return;
+    const oldValue = t.value === null ? value : t.value;
+    t.timers.forEach(id => clearTimeout(id));
+    t.timers = [];
+    setLongClass(key, value);
+
+    // Reveal the new value underneath immediately; the top leaf (still
+    // showing the old value) will fold away to expose it.
+    t.staticTop.textContent = value;
+    t.leafTopText.textContent = oldValue;
+    t.leafBottomText.textContent = value;
+
+    t.leafTop.style.transition = 'none';
+    t.leafTop.style.transform = 'rotateX(0deg)';
+    t.leafBottom.style.transition = 'none';
+    t.leafBottom.style.transform = 'rotateX(90deg)';
+    void t.leafTop.offsetHeight; // force reflow so the transition below retriggers
+
+    requestAnimationFrame(() => {
+      t.leafTop.style.transition = `transform ${FLIP_MS}ms cubic-bezier(.45,0,.2,1)`;
+      t.leafTop.style.transform = 'rotateX(-90deg)';
+    });
+
+    const timer1 = setTimeout(() => {
+      // Top leaf has folded away; the new bottom half now flips into place.
+      t.staticBottom.textContent = value;
+      t.leafBottom.style.transition = `transform ${FLIP_MS}ms cubic-bezier(.45,0,.2,1)`;
+      t.leafBottom.style.transform = 'rotateX(0deg)';
+    }, FLIP_MS);
+
+    t.timers.push(timer1);
+    t.value = value;
+  }
+
+  /* =========================================================
      TIMER LOGIC — starts at zero, presets + custom minutes.
   ========================================================= */
-  const clockDisplay = document.getElementById('clockDisplay');
   const stopBtn = document.getElementById('stopBtn');
   const pauseBtn = document.getElementById('pauseBtn');
   const pauseBtnLabel = document.getElementById('pauseBtnLabel');
   const pauseBtnIconPath = document.getElementById('pauseBtnIconPath');
-  const toggleBtn = document.getElementById('toggleBtn');
-  const toggleIcon = document.getElementById('toggleIcon');
-  const ringFill = document.getElementById('ringFill');
   const presetsWrap = document.getElementById('presets');
   const customPill = document.getElementById('customPill');
   const customInput = document.getElementById('customInput');
-  const cardRight = document.getElementById('cardRight');
   const statusDot = document.getElementById('statusDot');
-
-  const CIRC = 2 * Math.PI * 52; // matches r=52 on the SVG circle
-  ringFill.setAttribute('stroke-dasharray', CIRC.toFixed(1));
 
   const PLAY_PATH = "M8 5v14l11-7z";
   const PAUSE_PATH = "M7 5h4v14H7zM13 5h4v14h-4z";
-  const PAUSE_ICON_PAUSE = "M7 5h4v14H7zM13 5h4v14h-4z";
-  const PAUSE_ICON_PLAY = "M8 5v14l11-7z";
 
   let totalSeconds = 0;   // full duration of the current timer
   let remaining = 0;      // seconds left
   let intervalId = null;
   let running = false;
 
-  function formatTime(sec){
-    const m = Math.floor(sec / 60).toString().padStart(2, '0');
-    const s = Math.floor(sec % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  }
+  function pad2(n){ return n.toString().padStart(2, '0'); }
 
-  function renderClock(){
-    clockDisplay.textContent = formatTime(remaining);
-  }
+  function renderClock(instant){
+    const d = Math.floor(remaining / 86400);
+    const h = Math.floor((remaining % 86400) / 3600);
+    const m = Math.floor((remaining % 3600) / 60);
+    const s = Math.floor(remaining % 60);
+    const parts = { days: pad2(d), hours: pad2(h), minutes: pad2(m), seconds: pad2(s) };
 
-  function renderRing(){
-    const progress = totalSeconds > 0 ? remaining / totalSeconds : 0;
-    const offset = CIRC * (1 - progress);
-    ringFill.style.strokeDashoffset = offset.toFixed(1);
+    Object.keys(parts).forEach(key => {
+      if (instant){
+        setTileInstant(key, parts[key]);
+      } else {
+        flipTileTo(key, parts[key]);
+      }
+    });
   }
 
   function setToggleIcon(isPlaying){
-    toggleIcon.querySelector('path').setAttribute('d', isPlaying ? PAUSE_PATH : PLAY_PATH);
     pauseBtnLabel.textContent = isPlaying ? 'Pause' : 'Resume';
-    pauseBtnIconPath.setAttribute('d', isPlaying ? PAUSE_ICON_PAUSE : PAUSE_ICON_PLAY);
-    cardRight.classList.toggle('running', isPlaying);
+    pauseBtnIconPath.setAttribute('d', isPlaying ? PAUSE_PATH : PLAY_PATH);
     statusDot.classList.toggle('live', isPlaying);
   }
 
@@ -418,10 +654,8 @@
     running = false;
     totalSeconds = 0;
     remaining = 0;
-    renderClock();
-    renderRing();
+    renderClock(true);
     setToggleIcon(false);
-    toggleBtn.disabled = true;
     stopBtn.disabled = true;
     pauseBtn.disabled = true;
     setActivePill(null);
@@ -431,13 +665,11 @@
     remaining -= 1;
     if (remaining <= 0){
       remaining = 0;
-      renderClock();
-      renderRing();
+      renderClock(false);
       pause();
       return;
     }
-    renderClock();
-    renderRing();
+    renderClock(false);
   }
 
   function play(){
@@ -459,9 +691,7 @@
     clearInterval(intervalId);
     totalSeconds = Math.round(minutes * 60);
     remaining = totalSeconds;
-    renderClock();
-    renderRing();
-    toggleBtn.disabled = false;
+    renderClock(true);
     stopBtn.disabled = false;
     pauseBtn.disabled = false;
     setActivePill(sourcePill);
@@ -476,30 +706,22 @@
     });
   });
 
-  // Custom minutes input
+  // Custom minutes input (numeric-only text field, avoids native number-input width quirks)
   function commitCustom(){
     const val = Number(customInput.value);
     if (val > 0){
       startTimer(val, customPill);
     }
   }
-  // Keep the custom minutes field numeric-only (it's a text input to avoid
-  // the browser's native number-input spin-button width quirks)
   customInput.addEventListener('input', () => {
-    customInput.value = customInput.value.replace(/[^0-9]/g, '').slice(0, 3);
+    customInput.value = customInput.value.replace(/[^0-9]/g, '').slice(0, 6);
   });
   customInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') commitCustom();
   });
   customInput.addEventListener('change', commitCustom);
 
-  // Play / pause toggle (ring button)
-  toggleBtn.addEventListener('click', () => {
-    if (totalSeconds <= 0) return;
-    if (running) pause(); else play();
-  });
-
-  // Pause / Resume button (left side of card)
+  // Pause / Resume button
   pauseBtn.addEventListener('click', () => {
     if (totalSeconds <= 0) return;
     if (running) pause(); else play();
