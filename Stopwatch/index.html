@@ -9,9 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-1: #3fd0c9;
-    --bg-2: #ffb15e;
-    --bg-3: #ff5f6d;
+    --bg-1: #0b1638;
+    --bg-2: #0f2a5e;
+    --bg-3: #071026;
 
     --ink: #e8542c;
     --ink-strong: #d1451f;
@@ -41,15 +41,9 @@
 
     --label-text: rgba(255,255,255,0.9);
     --hint-text: rgba(255,255,255,0.8);
-
-    --sun-color: #ffe27a;
-    --palm-color: rgba(30,60,45,0.4);
-    --wave-color: rgba(255,255,255,0.22);
   }
 
   *{ box-sizing: border-box; }
-  html, body{ height: 100%; margin: 0; }
-
   html, body{ height: 100%; margin: 0; overflow-x: hidden; }
 
   body{
@@ -61,64 +55,103 @@
     justify-content: center;
     gap: clamp(24px, 4vw, 36px);
     padding: max(28px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
-    background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
-    background-image: var(--bg-url, none), linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
-    background-size: cover, auto;
-    background-position: center, center;
+    background: radial-gradient(circle at 82% 8%, #17306b 0%, transparent 40%), linear-gradient(165deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
+    background-image: var(--bg-url, none), radial-gradient(circle at 82% 8%, #17306b 0%, transparent 40%), linear-gradient(165deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
+    background-size: cover, auto, auto;
+    background-position: center, center, center;
     background-repeat: no-repeat;
     position: relative;
   }
 
-  /* ---------- Decorative summer elements (behind the content) ---------- */
-  .sun-decor{
+  /* ---------- Decorative space elements (behind the content) ---------- */
+  .stars-layer{
     position: fixed;
-    top: -80px; right: -60px;
-    width: 260px; height: 260px;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .stars-layer .stars-a, .stars-layer .stars-b{
+    position: absolute;
+    top: 0; left: 0;
+    width: 1px; height: 1px;
     border-radius: 50%;
-    background: radial-gradient(circle, var(--sun-color) 0%, rgba(255,226,122,0.55) 45%, rgba(255,226,122,0) 72%);
-    filter: blur(1px);
-    z-index: 0;
-    pointer-events: none;
-    animation: sunPulse 6s ease-in-out infinite;
+    background: transparent;
   }
-  @keyframes sunPulse{
-    0%, 100%{ opacity: 0.9; transform: scale(1); }
-    50%{ opacity: 1; transform: scale(1.05); }
+  .stars-layer .stars-a{ box-shadow: 663px 970px 0 #fff, 308px 404px 0 #fff, 1333px 49px 0 #fff, 148px 840px 0 #fff, 1097px 96px 0 #fff, 748px 596px 0 #fff, 118px 931px 0 #fff, 1039px 219px 0 #fff, 76px 88px 0 #fff, 888px 428px 0 #fff, 143px 246px 0 #fff, 185px 564px 0 #fff, 869px 60px 0 #fff, 1158px 126px 0 #fff, 457px 645px 0 #fff, 1284px 596px 0 #fff, 126px 590px 0 #fff, 1199px 406px 0 #fff, 101px 999px 0 #fff, 452px 47px 0 #fff, 1140px 879px 0 #fff, 272px 296px 0 #fff, 858px 147px 0 #fff, 1107px 120px 0 #fff, 1169px 315px 0 #fff, 1147px 835px 0 #fff, 1396px 185px 0 #fff, 211px 595px 0 #fff, 1169px 654px 0 #fff, 384px 381px 0 #fff, 199px 560px 0 #fff, 1458px 64px 0 #fff, 1155px 61px 0 #fff, 1267px 210px 0 #fff, 1016px 696px 0 #fff, 1088px 437px 0 #fff, 1591px 321px 0 #fff, 953px 599px 0 #fff, 928px 370px 0 #fff, 613px 254px 0 #fff, 368px 715px 0 #fff, 1597px 249px 0 #fff, 167px 588px 0 #fff, 614px 537px 0 #fff, 1013px 896px 0 #fff, 703px 746px 0 #fff, 919px 294px 0 #fff, 1247px 74px 0 #fff, 241px 524px 0 #fff, 856px 168px 0 #fff, 1550px 350px 0 #fff, 311px 955px 0 #fff, 1001px 431px 0 #fff, 80px 985px 0 #fff, 1368px 79px 0 #fff, 1565px 571px 0 #fff, 1173px 808px 0 #fff, 642px 348px 0 #fff, 1423px 358px 0 #fff, 1217px 508px 0 #fff, 1187px 816px 0 #fff, 934px 70px 0 #fff, 191px 967px 0 #fff, 552px 485px 0 #fff, 1427px 680px 0 #fff, 133px 62px 0 #fff, 1497px 718px 0 #fff, 634px 662px 0 #fff, 1183px 697px 0 #fff, 912px 291px 0 #fff, 1467px 395px 0 #fff, 1369px 355px 0 #fff, 46px 963px 0 #fff, 945px 363px 0 #fff, 344px 625px 0 #fff, 239px 505px 0 #fff, 120px 223px 0 #fff, 1573px 294px 0 #fff, 264px 756px 0 #fff, 507px 407px 0 #fff, 800px 938px 0 #fff, 1016px 82px 0 #fff, 340px 459px 0 #fff, 822px 562px 0 #fff, 569px 904px 0 #fff, 280px 838px 0 #fff, 881px 884px 0 #fff, 1126px 285px 0 #fff, 1446px 425px 0 #fff, 734px 699px 0 #fff; animation: twinkle 3.4s ease-in-out infinite; }
+  .stars-layer .stars-b{ box-shadow: 779px 980px 0 2px #fff, 472px 154px 0 2px #fff, 169px 180px 0 2px #fff, 309px 237px 0 2px #fff, 1348px 238px 0 2px #fff, 24px 496px 0 2px #fff, 1206px 186px 0 2px #fff, 538px 288px 0 2px #fff, 8px 149px 0 2px #fff, 858px 547px 0 2px #fff, 756px 624px 0 2px #fff, 1159px 326px 0 2px #fff, 257px 707px 0 2px #fff, 1055px 973px 0 2px #fff, 1264px 670px 0 2px #fff, 1384px 757px 0 2px #fff, 110px 467px 0 2px #fff, 1393px 817px 0 2px #fff, 1145px 401px 0 2px #fff, 815px 408px 0 2px #fff, 807px 106px 0 2px #fff, 986px 649px 0 2px #fff, 820px 63px 0 2px #fff, 390px 68px 0 2px #fff, 427px 451px 0 2px #fff, 332px 112px 0 2px #fff, 696px 615px 0 2px #fff, 107px 104px 0 2px #fff, 309px 549px 0 2px #fff, 207px 971px 0 2px #fff, 744px 628px 0 2px #fff, 52px 72px 0 2px #fff, 425px 628px 0 2px #fff, 770px 152px 0 2px #fff, 1299px 258px 0 2px #fff, 711px 616px 0 2px #fff, 745px 485px 0 2px #fff, 251px 118px 0 2px #fff, 999px 477px 0 2px #fff, 983px 495px 0 2px #fff, 638px 87px 0 2px #fff, 295px 104px 0 2px #fff, 1535px 350px 0 2px #fff, 1516px 271px 0 2px #fff, 980px 848px 0 2px #fff, 1417px 165px 0 2px #fff, 1057px 23px 0 2px #fff, 420px 973px 0 2px #fff; animation: twinkle 4.6s ease-in-out infinite 1.2s; }
+  @keyframes twinkle{
+    0%, 100%{ opacity: 0.9; }
+    50%{ opacity: 0.35; }
   }
 
-  .cloud-decor{
+  .moon-decor{
     position: fixed;
-    width: 140px; height: auto;
-    fill: rgba(255,255,255,0.55);
+    top: -70px; right: -70px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 35% 32%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 8%),
+      radial-gradient(circle at 62% 55%, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 10%),
+      radial-gradient(circle at 45% 45%, #fdf3d3 0%, #f3d99a 55%, #e2b768 100%);
+    box-shadow: 0 0 70px 20px rgba(243,217,154,0.35);
     z-index: 0;
     pointer-events: none;
+    animation: glowPulse 7s ease-in-out infinite;
   }
-  .cloud-decor.cloud-1{ top: 8%; left: -10%; animation: driftRight 46s linear infinite; }
-  .cloud-decor.cloud-2{ top: 16%; left: -30%; width: 100px; opacity: 0.8; animation: driftRight 60s linear infinite 4s; }
-  @keyframes driftRight{
-    0%{ transform: translateX(0); }
-    100%{ transform: translateX(130vw); }
+  @keyframes glowPulse{
+    0%, 100%{ box-shadow: 0 0 70px 20px rgba(243,217,154,0.3); }
+    50%{ box-shadow: 0 0 90px 26px rgba(243,217,154,0.45); }
   }
 
-  .palm-decor{
+  .planet-decor{
     position: fixed;
-    bottom: -10px;
-    width: clamp(90px, 20vw, 170px);
-    height: auto;
-    fill: var(--palm-color);
+    bottom: -60px; left: -60px;
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #7fe3d0 0%, #2f9e9c 55%, #146a72 100%);
+    box-shadow: 0 0 60px 18px rgba(63,208,201,0.28);
     z-index: 0;
     pointer-events: none;
   }
-  .palm-decor.palm-left{ left: -20px; transform: scaleX(-1) rotate(6deg); }
-  .palm-decor.palm-right{ right: -20px; transform: rotate(-6deg); }
 
-  .wave-decor{
+  .ufo-decor{
     position: fixed;
-    left: 0; right: 0; bottom: 0;
-    width: 100%; height: clamp(50px, 9vh, 90px);
-    fill: var(--wave-color);
+    width: 74px; height: auto;
     z-index: 0;
     pointer-events: none;
+    animation: driftSide 22s ease-in-out infinite;
+  }
+  .ufo-decor.ufo-1{ top: 20%; left: 8%; }
+  .ufo-decor.ufo-2{ top: 10%; left: 58%; width: 56px; animation-duration: 26s; animation-delay: 2s; }
+  @keyframes driftSide{
+    0%, 100%{ transform: translateX(0) translateY(0); }
+    50%{ transform: translateX(14px) translateY(-8px); }
+  }
+
+  .rocket-decor{
+    position: fixed;
+    top: 12%; right: 14%;
+    width: 70px; height: auto;
+    z-index: 0;
+    pointer-events: none;
+    animation: rocketBob 5s ease-in-out infinite;
+  }
+  @keyframes rocketBob{
+    0%, 100%{ transform: translateY(0) rotate(28deg); }
+    50%{ transform: translateY(-10px) rotate(28deg); }
+  }
+
+  .astronaut-decor{
+    position: fixed;
+    bottom: 6%; left: 6%;
+    width: 90px; height: auto;
+    z-index: 0;
+    pointer-events: none;
+    animation: astronautFloat 8s ease-in-out infinite;
+  }
+  @keyframes astronautFloat{
+    0%, 100%{ transform: translateY(0) rotate(-4deg); }
+    50%{ transform: translateY(-14px) rotate(4deg); }
   }
 
   /* keep real content above the decorations */
@@ -127,13 +160,40 @@
     z-index: 1;
   }
 
+  .fullscreen-btn{
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(6px);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+  .fullscreen-btn:hover{ background: rgba(255,255,255,0.3); }
+  .fullscreen-btn:active{ transform: scale(0.94); }
+  .fullscreen-btn svg{ width: 20px; height: 20px; }
+
   @media (max-width: 560px){
-    .sun-decor{ width: 190px; height: 190px; top: -60px; right: -50px; }
-    .palm-decor{ display: none; }
+    .moon-decor{ width: 160px; height: 160px; top: -50px; right: -50px; }
+    .planet-decor{ width: 130px; height: 130px; bottom: -40px; left: -40px; }
+    .astronaut-decor, .rocket-decor{ width: 58px; }
+    .ufo-decor{ width: 48px; }
   }
 
   @media (max-height: 560px){
-    .cloud-decor, .palm-decor{ display: none; }
+    .ufo-decor, .astronaut-decor, .rocket-decor, .planet-decor{ display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .stars-layer .stars-a, .stars-layer .stars-b, .moon-decor, .ufo-decor, .rocket-decor, .astronaut-decor{ animation: none; }
   }
 
   /* ---------- Preset pills (unchanged) ---------- */
@@ -174,11 +234,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 12px 18px;
+    gap: 3px;
+    padding: 12px 16px;
   }
   .pill.custom-pill input{
-    width: 5.6ch;
     background: transparent;
     border: none;
     outline: none;
@@ -190,8 +249,11 @@
     text-align: center;
     padding: 0;
   }
+  .pill.custom-pill input#customMinInput{ width: 3.2ch; }
+  .pill.custom-pill input#customSecInput{ width: 2.2ch; }
   .pill.custom-pill input::placeholder{ color: inherit; opacity: 0.55; }
-  .pill.custom-pill span.unit{ font-size: 14px; opacity: 0.75; }
+  .pill.custom-pill span.unit{ font-size: 13px; opacity: 0.75; }
+  .pill.custom-pill span.sep{ font-size: 14px; opacity: 0.4; margin: 0 1px; }
 
   /* ---------- Flip clock ---------- */
   .clock-wrap{
@@ -416,25 +478,55 @@
 </head>
 <body>
 
-  <div class="sun-decor" aria-hidden="true"></div>
-  <svg class="cloud-decor cloud-1" aria-hidden="true" viewBox="0 0 120 50">
-    <ellipse cx="30" cy="30" rx="28" ry="16"/>
-    <ellipse cx="60" cy="22" rx="24" ry="20"/>
-    <ellipse cx="88" cy="30" rx="22" ry="14"/>
+  <div class="stars-layer" aria-hidden="true">
+    <div class="stars-a"></div>
+    <div class="stars-b"></div>
+  </div>
+  <div class="moon-decor" aria-hidden="true"></div>
+  <div class="planet-decor" aria-hidden="true"></div>
+
+  <button class="fullscreen-btn" id="fullscreenBtn" aria-label="Toggle fullscreen" title="Toggle fullscreen">
+    <svg id="fullscreenIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>
+    </svg>
+  </button>
+
+  <svg class="ufo-decor ufo-1" aria-hidden="true" viewBox="0 0 100 44">
+    <ellipse cx="50" cy="26" rx="46" ry="12" fill="#16254a"/>
+    <ellipse cx="50" cy="18" rx="24" ry="14" fill="#22335e"/>
+    <rect x="30" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
+    <rect x="45" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
+    <rect x="60" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
   </svg>
-  <svg class="cloud-decor cloud-2" aria-hidden="true" viewBox="0 0 120 50">
-    <ellipse cx="30" cy="30" rx="28" ry="16"/>
-    <ellipse cx="60" cy="22" rx="24" ry="20"/>
-    <ellipse cx="88" cy="30" rx="22" ry="14"/>
+  <svg class="ufo-decor ufo-2" aria-hidden="true" viewBox="0 0 100 44">
+    <ellipse cx="50" cy="26" rx="46" ry="12" fill="#16254a"/>
+    <ellipse cx="50" cy="18" rx="24" ry="14" fill="#22335e"/>
+    <rect x="30" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
+    <rect x="45" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
+    <rect x="60" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
   </svg>
-  <svg class="palm-decor palm-left" aria-hidden="true" viewBox="0 0 200 220">
-    <path d="M20 220 C 30 150, 40 90, 55 40 C 20 55, -10 45, -25 15 C 5 30, 35 25, 55 40 C 15 15, 0 -15, 5 -40 C 30 -15, 45 15, 55 40 C 60 5, 85 -15, 115 -20 C 95 5, 75 30, 55 40 C 90 30, 120 40, 140 65 C 105 55, 75 55, 55 40 L 45 220 Z" />
+
+  <svg class="rocket-decor" aria-hidden="true" viewBox="0 0 60 120">
+    <path d="M30 4 C42 20 46 46 42 74 L18 74 C14 46 18 20 30 4 Z" fill="#f2523a"/>
+    <path d="M30 10 C39 24 42 46 39 68 L21 68 C18 46 21 24 30 10 Z" fill="#ffcf4d"/>
+    <circle cx="30" cy="38" r="8" fill="#16254a"/>
+    <path d="M18 60 L4 84 L18 78 Z" fill="#c8391f"/>
+    <path d="M42 60 L56 84 L42 78 Z" fill="#c8391f"/>
+    <path d="M22 74 L38 74 L34 96 L26 96 Z" fill="#e3e8f0"/>
+    <path d="M25 96 C25 108 30 116 30 116 C30 116 35 108 35 96 Z" fill="#ffb35c"/>
   </svg>
-  <svg class="palm-decor palm-right" aria-hidden="true" viewBox="0 0 200 220">
-    <path d="M20 220 C 30 150, 40 90, 55 40 C 20 55, -10 45, -25 15 C 5 30, 35 25, 55 40 C 15 15, 0 -15, 5 -40 C 30 -15, 45 15, 55 40 C 60 5, 85 -15, 115 -20 C 95 5, 75 30, 55 40 C 90 30, 120 40, 140 65 C 105 55, 75 55, 55 40 L 45 220 Z" />
-  </svg>
-  <svg class="wave-decor" aria-hidden="true" viewBox="0 0 800 80" preserveAspectRatio="none">
-    <path d="M0 40 C 100 10, 200 70, 300 40 S 500 10, 600 40 S 750 60, 800 40 V80 H0 Z"/>
+
+  <svg class="astronaut-decor" aria-hidden="true" viewBox="0 0 100 120">
+    <ellipse cx="50" cy="98" rx="30" ry="8" fill="#0b1638" opacity="0.25"/>
+    <circle cx="50" cy="38" r="26" fill="#eef2f8"/>
+    <circle cx="50" cy="40" r="18" fill="#16254a"/>
+    <circle cx="55" cy="35" r="5" fill="#3a5aa8" opacity="0.6"/>
+    <rect x="28" y="58" width="44" height="38" rx="16" fill="#eef2f8"/>
+    <rect x="14" y="62" width="16" height="22" rx="8" fill="#eef2f8"/>
+    <rect x="70" y="62" width="16" height="22" rx="8" fill="#eef2f8"/>
+    <rect x="34" y="92" width="14" height="20" rx="7" fill="#eef2f8"/>
+    <rect x="52" y="92" width="14" height="20" rx="7" fill="#eef2f8"/>
+    <circle cx="50" cy="76" r="6" fill="#ff7a3d"/>
   </svg>
 
   <div class="presets" id="presets">
@@ -442,8 +534,11 @@
     <button class="pill" data-mins="10">10 mins</button>
     <button class="pill" data-mins="20">20 mins</button>
     <label class="pill custom-pill" id="customPill">
-      <input id="customInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="—">
-      <span class="unit">mins</span>
+      <input id="customMinInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="00">
+      <span class="unit">m</span>
+      <span class="sep">:</span>
+      <input id="customSecInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" placeholder="00">
+      <span class="unit">s</span>
     </label>
   </div>
 
@@ -466,7 +561,7 @@
 
   <div class="home-indicator"></div>
 
-  <div class="hint">Pick a preset or type a custom number of minutes to start the timer.</div>
+  <div class="hint">Pick a preset or set a custom minutes and seconds to start the timer.</div>
 
 <script>
 (function(){
@@ -490,6 +585,38 @@
   }
 
   setBackground(BACKGROUND_IMAGE_URL);
+
+  /* =========================================================
+     FULLSCREEN TOGGLE
+  ========================================================= */
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const fullscreenIcon = document.getElementById('fullscreenIcon');
+  const ENTER_ICON = '<path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>';
+  const EXIT_ICON = '<path d="M4 8V5a2 2 0 0 1 2-2h3M20 8V5a2 2 0 0 0-2-2h-3M4 16v3a2 2 0 0 0 2 2h3M20 16v3a2 2 0 0 1-2 2h-3"/>';
+
+  function isFullscreen(){
+    return !!document.fullscreenElement;
+  }
+
+  function updateFullscreenIcon(){
+    fullscreenIcon.innerHTML = isFullscreen() ? EXIT_ICON : ENTER_ICON;
+  }
+
+  fullscreenBtn.addEventListener('click', () => {
+    if (!isFullscreen()){
+      document.documentElement.requestFullscreen?.().catch(() => {});
+    } else {
+      document.exitFullscreen?.().catch(() => {});
+    }
+  });
+
+  document.addEventListener('fullscreenchange', updateFullscreenIcon);
+  updateFullscreenIcon();
+
+  // Hide the button entirely if the browser has no Fullscreen API support
+  if (!document.documentElement.requestFullscreen){
+    fullscreenBtn.style.display = 'none';
+  }
 
   /* =========================================================
      FLIP TILES — build the 4 units (Days/Hours/Minutes/Seconds)
@@ -608,7 +735,8 @@
   const pauseBtnIconPath = document.getElementById('pauseBtnIconPath');
   const presetsWrap = document.getElementById('presets');
   const customPill = document.getElementById('customPill');
-  const customInput = document.getElementById('customInput');
+  const customMinInput = document.getElementById('customMinInput');
+  const customSecInput = document.getElementById('customSecInput');
   const statusDot = document.getElementById('statusDot');
 
   const PLAY_PATH = "M8 5v14l11-7z";
@@ -686,10 +814,10 @@
     setToggleIcon(false);
   }
 
-  function startTimer(minutes, sourcePill){
-    if (!minutes || minutes <= 0) return;
+  function startTimer(seconds, sourcePill){
+    if (!seconds || seconds <= 0) return;
     clearInterval(intervalId);
-    totalSeconds = Math.round(minutes * 60);
+    totalSeconds = Math.round(seconds);
     remaining = totalSeconds;
     renderClock(true);
     stopBtn.disabled = false;
@@ -701,25 +829,36 @@
   // Preset buttons
   presetsWrap.querySelectorAll('.pill[data-mins]').forEach(btn => {
     btn.addEventListener('click', () => {
-      customInput.value = "";
-      startTimer(Number(btn.dataset.mins), btn);
+      customMinInput.value = "";
+      customSecInput.value = "";
+      startTimer(Number(btn.dataset.mins) * 60, btn);
     });
   });
 
-  // Custom minutes input (numeric-only text field, avoids native number-input width quirks)
+  // Custom minutes + seconds inputs (numeric-only text fields, avoids native
+  // number-input width quirks)
   function commitCustom(){
-    const val = Number(customInput.value);
-    if (val > 0){
-      startTimer(val, customPill);
+    const mins = Number(customMinInput.value) || 0;
+    const secs = Number(customSecInput.value) || 0;
+    const total = mins * 60 + secs;
+    if (total > 0){
+      startTimer(total, customPill);
     }
   }
-  customInput.addEventListener('input', () => {
-    customInput.value = customInput.value.replace(/[^0-9]/g, '').slice(0, 6);
+  customMinInput.addEventListener('input', () => {
+    customMinInput.value = customMinInput.value.replace(/[^0-9]/g, '').slice(0, 6);
   });
-  customInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') commitCustom();
+  customSecInput.addEventListener('input', () => {
+    let digits = customSecInput.value.replace(/[^0-9]/g, '').slice(0, 2);
+    if (digits !== '' && Number(digits) > 59) digits = '59';
+    customSecInput.value = digits;
   });
-  customInput.addEventListener('change', commitCustom);
+  [customMinInput, customSecInput].forEach(input => {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') commitCustom();
+    });
+    input.addEventListener('change', commitCustom);
+  });
 
   // Pause / Resume button
   pauseBtn.addEventListener('click', () => {
