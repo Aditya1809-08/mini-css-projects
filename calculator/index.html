@@ -2,331 +2,81 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Calculator</title>
 <style>
-  * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
-  html, body {
-    height: 100%;
-    overscroll-behavior: none;
-  }
-
-  body {
-    margin: 0;
-    min-height: 100dvh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: linear-gradient(160deg, #05070d 0%, #0d1220 30%, #1b2a45 65%, #2f4a6b 100%);
-    padding: 20px 14px;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-
-  .phone {
-    width: 100%;
-    max-width: 340px;
-    background: linear-gradient(180deg, #05060a 0%, #0b1120 55%, #16223a 100%);
-    border-radius: 44px;
-    padding: 18px;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
-  }
-
-  .status {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 10px 18px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #f4f6fa;
-  }
-
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  html, body { min-height: 100%; overscroll-behavior: none; }
+  body { margin: 0; min-height: 100dvh; display: flex; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: linear-gradient(160deg, #05070d 0%, #0d1220 30%, #1b2a45 65%, #2f4a6b 100%); padding: clamp(12px, 4vw, 48px); -webkit-user-select: none; user-select: none; }
+  .phone { width: min(100%, 520px); background: linear-gradient(180deg, #05060a 0%, #0b1120 55%, #16223a 100%); border-radius: clamp(24px, 5vw, 44px); padding: clamp(14px, 3vw, 24px); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55); }
+  .status { display: flex; justify-content: space-between; align-items: center; padding: clamp(4px, 1.5vw, 8px) clamp(8px, 2vw, 12px) clamp(14px, 3vw, 20px); font-size: clamp(12px, 2vw, 14px); font-weight: 600; color: #f4f6fa; }
   .status .icons { display: flex; gap: 5px; align-items: center; }
   .status .icons span { width: 4px; height: 10px; background: #f4f6fa; border-radius: 1px; display: inline-block; }
-
-  .card {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border-radius: 28px;
-    padding: 22px 20px 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  }
-
-  .label {
-    font-size: 13px;
-    color: #8ea0bd;
-    font-weight: 500;
-    margin: 0 0 6px;
-  }
-
-  .display {
-    text-align: right;
-    padding: 4px 4px 18px;
-    word-break: break-all;
-  }
-
-  .expression {
-    font-size: 15px;
-    color: #7f92b0;
-    min-height: 20px;
-    font-weight: 500;
-  }
-
-  .result {
-    font-size: 40px;
-    font-weight: 600;
-    color: #f4f6fa;
-    line-height: 1.15;
-    margin-top: 2px;
-  }
-
-  .pad {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
-
-  button {
-    border: none;
-    font-size: 19px;
-    font-weight: 500;
-    border-radius: 18px;
-    height: 62px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: transform 0.08s ease, filter 0.15s ease, background 0.15s ease;
-    color: #f4f6fa;
-    will-change: transform;
-  }
-
-  button:active,
-  button.pressed {
-    transform: scale(0.92);
-    filter: brightness(1.25);
-  }
-
-  .num {
-    background: rgba(255, 255, 255, 0.1);
-  }
+  .card { background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-radius: clamp(20px, 4vw, 30px); padding: clamp(18px, 4vw, 28px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
+  .label { font-size: clamp(12px, 2vw, 14px); color: #8ea0bd; font-weight: 500; margin: 0 0 6px; }
+  .display { text-align: right; padding: 4px 4px clamp(16px, 4vw, 24px); min-height: clamp(110px, 20vw, 150px); display: flex; flex-direction: column; justify-content: flex-end; word-break: break-all; }
+  .expression { font-size: clamp(14px, 2.5vw, 18px); color: #7f92b0; min-height: 22px; font-weight: 500; }
+  .result { font-size: clamp(36px, 7vw, 58px); font-weight: 600; color: #f4f6fa; line-height: 1.15; margin-top: 2px; }
+  .pad { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(7px, 1.6vw, 12px); }
+  button { border: none; font-size: clamp(17px, 3vw, 22px); font-weight: 500; border-radius: clamp(14px, 3vw, 20px); min-height: clamp(54px, 10vw, 78px); height: auto; cursor: pointer; font-family: inherit; transition: transform 0.08s ease, filter 0.15s ease, background 0.15s ease; color: #f4f6fa; will-change: transform; }
+  button:active, button.pressed { transform: scale(0.92); filter: brightness(1.25); }
+  .num { background: rgba(255, 255, 255, 0.1); }
   .num:hover { background: rgba(255, 255, 255, 0.16); }
-
-  .op {
-    background: rgba(111, 168, 186, 0.2);
-    color: #bcd6e6;
-  }
+  .op { background: rgba(111, 168, 186, 0.2); color: #bcd6e6; }
   .op:hover { background: rgba(111, 168, 186, 0.32); }
-
-  .op.active {
-    background: #f4f6fa;
-    color: #0b1120;
-  }
-
-  .fn {
-    background: rgba(255, 255, 255, 0.06);
-    color: #9fb0c8;
-    font-size: 17px;
-  }
+  .op.active { background: #f4f6fa; color: #0b1120; }
+  .fn { background: rgba(255, 255, 255, 0.06); color: #9fb0c8; font-size: clamp(15px, 2.6vw, 19px); }
   .fn:hover { background: rgba(255, 255, 255, 0.12); }
-
-  .equals {
-    background: #f4f6fa;
-    color: #0b1120;
-    grid-column: span 2;
-  }
+  .equals { background: #f4f6fa; color: #0b1120; grid-column: span 2; }
   .equals:hover { filter: brightness(0.92); }
-
   .zero { grid-column: span 2; }
+  @media (max-height: 600px) and (orientation: landscape) {
+    body { padding: 10px 16px; }
+    .phone { width: min(760px, 100%); padding: 10px 14px; }
+    .status { padding-bottom: 8px; }
+    .card { display: grid; grid-template-columns: minmax(220px, 0.85fr) minmax(280px, 1.15fr); gap: 18px; align-items: stretch; }
+    .display { min-height: 0; padding: 12px 4px; }
+  }
+  @media (min-width: 900px) { .phone { width: min(520px, 55vw); } }
+  @media (max-width: 360px) { body { padding: 8px; } .phone { padding: 12px; } .card { padding: 16px; } .pad { gap: 6px; } }
 </style>
 </head>
 <body>
-
 <div class="phone">
-  <div class="status">
-    <span id="clock">19:30</span>
-    <div class="icons"><span></span><span></span><span></span><span style="height:12px"></span></div>
-  </div>
-
+  <div class="status"><span id="clock">19:30</span><div class="icons"><span></span><span></span><span></span><span style="height:12px"></span></div></div>
   <div class="card">
     <p class="label">Calculator</p>
-    <div class="display">
-      <div class="expression" id="expression">&nbsp;</div>
-      <div class="result" id="result">0</div>
-    </div>
-
+    <div class="display"><div class="expression" id="expression">&nbsp;</div><div class="result" id="result">0</div></div>
     <div class="pad">
-      <button class="fn" data-action="clear">AC</button>
-      <button class="fn" data-action="sign">+/-</button>
-      <button class="fn" data-action="percent">%</button>
-      <button class="op" data-op="÷">÷</button>
-
-      <button class="num" data-num="7">7</button>
-      <button class="num" data-num="8">8</button>
-      <button class="num" data-num="9">9</button>
-      <button class="op" data-op="×">×</button>
-
-      <button class="num" data-num="4">4</button>
-      <button class="num" data-num="5">5</button>
-      <button class="num" data-num="6">6</button>
-      <button class="op" data-op="−">−</button>
-
-      <button class="num" data-num="1">1</button>
-      <button class="num" data-num="2">2</button>
-      <button class="num" data-num="3">3</button>
-      <button class="op" data-op="+">+</button>
-
-      <button class="num zero" data-num="0">0</button>
-      <button class="num" data-action="decimal">.</button>
-      <button class="equals" data-action="equals">=</button>
+      <button class="fn" data-action="clear">AC</button><button class="fn" data-action="sign">+/-</button><button class="fn" data-action="percent">%</button><button class="op" data-op="÷">÷</button>
+      <button class="num" data-num="7">7</button><button class="num" data-num="8">8</button><button class="num" data-num="9">9</button><button class="op" data-op="×">×</button>
+      <button class="num" data-num="4">4</button><button class="num" data-num="5">5</button><button class="num" data-num="6">6</button><button class="op" data-op="−">−</button>
+      <button class="num" data-num="1">1</button><button class="num" data-num="2">2</button><button class="num" data-num="3">3</button><button class="op" data-op="+">+</button>
+      <button class="num zero" data-num="0">0</button><button class="num" data-action="decimal">.</button><button class="equals" data-action="equals">=</button>
     </div>
   </div>
 </div>
-
 <script>
-  const resultEl = document.getElementById('result');
-  const expressionEl = document.getElementById('expression');
-
-  let current = '0';
-  let previous = null;
-  let operator = null;
-  let overwrite = true;
-
-  function updateDisplay() {
-    resultEl.textContent = formatNumber(current);
-    expressionEl.textContent = previous !== null
-      ? `${formatNumber(previous)} ${operator}`
-      : '\u00A0';
-    document.querySelectorAll('.op').forEach(b =>
-      b.classList.toggle('active', b.dataset.op === operator)
-    );
-  }
-
-  function formatNumber(numStr) {
-    if (numStr === 'Error') return numStr;
-    const [intPart, decPart] = numStr.split('.');
-    const withCommas = Number(intPart).toLocaleString('en-US');
-    return decPart !== undefined ? `${withCommas}.${decPart}` : withCommas;
-  }
-
-  function inputNum(n) {
-    if (overwrite) {
-      current = n === '.' ? '0.' : n;
-      overwrite = false;
-    } else {
-      if (n === '.' && current.includes('.')) return;
-      current = current === '0' && n !== '.' ? n : current + n;
-    }
-  }
-
-  function compute(a, b, op) {
-    a = parseFloat(a);
-    b = parseFloat(b);
-    switch (op) {
-      case '+': return a + b;
-      case '−': return a - b;
-      case '×': return a * b;
-      case '÷': return b === 0 ? NaN : a / b;
-      default: return b;
-    }
-  }
-
-  function setOperator(op) {
-    if (operator && !overwrite) {
-      const res = compute(previous, current, operator);
-      current = isNaN(res) ? 'Error' : String(res);
-    }
-    previous = current;
-    operator = op;
-    overwrite = true;
-  }
-
-  function equals() {
-    if (operator === null) return;
-    const res = compute(previous, current, operator);
-    current = isNaN(res) ? 'Error' : String(res);
-    previous = null;
-    operator = null;
-    overwrite = true;
-  }
-
-  function clearAll() {
-    current = '0';
-    previous = null;
-    operator = null;
-    overwrite = true;
-  }
-
-  document.querySelectorAll('[data-num]').forEach(btn =>
-    btn.addEventListener('click', () => { inputNum(btn.dataset.num); updateDisplay(); })
-  );
-
-  document.querySelectorAll('[data-op]').forEach(btn =>
-    btn.addEventListener('click', () => { setOperator(btn.dataset.op); updateDisplay(); })
-  );
-
-  document.querySelector('[data-action="equals"]').addEventListener('click', () => {
-    equals(); updateDisplay();
-  });
-
-  document.querySelector('[data-action="clear"]').addEventListener('click', () => {
-    clearAll(); updateDisplay();
-  });
-
-  document.querySelector('[data-action="decimal"]').addEventListener('click', () => {
-    inputNum('.'); updateDisplay();
-  });
-
-  document.querySelector('[data-action="sign"]').addEventListener('click', () => {
-    if (current !== '0' && current !== 'Error') current = String(parseFloat(current) * -1);
-    updateDisplay();
-  });
-
-  document.querySelector('[data-action="percent"]').addEventListener('click', () => {
-    if (current !== 'Error') current = String(parseFloat(current) / 100);
-    updateDisplay();
-  });
-
-  document.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('touchstart', () => btn.classList.add('pressed'), { passive: true });
-    ['touchend', 'touchcancel'].forEach(evt =>
-      btn.addEventListener(evt, () => btn.classList.remove('pressed'), { passive: true })
-    );
-  });
-
-  window.addEventListener('keydown', (e) => {
-    if (e.key >= '0' && e.key <= '9') { inputNum(e.key); updateDisplay(); }
-    else if (e.key === '.') { inputNum('.'); updateDisplay(); }
-    else if (e.key === '+') { setOperator('+'); updateDisplay(); }
-    else if (e.key === '-') { setOperator('−'); updateDisplay(); }
-    else if (e.key === '*') { setOperator('×'); updateDisplay(); }
-    else if (e.key === '/') { e.preventDefault(); setOperator('÷'); updateDisplay(); }
-    else if (e.key === 'Enter' || e.key === '=') { equals(); updateDisplay(); }
-    else if (e.key === 'Escape') { clearAll(); updateDisplay(); }
-    else if (e.key === 'Backspace') {
-      current = current.length > 1 ? current.slice(0, -1) : '0';
-      updateDisplay();
-    }
-  });
-
-  function setClock() {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    document.getElementById('clock').textContent = `${h}:${m}`;
-  }
-  setClock();
-  setInterval(setClock, 30000);
-
-  updateDisplay();
+  const resultEl = document.getElementById('result'); const expressionEl = document.getElementById('expression');
+  let current = '0', previous = null, operator = null, overwrite = true;
+  function updateDisplay() { resultEl.textContent = formatNumber(current); expressionEl.textContent = previous !== null ? `${formatNumber(previous)} ${operator}` : '\u00A0'; document.querySelectorAll('.op').forEach(b => b.classList.toggle('active', b.dataset.op === operator)); }
+  function formatNumber(numStr) { if (numStr === 'Error') return numStr; const [intPart, decPart] = numStr.split('.'); const withCommas = Number(intPart).toLocaleString('en-US'); return decPart !== undefined ? `${withCommas}.${decPart}` : withCommas; }
+  function inputNum(n) { if (overwrite) { current = n === '.' ? '0.' : n; overwrite = false; } else { if (n === '.' && current.includes('.')) return; current = current === '0' && n !== '.' ? n : current + n; } }
+  function compute(a, b, op) { a = parseFloat(a); b = parseFloat(b); switch (op) { case '+': return a + b; case '−': return a - b; case '×': return a * b; case '÷': return b === 0 ? NaN : a / b; default: return b; } }
+  function setOperator(op) { if (operator && !overwrite) { const res = compute(previous, current, operator); current = isNaN(res) ? 'Error' : String(res); } previous = current; operator = op; overwrite = true; }
+  function equals() { if (operator === null) return; const res = compute(previous, current, operator); current = isNaN(res) ? 'Error' : String(res); previous = null; operator = null; overwrite = true; }
+  function clearAll() { current = '0'; previous = null; operator = null; overwrite = true; }
+  document.querySelectorAll('[data-num]').forEach(btn => btn.addEventListener('click', () => { inputNum(btn.dataset.num); updateDisplay(); }));
+  document.querySelectorAll('[data-op]').forEach(btn => btn.addEventListener('click', () => { setOperator(btn.dataset.op); updateDisplay(); }));
+  document.querySelector('[data-action="equals"]').addEventListener('click', () => { equals(); updateDisplay(); });
+  document.querySelector('[data-action="clear"]').addEventListener('click', () => { clearAll(); updateDisplay(); });
+  document.querySelector('[data-action="decimal"]').addEventListener('click', () => { inputNum('.'); updateDisplay(); });
+  document.querySelector('[data-action="sign"]').addEventListener('click', () => { if (current !== '0' && current !== 'Error') current = String(parseFloat(current) * -1); updateDisplay(); });
+  document.querySelector('[data-action="percent"]').addEventListener('click', () => { if (current !== 'Error') current = String(parseFloat(current) / 100); updateDisplay(); });
+  document.querySelectorAll('button').forEach(btn => { btn.addEventListener('touchstart', () => btn.classList.add('pressed'), { passive: true }); ['touchend', 'touchcancel'].forEach(evt => btn.addEventListener(evt, () => btn.classList.remove('pressed'), { passive: true })); });
+  window.addEventListener('keydown', (e) => { if (e.key >= '0' && e.key <= '9') { inputNum(e.key); updateDisplay(); } else if (e.key === '.') { inputNum('.'); updateDisplay(); } else if (e.key === '+') { setOperator('+'); updateDisplay(); } else if (e.key === '-') { setOperator('−'); updateDisplay(); } else if (e.key === '*') { setOperator('×'); updateDisplay(); } else if (e.key === '/') { e.preventDefault(); setOperator('÷'); updateDisplay(); } else if (e.key === 'Enter' || e.key === '=') { equals(); updateDisplay(); } else if (e.key === 'Escape') { clearAll(); updateDisplay(); } else if (e.key === 'Backspace') { current = current.length > 1 ? current.slice(0, -1) : '0'; updateDisplay(); } });
+  function setClock() { const now = new Date(); const h = String(now.getHours()).padStart(2, '0'); const m = String(now.getMinutes()).padStart(2, '0'); document.getElementById('clock').textContent = `${h}:${m}`; }
+  setClock(); setInterval(setClock, 30000); updateDisplay();
 </script>
-
 </body>
 </html>
