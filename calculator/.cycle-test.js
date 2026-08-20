@@ -1,1 +1,1 @@
-const cycle = 18;
+const cycle = 19;
