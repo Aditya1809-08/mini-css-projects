@@ -1,1 +1,1 @@
-const cycle = 6;
+const cycle = 7;
