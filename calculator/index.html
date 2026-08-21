@@ -23,7 +23,6 @@
       box-sizing: border-box;
     }
 
-    /* Temporary commit test: keep calculator unchanged visually. */
     html,
     body {
       min-height: 100%;
@@ -437,107 +436,56 @@
     </main>
 
     <footer class="footer">
-      <span><strong>Keyboard:</strong> 0-9, +, -, *, /, %, Enter, Esc</span>
+      <span>Calculate. Simplify. Conquer.</span>
+      <span>Built with <strong>HTML, CSS &amp; JavaScript</strong></span>
     </footer>
   </div>
 
   <script>
     const resultEl = document.getElementById('result');
     const expressionEl = document.getElementById('expression');
-    const buttons = [...document.querySelectorAll('button')];
 
     let current = '0';
-    let stored = null;
+    let previous = null;
     let operator = null;
-    let waitingForOperand = false;
-    let justEvaluated = false;
-
-    const operatorMap = {
-      '+': '+',
-      '-': '−',
-      '*': '×',
-      '/': '÷'
-    };
-
-    function formatNumber(value) {
-      if (!Number.isFinite(value)) return 'Error';
-      const rounded = Math.round((value + Number.EPSILON) * 1e12) / 1e12;
-      return String(rounded);
-    }
+    let overwrite = true;
 
     function updateDisplay() {
-      resultEl.textContent = current;
-      expressionEl.textContent = stored !== null && operator
-        ? `${stored} ${operator}`
-        : '\u00a0';
+      resultEl.textContent = formatNumber(current);
+      expressionEl.textContent = previous !== null
+        ? `${formatNumber(previous)} ${operator}`
+        : '\u00A0';
 
-      buttons.forEach((button) => button.classList.remove('active'));
-      const activeOperator = buttons.find((button) => button.dataset.op === operator);
-      if (activeOperator) activeOperator.classList.add('active');
+      document.querySelectorAll('.op').forEach(button => {
+        button.classList.toggle('active', button.dataset.op === operator);
+      });
     }
 
-    function inputNumber(num) {
-      if (current === 'Error' || justEvaluated) {
-        current = num;
-        stored = null;
-        operator = null;
-        waitingForOperand = false;
-        justEvaluated = false;
-        updateDisplay();
-        return;
-      }
+    function formatNumber(value) {
+      if (value === 'Error') return value;
 
-      if (waitingForOperand) {
-        current = num;
-        waitingForOperand = false;
+      const [integer, decimal] = value.split('.');
+      const formattedInteger = Number(integer).toLocaleString('en-US');
+
+      return decimal !== undefined
+        ? `${formattedInteger}.${decimal}`
+        : formattedInteger;
+    }
+
+    function inputNum(number) {
+      if (overwrite) {
+        current = number === '.' ? '0.' : number;
+        overwrite = false;
       } else {
-        current = current === '0' ? num : current + num;
+        if (number === '.' && current.includes('.')) return;
+        current = current === '0' && number !== '.' ? number : current + number;
       }
-      updateDisplay();
     }
 
-    function inputDecimal() {
-      if (current === 'Error' || justEvaluated) {
-        current = '0.';
-        stored = null;
-        operator = null;
-        waitingForOperand = false;
-        justEvaluated = false;
-        updateDisplay();
-        return;
-      }
+    function compute(a, b, op) {
+      a = parseFloat(a);
+      b = parseFloat(b);
 
-      if (waitingForOperand) {
-        current = '0.';
-        waitingForOperand = false;
-      } else if (!current.includes('.')) {
-        current += '.';
-      }
-      updateDisplay();
-    }
-
-    function clearAll() {
-      current = '0';
-      stored = null;
-      operator = null;
-      waitingForOperand = false;
-      justEvaluated = false;
-      updateDisplay();
-    }
-
-    function toggleSign() {
-      if (current === '0' || current === 'Error') return;
-      current = current.startsWith('-') ? current.slice(1) : `-${current}`;
-      updateDisplay();
-    }
-
-    function percent() {
-      if (current === 'Error') return;
-      current = formatNumber(Number(current) / 100);
-      updateDisplay();
-    }
-
-    function calculate(a, b, op) {
       switch (op) {
         case '+': return a + b;
         case '−': return a - b;
@@ -547,113 +495,116 @@
       }
     }
 
-    function chooseOperator(nextOperator) {
-      if (current === 'Error') return;
-
-      const inputValue = Number(current);
-      if (stored === null) {
-        stored = inputValue;
-      } else if (operator && !waitingForOperand) {
-        const result = calculate(stored, inputValue, operator);
-        stored = result;
-        current = formatNumber(result);
+    function setOperator(op) {
+      if (operator && !overwrite) {
+        const result = compute(previous, current, operator);
+        current = Number.isNaN(result) ? 'Error' : String(result);
       }
 
-      operator = nextOperator;
-      waitingForOperand = true;
-      justEvaluated = false;
-      updateDisplay();
+      previous = current;
+      operator = op;
+      overwrite = true;
     }
 
     function equals() {
-      if (current === 'Error' || stored === null || !operator) return;
+      if (operator === null) return;
 
-      const result = calculate(stored, Number(current), operator);
-      current = formatNumber(result);
-      stored = null;
+      const result = compute(previous, current, operator);
+      current = Number.isNaN(result) ? 'Error' : String(result);
+      previous = null;
       operator = null;
-      waitingForOperand = false;
-      justEvaluated = true;
-      updateDisplay();
+      overwrite = true;
     }
 
-    function handleAction(action) {
-      switch (action) {
-        case 'clear': clearAll(); break;
-        case 'sign': toggleSign(); break;
-        case 'percent': percent(); break;
-        case 'decimal': inputDecimal(); break;
-        case 'equals': equals(); break;
-      }
+    function clearAll() {
+      current = '0';
+      previous = null;
+      operator = null;
+      overwrite = true;
     }
 
-    function pressButton(button) {
-      button.classList.add('pressed');
-      setTimeout(() => button.classList.remove('pressed'), 100);
-    }
-
-    buttons.forEach((button) => {
+    document.querySelectorAll('[data-num]').forEach(button => {
       button.addEventListener('click', () => {
-        pressButton(button);
-        if (button.dataset.num !== undefined) {
-          inputNumber(button.dataset.num);
-        } else if (button.dataset.op) {
-          chooseOperator(button.dataset.op);
-        } else if (button.dataset.action) {
-          handleAction(button.dataset.action);
-        }
+        inputNum(button.dataset.num);
+        updateDisplay();
       });
     });
 
-    window.addEventListener('keydown', (event) => {
-      const key = event.key;
+    document.querySelectorAll('[data-op]').forEach(button => {
+      button.addEventListener('click', () => {
+        setOperator(button.dataset.op);
+        updateDisplay();
+      });
+    });
 
-      if (/^[0-9]$/.test(key)) {
-        const button = buttons.find((item) => item.dataset.num === key);
-        if (button) pressButton(button);
-        inputNumber(key);
-        return;
+    document.querySelector('[data-action="equals"]').addEventListener('click', () => {
+      equals();
+      updateDisplay();
+    });
+
+    document.querySelector('[data-action="clear"]').addEventListener('click', () => {
+      clearAll();
+      updateDisplay();
+    });
+
+    document.querySelector('[data-action="decimal"]').addEventListener('click', () => {
+      inputNum('.');
+      updateDisplay();
+    });
+
+    document.querySelector('[data-action="sign"]').addEventListener('click', () => {
+      if (current !== '0' && current !== 'Error') {
+        current = String(parseFloat(current) * -1);
       }
+      updateDisplay();
+    });
 
-      if (key === '.') {
-        const button = buttons.find((item) => item.dataset.action === 'decimal');
-        if (button) pressButton(button);
-        inputDecimal();
-        return;
+    document.querySelector('[data-action="percent"]').addEventListener('click', () => {
+      if (current !== 'Error') {
+        current = String(parseFloat(current) / 100);
       }
+      updateDisplay();
+    });
 
-      if (operatorMap[key]) {
-        const button = buttons.find((item) => item.dataset.op === operatorMap[key]);
-        if (button) pressButton(button);
-        chooseOperator(operatorMap[key]);
+    document.querySelectorAll('button').forEach(button => {
+      button.addEventListener('touchstart', () => {
+        button.classList.add('pressed');
+      }, { passive: true });
+
+      ['touchend', 'touchcancel'].forEach(event => {
+        button.addEventListener(event, () => {
+          button.classList.remove('pressed');
+        }, { passive: true });
+      });
+    });
+
+    window.addEventListener('keydown', event => {
+      if (event.key >= '0' && event.key <= '9') {
+        inputNum(event.key);
+        updateDisplay();
+      } else if (event.key === '.') {
+        inputNum('.');
+        updateDisplay();
+      } else if (event.key === '+') {
+        setOperator('+');
+        updateDisplay();
+      } else if (event.key === '-') {
+        setOperator('−');
+        updateDisplay();
+      } else if (event.key === '*') {
+        setOperator('×');
+        updateDisplay();
+      } else if (event.key === '/') {
         event.preventDefault();
-        return;
-      }
-
-      if (key === 'Enter' || key === '=') {
-        const button = buttons.find((item) => item.dataset.action === 'equals');
-        if (button) pressButton(button);
+        setOperator('÷');
+        updateDisplay();
+      } else if (event.key === 'Enter' || event.key === '=') {
         equals();
-        event.preventDefault();
-        return;
-      }
-
-      if (key === 'Escape') {
-        const button = buttons.find((item) => item.dataset.action === 'clear');
-        if (button) pressButton(button);
+        updateDisplay();
+      } else if (event.key === 'Escape') {
         clearAll();
-        return;
-      }
-
-      if (key === '%') {
-        const button = buttons.find((item) => item.dataset.action === 'percent');
-        if (button) pressButton(button);
-        percent();
-        return;
-      }
-
-      if (key === 'Backspace') {
-        if (current === 'Error' || justEvaluated || waitingForOperand) return;
+        updateDisplay();
+      } else if (event.key === 'Backspace') {
         current = current.length > 1 ? current.slice(0, -1) : '0';
         updateDisplay();
       }
