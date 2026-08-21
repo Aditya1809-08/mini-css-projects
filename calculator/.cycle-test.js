@@ -1,1 +1,0 @@
-const cycle = 20;
