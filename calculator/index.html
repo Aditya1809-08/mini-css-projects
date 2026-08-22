@@ -436,181 +436,144 @@
     </main>
 
     <footer class="footer">
-      <span>Calculate. Simplify. Conquer.</span>
-      <span>Built with <strong>HTML, CSS &amp; JavaScript</strong></span>
+      <span><strong>Calcora</strong> · Glassmorphism Calculator</span>
+      <span>Built with HTML · CSS · JavaScript</span>
     </footer>
   </div>
 
   <script>
     const resultEl = document.getElementById('result');
     const expressionEl = document.getElementById('expression');
+    const buttons = [...document.querySelectorAll('button')];
 
     let current = '0';
-    let previous = null;
+    let stored = null;
     let operator = null;
-    let overwrite = true;
+    let waiting = false;
 
-    function updateDisplay() {
-      resultEl.textContent = formatNumber(current);
-      expressionEl.textContent = previous !== null
-        ? `${formatNumber(previous)} ${operator}`
-        : '\u00A0';
+    const symbols = { '÷': '/', '×': '*', '−': '-' };
 
-      document.querySelectorAll('.op').forEach(button => {
-        button.classList.toggle('active', button.dataset.op === operator);
-      });
+    function render() {
+      resultEl.textContent = current;
+      expressionEl.textContent = stored !== null && operator ? `${stored} ${operator}` : '\u00a0';
     }
 
     function formatNumber(value) {
-      if (value === 'Error') return value;
-
-      const [integer, decimal] = value.split('.');
-      const formattedInteger = Number(integer).toLocaleString('en-US');
-
-      return decimal !== undefined
-        ? `${formattedInteger}.${decimal}`
-        : formattedInteger;
+      if (!Number.isFinite(value)) return 'Error';
+      return String(parseFloat(value.toFixed(10)));
     }
 
-    function inputNum(number) {
-      if (overwrite) {
-        current = number === '.' ? '0.' : number;
-        overwrite = false;
+    function inputNumber(num) {
+      if (current === 'Error') current = '0';
+      if (waiting) {
+        current = num;
+        waiting = false;
       } else {
-        if (number === '.' && current.includes('.')) return;
-        current = current === '0' && number !== '.' ? number : current + number;
+        current = current === '0' ? num : current + num;
       }
+      render();
     }
 
-    function compute(a, b, op) {
-      a = parseFloat(a);
-      b = parseFloat(b);
-
-      switch (op) {
-        case '+': return a + b;
-        case '−': return a - b;
-        case '×': return a * b;
-        case '÷': return b === 0 ? NaN : a / b;
-        default: return b;
+    function inputDecimal() {
+      if (waiting) {
+        current = '0.';
+        waiting = false;
+      } else if (!current.includes('.')) {
+        current += '.';
       }
-    }
-
-    function setOperator(op) {
-      if (operator && !overwrite) {
-        const result = compute(previous, current, operator);
-        current = Number.isNaN(result) ? 'Error' : String(result);
-      }
-
-      previous = current;
-      operator = op;
-      overwrite = true;
-    }
-
-    function equals() {
-      if (operator === null) return;
-
-      const result = compute(previous, current, operator);
-      current = Number.isNaN(result) ? 'Error' : String(result);
-      previous = null;
-      operator = null;
-      overwrite = true;
+      render();
     }
 
     function clearAll() {
       current = '0';
-      previous = null;
+      stored = null;
       operator = null;
-      overwrite = true;
+      waiting = false;
+      render();
     }
 
-    document.querySelectorAll('[data-num]').forEach(button => {
-      button.addEventListener('click', () => {
-        inputNum(button.dataset.num);
-        updateDisplay();
-      });
-    });
+    function toggleSign() {
+      if (current === '0' || current === 'Error') return;
+      current = current.startsWith('-') ? current.slice(1) : `-${current}`;
+      render();
+    }
 
-    document.querySelectorAll('[data-op]').forEach(button => {
-      button.addEventListener('click', () => {
-        setOperator(button.dataset.op);
-        updateDisplay();
-      });
-    });
+    function percent() {
+      if (current === 'Error') return;
+      current = formatNumber(Number(current) / 100);
+      render();
+    }
 
-    document.querySelector('[data-action="equals"]').addEventListener('click', () => {
-      equals();
-      updateDisplay();
-    });
+    function calculate() {
+      if (stored === null || operator === null) return;
+      const a = Number(stored);
+      const b = Number(current);
+      let value;
 
-    document.querySelector('[data-action="clear"]').addEventListener('click', () => {
-      clearAll();
-      updateDisplay();
-    });
-
-    document.querySelector('[data-action="decimal"]').addEventListener('click', () => {
-      inputNum('.');
-      updateDisplay();
-    });
-
-    document.querySelector('[data-action="sign"]').addEventListener('click', () => {
-      if (current !== '0' && current !== 'Error') {
-        current = String(parseFloat(current) * -1);
+      switch (symbols[operator]) {
+        case '+': value = a + b; break;
+        case '-': value = a - b; break;
+        case '*': value = a * b; break;
+        case '/': value = b === 0 ? NaN : a / b; break;
+        default: value = b;
       }
-      updateDisplay();
-    });
 
-    document.querySelector('[data-action="percent"]').addEventListener('click', () => {
-      if (current !== 'Error') {
-        current = String(parseFloat(current) / 100);
+      current = formatNumber(value);
+      stored = null;
+      operator = null;
+      waiting = true;
+      render();
+    }
+
+    function chooseOperator(nextOperator) {
+      if (current === 'Error') return;
+      if (operator && waiting) {
+        operator = nextOperator;
+        render();
+        return;
       }
-      updateDisplay();
-    });
+      if (stored !== null) calculate();
+      stored = current;
+      operator = nextOperator;
+      waiting = true;
+      render();
+    }
 
-    document.querySelectorAll('button').forEach(button => {
-      button.addEventListener('touchstart', () => {
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
         button.classList.add('pressed');
-      }, { passive: true });
+        setTimeout(() => button.classList.remove('pressed'), 110);
 
-      ['touchend', 'touchcancel'].forEach(event => {
-        button.addEventListener(event, () => {
-          button.classList.remove('pressed');
-        }, { passive: true });
+        if (button.dataset.num) inputNumber(button.dataset.num);
+        else if (button.dataset.op) chooseOperator(button.dataset.op);
+        else {
+          const action = button.dataset.action;
+          if (action === 'decimal') inputDecimal();
+          if (action === 'clear') clearAll();
+          if (action === 'sign') toggleSign();
+          if (action === 'percent') percent();
+          if (action === 'equals') calculate();
+        }
       });
     });
 
-    window.addEventListener('keydown', event => {
-      if (event.key >= '0' && event.key <= '9') {
-        inputNum(event.key);
-        updateDisplay();
-      } else if (event.key === '.') {
-        inputNum('.');
-        updateDisplay();
-      } else if (event.key === '+') {
-        setOperator('+');
-        updateDisplay();
-      } else if (event.key === '-') {
-        setOperator('−');
-        updateDisplay();
-      } else if (event.key === '*') {
-        setOperator('×');
-        updateDisplay();
-      } else if (event.key === '/') {
-        event.preventDefault();
-        setOperator('÷');
-        updateDisplay();
-      } else if (event.key === 'Enter' || event.key === '=') {
-        equals();
-        updateDisplay();
-      } else if (event.key === 'Escape') {
-        clearAll();
-        updateDisplay();
-      } else if (event.key === 'Backspace') {
+    window.addEventListener('keydown', (event) => {
+      const key = event.key;
+      if (/\d/.test(key)) inputNumber(key);
+      else if (key === '.') inputDecimal();
+      else if (['+', '-', '*', '/'].includes(key)) {
+        const op = Object.entries(symbols).find(([, value]) => value === key)?.[0];
+        if (op) chooseOperator(op);
+      } else if (key === 'Enter' || key === '=') calculate();
+      else if (key === 'Escape') clearAll();
+      else if (key === '%') percent();
+      else if (key === 'Backspace') {
         current = current.length > 1 ? current.slice(0, -1) : '0';
-        updateDisplay();
+        render();
       }
     });
 
-    updateDisplay();
+    render();
   </script>
 </body>
 </html>
