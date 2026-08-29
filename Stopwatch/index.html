@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- Small harmless note: stopwatch UI lives here. -->
 <title>Timer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -183,695 +184,135 @@
 
   @media (max-width: 560px){
     .moon-decor{ width: 160px; height: 160px; top: -50px; right: -50px; }
-    .planet-decor{ width: 130px; height: 130px; bottom: -40px; left: -40px; }
-    .astronaut-decor, .rocket-decor{ width: 58px; }
-    .ufo-decor{ width: 48px; }
-  }
-
-  @media (max-height: 560px){
-    .ufo-decor, .astronaut-decor, .rocket-decor, .planet-decor{ display: none; }
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    .stars-layer .stars-a, .stars-layer .stars-b, .moon-decor, .ufo-decor, .rocket-decor, .astronaut-decor{ animation: none; }
-  }
-
-  /* ---------- Preset pills (unchanged) ---------- */
-  .presets{
-    display: flex;
-    gap: clamp(8px, 2vw, 10px);
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 0 4px;
-  }
-
-  .pill{
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: clamp(13.5px, 3.4vw, 15px);
-    font-weight: 600;
-    padding: 12px clamp(14px, 4vw, 20px);
-    border-radius: 16px;
-    background: var(--pill-idle-bg);
-    color: var(--pill-idle-text);
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    line-height: 1;
-    box-shadow: 0 6px 16px var(--pill-shadow);
-    transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-  }
-  .pill:hover{ transform: translateY(-1px); box-shadow: 0 8px 20px var(--pill-shadow); }
-  .pill:active{ transform: translateY(0) scale(0.97); }
-  .pill.active{
-    background: var(--pill-active-bg);
-    color: var(--pill-active-text);
-    box-shadow: 0 8px 20px rgba(230,100,40,0.4);
-  }
-
-  .pill.custom-pill{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    padding: 12px 16px;
-  }
-  .pill.custom-pill input{
-    background: transparent;
-    border: none;
-    outline: none;
-    color: inherit;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1;
-    text-align: center;
-    padding: 0;
-  }
-  .pill.custom-pill input#customMinInput{ width: 3.2ch; }
-  .pill.custom-pill input#customSecInput{ width: 2.2ch; }
-  .pill.custom-pill input::placeholder{ color: inherit; opacity: 0.55; }
-  .pill.custom-pill span.unit{ font-size: 13px; opacity: 0.75; }
-  .pill.custom-pill span.sep{ font-size: 14px; opacity: 0.4; margin: 0 1px; }
-
-  /* ---------- Flip clock ---------- */
-  .clock-wrap{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: clamp(16px, 3.5vw, 22px);
-    width: min(94vw, 480px);
-  }
-
-  .clock-label{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--label-text);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .status-dot{
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.5);
-    transition: background 0.2s ease, box-shadow 0.2s ease;
-  }
-  .status-dot.live{
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.25);
-    animation: pulseDot 1.6s ease-in-out infinite;
-  }
-  @keyframes pulseDot{
-    0%, 100%{ box-shadow: 0 0 0 3px rgba(255,255,255,0.22); }
-    50%{ box-shadow: 0 0 0 6px rgba(255,255,255,0.08); }
-  }
-
-  .flip-clock{
-    display: flex;
-    justify-content: center;
-    gap: clamp(10px, 3vw, 20px);
-  }
-
-  .flip-unit{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .flip-caption{
-    font-size: clamp(10.5px, 2.6vw, 12.5px);
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--label-text);
-  }
-
-  /* ----- tile: two static halves + two animated flap leaves ----- */
-  .flip-tile{
-    position: relative;
-    width: clamp(56px, 18vw, 84px);
-    aspect-ratio: 1 / 1;
-    border-radius: clamp(10px, 2.4vw, 14px);
-    box-shadow: 0 14px 26px var(--tile-shadow);
-    overflow: hidden;
-    perspective: 240px;
-  }
-
-  .flip-half-box{
-    position: absolute;
-    left: 0; right: 0;
-    height: 50%;
-    overflow: hidden;
-    z-index: 1;
-  }
-  .flip-half-box.pos-top{ top: 0; background: linear-gradient(180deg, var(--tile-bg-top), var(--tile-bg-mid)); }
-  .flip-half-box.pos-bottom{ bottom: 0; background: linear-gradient(180deg, var(--tile-bg-mid), var(--tile-bg-bottom)); }
-
-  .digit-inner{
-    position: absolute;
-    left: 0; right: 0;
-    height: 200%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
-    font-weight: 700;
-    font-size: clamp(26px, 8vw, 40px);
-    color: var(--tile-text);
-    line-height: 1;
-    letter-spacing: 0.01em;
-    font-variant-numeric: tabular-nums;
-  }
-  .pos-top .digit-inner{ top: 0; }
-  .pos-bottom .digit-inner{ top: -100%; }
-  .digit-inner.long{ font-size: clamp(15px, 4.2vw, 22px); }
-
-  .flip-leaf{
-    position: absolute;
-    left: 0; right: 0;
-    height: 50%;
-    overflow: hidden;
-    backface-visibility: hidden;
-    z-index: 3;
-    box-shadow: inset 0 -6px 10px rgba(0,0,0,0.08);
-  }
-  .flip-leaf.pos-top{
-    top: 0;
-    transform-origin: bottom center;
-    background: linear-gradient(180deg, var(--tile-bg-top), var(--tile-bg-mid));
-    transform: rotateX(0deg);
-  }
-  .flip-leaf.pos-bottom{
-    bottom: 0;
-    transform-origin: top center;
-    background: linear-gradient(180deg, var(--tile-bg-mid), var(--tile-bg-bottom));
-    transform: rotateX(0deg);
-  }
-
-  .flip-tile::before{
-    /* diagonal sheen, echoes the reference tiles */
-    content: "";
-    position: absolute;
-    inset: -20%;
-    background: linear-gradient(115deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 34%);
-    pointer-events: none;
-    z-index: 4;
-  }
-  .flip-tile::after{
-    /* center hinge line, always on top so it reads through the flip */
-    content: "";
-    position: absolute;
-    left: 0; right: 0; top: 50%;
-    height: 2px;
-    background: var(--tile-hinge);
-    transform: translateY(-1px);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.06);
-    z-index: 5;
-  }
-
-  .hinge-dot{
-    position: absolute;
-    top: 50%;
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--tile-dot);
-    transform: translateY(-50%);
-    z-index: 6;
-  }
-  .hinge-dot.left{ left: 6px; }
-  .hinge-dot.right{ right: 6px; }
-
-  .btn-row{
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
-    max-width: 320px;
-  }
-
-  .stop-btn, .pause-btn{
-    flex: 1 1 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-family: inherit;
-    border: 1px solid transparent;
-    padding: 12px 16px;
-    border-radius: 15px;
-    font-size: 15px;
-    font-weight: 600;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: background 0.2s ease, opacity 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-  }
-  .stop-btn{ background: var(--stop-bg); color: var(--stop-text); box-shadow: 0 10px 22px var(--stop-shadow); }
-  .stop-btn:hover:not(:disabled){ filter: brightness(0.98); }
-  .pause-btn{ background: var(--pause-bg); color: var(--pause-text); border-color: var(--pause-border); backdrop-filter: blur(6px); }
-  .pause-btn:hover:not(:disabled){ background: rgba(255,255,255,0.24); }
-  .stop-btn:active:not(:disabled), .pause-btn:active:not(:disabled){ transform: scale(0.96); }
-  .stop-btn:disabled, .pause-btn:disabled{ opacity: 0.4; cursor: not-allowed; box-shadow: none; }
-  .stop-btn svg, .pause-btn svg{ width: 14px; height: 14px; flex-shrink: 0; }
-
-  .home-indicator{
-    width: 130px;
-    height: 5px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.5);
-  }
-
-  .hint{
-    color: var(--hint-text);
-    font-size: 13px;
-    font-weight: 500;
-    text-align: center;
-    max-width: 380px;
-    padding: 0 12px;
-  }
-
-  /* ---------- Small phones: tighten tile spacing ---------- */
-  @media (max-width: 380px){
-    .flip-clock{ gap: 8px; }
-    .flip-tile{ width: clamp(50px, 20vw, 70px); }
-  }
-
-  /* ---------- Short / landscape viewports ---------- */
-  @media (max-height: 560px){
-    body{ justify-content: flex-start; gap: 16px; padding-top: max(18px, env(safe-area-inset-top)); padding-bottom: max(18px, env(safe-area-inset-bottom)); }
-    .flip-tile{ width: clamp(44px, 10vw, 60px); }
-    .digit-inner{ font-size: clamp(20px, 5vw, 28px); }
-    .home-indicator{ display: none; }
-    .hint{ display: none; }
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    .pill, .stop-btn, .pause-btn, .status-dot, .flip-leaf{ transition: none; animation: none; }
+    .planet-decor{ width: 140px; height: 140px; bottom: -45px; left: -45px; }
+    .rocket-decor{ width: 54px; top: 10%; right: 18%; }
+    .astronaut-decor{ width: 70px; left: 2%; bottom: 8%; }
+    .ufo-decor{ width: 56px; }
+    .ufo-decor.ufo-2{ width: 44px; }
   }
 </style>
 </head>
 <body>
-
   <div class="stars-layer" aria-hidden="true">
     <div class="stars-a"></div>
     <div class="stars-b"></div>
   </div>
   <div class="moon-decor" aria-hidden="true"></div>
   <div class="planet-decor" aria-hidden="true"></div>
+  <img class="ufo-decor ufo-1" src="4b05811633ca657e65e685dc0ac353b5.jpg" alt="" aria-hidden="true">
+  <img class="ufo-decor ufo-2" src="4b05811633ca657e65e685dc0ac353b5.jpg" alt="" aria-hidden="true">
+  <img class="rocket-decor" src="download.png" alt="" aria-hidden="true">
+  <img class="astronaut-decor" src="download.png" alt="" aria-hidden="true">
 
-  <button class="fullscreen-btn" id="fullscreenBtn" aria-label="Toggle fullscreen" title="Toggle fullscreen">
-    <svg id="fullscreenIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>
+  <button class="fullscreen-btn" id="fullscreenBtn" type="button" aria-label="Toggle fullscreen">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+      <path d="M16 3h3a2 2 0 0 1 2 2v3"></path>
+      <path d="M21 16v3a2 2 0 0 1-2 2h-3"></path>
+      <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
     </svg>
   </button>
 
-  <svg class="ufo-decor ufo-1" aria-hidden="true" viewBox="0 0 100 44">
-    <ellipse cx="50" cy="26" rx="46" ry="12" fill="#16254a"/>
-    <ellipse cx="50" cy="18" rx="24" ry="14" fill="#22335e"/>
-    <rect x="30" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
-    <rect x="45" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
-    <rect x="60" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
-  </svg>
-  <svg class="ufo-decor ufo-2" aria-hidden="true" viewBox="0 0 100 44">
-    <ellipse cx="50" cy="26" rx="46" ry="12" fill="#16254a"/>
-    <ellipse cx="50" cy="18" rx="24" ry="14" fill="#22335e"/>
-    <rect x="30" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
-    <rect x="45" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
-    <rect x="60" y="22" width="10" height="7" rx="2" fill="#ffe27a"/>
-  </svg>
-
-  <svg class="rocket-decor" aria-hidden="true" viewBox="0 0 60 120">
-    <path d="M30 4 C42 20 46 46 42 74 L18 74 C14 46 18 20 30 4 Z" fill="#f2523a"/>
-    <path d="M30 10 C39 24 42 46 39 68 L21 68 C18 46 21 24 30 10 Z" fill="#ffcf4d"/>
-    <circle cx="30" cy="38" r="8" fill="#16254a"/>
-    <path d="M18 60 L4 84 L18 78 Z" fill="#c8391f"/>
-    <path d="M42 60 L56 84 L42 78 Z" fill="#c8391f"/>
-    <path d="M22 74 L38 74 L34 96 L26 96 Z" fill="#e3e8f0"/>
-    <path d="M25 96 C25 108 30 116 30 116 C30 116 35 108 35 96 Z" fill="#ffb35c"/>
-  </svg>
-
-  <svg class="astronaut-decor" aria-hidden="true" viewBox="0 0 100 120">
-    <ellipse cx="50" cy="98" rx="30" ry="8" fill="#0b1638" opacity="0.25"/>
-    <circle cx="50" cy="38" r="26" fill="#eef2f8"/>
-    <circle cx="50" cy="40" r="18" fill="#16254a"/>
-    <circle cx="55" cy="35" r="5" fill="#3a5aa8" opacity="0.6"/>
-    <rect x="28" y="58" width="44" height="38" rx="16" fill="#eef2f8"/>
-    <rect x="14" y="62" width="16" height="22" rx="8" fill="#eef2f8"/>
-    <rect x="70" y="62" width="16" height="22" rx="8" fill="#eef2f8"/>
-    <rect x="34" y="92" width="14" height="20" rx="7" fill="#eef2f8"/>
-    <rect x="52" y="92" width="14" height="20" rx="7" fill="#eef2f8"/>
-    <circle cx="50" cy="76" r="6" fill="#ff7a3d"/>
-  </svg>
-
-  <div class="presets" id="presets">
-    <button class="pill" data-mins="5">5 mins</button>
-    <button class="pill" data-mins="10">10 mins</button>
-    <button class="pill" data-mins="20">20 mins</button>
-    <label class="pill custom-pill" id="customPill">
-      <input id="customMinInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="00">
-      <span class="unit">m</span>
-      <span class="sep">:</span>
-      <input id="customSecInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" placeholder="00">
-      <span class="unit">s</span>
-    </label>
+  <div class="presets">
+    <button type="button">15m</button>
+    <button type="button" class="active">30m</button>
+    <button type="button">45m</button>
+    <button type="button">60m</button>
   </div>
 
-  <div class="clock-wrap">
-    <div class="clock-label"><span class="status-dot" id="statusDot"></span>Timer</div>
-
-    <div class="flip-clock" id="flipClock"></div>
-
-    <div class="btn-row">
-      <button class="pause-btn" id="pauseBtn" disabled>
-        <svg viewBox="0 0 24 24" fill="none"><path id="pauseBtnIconPath" d="M8 5v14l11-7z" fill="currentColor"/></svg>
-        <span id="pauseBtnLabel">Pause</span>
-      </button>
-      <button class="stop-btn" id="stopBtn" disabled>
-        <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
-        Stop
-      </button>
+  <main class="clock-wrap" aria-label="Stopwatch timer">
+    <div class="time-display">
+      <span id="minutes">30</span><span class="colon">:</span><span id="seconds">00</span>
     </div>
-  </div>
+    <div class="labels"><span>MINUTES</span><span>SECONDS</span></div>
+    <div class="controls">
+      <button class="stop-btn" id="stopBtn" type="button">Stop</button>
+      <button class="pause-btn" id="pauseBtn" type="button">Pause</button>
+    </div>
+  </main>
 
-  <div class="home-indicator"></div>
-
-  <div class="hint">Pick a preset or set a custom minutes and seconds to start the timer.</div>
+  <div class="hint">Tap Pause to pause the timer</div>
+  <div class="home-indicator" aria-hidden="true"></div>
 
 <script>
-(function(){
-
-  /* =========================================================
-     BACKGROUND IMAGE — DEV-ONLY SETTING.
-     There is no on-page control for this on purpose: only
-     someone editing this file's code can change it. Just
-     replace the URL string below and reload the page.
-  ========================================================= */
-  const BACKGROUND_IMAGE_URL = ""; // e.g. "https://images.unsplash.com/photo-XXXX"
-
-  const body = document.body;
-
-  function setBackground(url){
-    if (url){
-      body.style.setProperty('--bg-url', `url("${url}")`);
-    } else {
-      body.style.setProperty('--bg-url', 'none');
-    }
-  }
-
-  setBackground(BACKGROUND_IMAGE_URL);
-
-  /* =========================================================
-     FULLSCREEN TOGGLE
-  ========================================================= */
-  const fullscreenBtn = document.getElementById('fullscreenBtn');
-  const fullscreenIcon = document.getElementById('fullscreenIcon');
-  const ENTER_ICON = '<path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>';
-  const EXIT_ICON = '<path d="M4 8V5a2 2 0 0 1 2-2h3M20 8V5a2 2 0 0 0-2-2h-3M4 16v3a2 2 0 0 0 2 2h3M20 16v3a2 2 0 0 1-2 2h-3"/>';
-
-  function isFullscreen(){
-    return !!document.fullscreenElement;
-  }
-
-  function updateFullscreenIcon(){
-    fullscreenIcon.innerHTML = isFullscreen() ? EXIT_ICON : ENTER_ICON;
-  }
-
-  fullscreenBtn.addEventListener('click', () => {
-    if (!isFullscreen()){
-      document.documentElement.requestFullscreen?.().catch(() => {});
-    } else {
-      document.exitFullscreen?.().catch(() => {});
-    }
-  });
-
-  document.addEventListener('fullscreenchange', updateFullscreenIcon);
-  updateFullscreenIcon();
-
-  // Hide the button entirely if the browser has no Fullscreen API support
-  if (!document.documentElement.requestFullscreen){
-    fullscreenBtn.style.display = 'none';
-  }
-
-  /* =========================================================
-     FLIP TILES — build the 4 units (Days/Hours/Minutes/Seconds)
-     Each tile = 2 static halves (always show the current value)
-     + 2 animated "leaf" halves that flip to reveal a new value,
-     mimicking a real mechanical split-flap display.
-  ========================================================= */
-  const UNITS = [
-    { key: 'days', label: 'Days' },
-    { key: 'hours', label: 'Hours' },
-    { key: 'minutes', label: 'Minutes' },
-    { key: 'seconds', label: 'Seconds' },
-  ];
-
-  const flipClockEl = document.getElementById('flipClock');
-  const tiles = {};
-
-  UNITS.forEach(({ key, label }) => {
-    const unit = document.createElement('div');
-    unit.className = 'flip-unit';
-    unit.innerHTML = `
-      <div class="flip-tile" data-key="${key}">
-        <div class="flip-half-box pos-top"><div class="digit-inner" data-role="static-top">00</div></div>
-        <div class="flip-half-box pos-bottom"><div class="digit-inner" data-role="static-bottom">00</div></div>
-        <div class="flip-leaf pos-top" data-role="leaf-top"><div class="digit-inner" data-role="leaf-top-text">00</div></div>
-        <div class="flip-leaf pos-bottom" data-role="leaf-bottom"><div class="digit-inner" data-role="leaf-bottom-text">00</div></div>
-        <span class="hinge-dot left"></span><span class="hinge-dot right"></span>
-      </div>
-      <div class="flip-caption">${label}</div>
-    `;
-    flipClockEl.appendChild(unit);
-
-    const tileEl = unit.querySelector('.flip-tile');
-    const staticTop = tileEl.querySelector('[data-role="static-top"]');
-    const staticBottom = tileEl.querySelector('[data-role="static-bottom"]');
-    const leafTopText = tileEl.querySelector('[data-role="leaf-top-text"]');
-    const leafBottomText = tileEl.querySelector('[data-role="leaf-bottom-text"]');
-    tiles[key] = {
-      value: null,
-      staticTop, staticBottom,
-      leafTop: tileEl.querySelector('[data-role="leaf-top"]'),
-      leafTopText,
-      leafBottom: tileEl.querySelector('[data-role="leaf-bottom"]'),
-      leafBottomText,
-      allTextEls: [staticTop, staticBottom, leafTopText, leafBottomText],
-      timers: [],
-    };
-  });
-
-  const FLIP_MS = 300; // duration of each half-flip phase
-
-  function setLongClass(key, value){
-    const t = tiles[key];
-    const isLong = value.length > 2;
-    t.allTextEls.forEach(el => el.classList.toggle('long', isLong));
-  }
-
-  function setTileInstant(key, value){
-    const t = tiles[key];
-    t.timers.forEach(id => clearTimeout(id));
-    t.timers = [];
-    setLongClass(key, value);
-    t.staticTop.textContent = value;
-    t.staticBottom.textContent = value;
-    t.leafTopText.textContent = value;
-    t.leafBottomText.textContent = value;
-    t.leafTop.style.transition = 'none';
-    t.leafTop.style.transform = 'rotateX(0deg)';
-    t.leafBottom.style.transition = 'none';
-    t.leafBottom.style.transform = 'rotateX(0deg)';
-    t.value = value;
-  }
-
-  function flipTileTo(key, value){
-    const t = tiles[key];
-    if (t.value === value) return;
-    const oldValue = t.value === null ? value : t.value;
-    t.timers.forEach(id => clearTimeout(id));
-    t.timers = [];
-    setLongClass(key, value);
-
-    // Reveal the new value underneath immediately; the top leaf (still
-    // showing the old value) will fold away to expose it.
-    t.staticTop.textContent = value;
-    t.leafTopText.textContent = oldValue;
-    t.leafBottomText.textContent = value;
-
-    t.leafTop.style.transition = 'none';
-    t.leafTop.style.transform = 'rotateX(0deg)';
-    t.leafBottom.style.transition = 'none';
-    t.leafBottom.style.transform = 'rotateX(90deg)';
-    void t.leafTop.offsetHeight; // force reflow so the transition below retriggers
-
-    requestAnimationFrame(() => {
-      t.leafTop.style.transition = `transform ${FLIP_MS}ms cubic-bezier(.45,0,.2,1)`;
-      t.leafTop.style.transform = 'rotateX(-90deg)';
-    });
-
-    const timer1 = setTimeout(() => {
-      // Top leaf has folded away; the new bottom half now flips into place.
-      t.staticBottom.textContent = value;
-      t.leafBottom.style.transition = `transform ${FLIP_MS}ms cubic-bezier(.45,0,.2,1)`;
-      t.leafBottom.style.transform = 'rotateX(0deg)';
-    }, FLIP_MS);
-
-    t.timers.push(timer1);
-    t.value = value;
-  }
-
-  /* =========================================================
-     TIMER LOGIC — starts at zero, presets + custom minutes.
-  ========================================================= */
-  const stopBtn = document.getElementById('stopBtn');
+(() => {
+  let totalSeconds = 30 * 60;
+  let remaining = totalSeconds;
+  let interval = null;
+  const minutesEl = document.getElementById('minutes');
+  const secondsEl = document.getElementById('seconds');
   const pauseBtn = document.getElementById('pauseBtn');
-  const pauseBtnLabel = document.getElementById('pauseBtnLabel');
-  const pauseBtnIconPath = document.getElementById('pauseBtnIconPath');
-  const presetsWrap = document.getElementById('presets');
-  const customPill = document.getElementById('customPill');
-  const customMinInput = document.getElementById('customMinInput');
-  const customSecInput = document.getElementById('customSecInput');
-  const statusDot = document.getElementById('statusDot');
+  const stopBtn = document.getElementById('stopBtn');
+  const presetBtns = [...document.querySelectorAll('.presets button')];
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-  const PLAY_PATH = "M8 5v14l11-7z";
-  const PAUSE_PATH = "M7 5h4v14H7zM13 5h4v14h-4z";
-
-  let totalSeconds = 0;   // full duration of the current timer
-  let remaining = 0;      // seconds left
-  let intervalId = null;
-  let running = false;
-
-  function pad2(n){ return n.toString().padStart(2, '0'); }
-
-  function renderClock(instant){
-    const d = Math.floor(remaining / 86400);
-    const h = Math.floor((remaining % 86400) / 3600);
-    const m = Math.floor((remaining % 3600) / 60);
-    const s = Math.floor(remaining % 60);
-    const parts = { days: pad2(d), hours: pad2(h), minutes: pad2(m), seconds: pad2(s) };
-
-    Object.keys(parts).forEach(key => {
-      if (instant){
-        setTileInstant(key, parts[key]);
-      } else {
-        flipTileTo(key, parts[key]);
-      }
-    });
-  }
-
-  function setToggleIcon(isPlaying){
-    pauseBtnLabel.textContent = isPlaying ? 'Pause' : 'Resume';
-    pauseBtnIconPath.setAttribute('d', isPlaying ? PAUSE_PATH : PLAY_PATH);
-    statusDot.classList.toggle('live', isPlaying);
-  }
-
-  function setActivePill(btn){
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-  }
-
-  function resetToZero(){
-    clearInterval(intervalId);
-    intervalId = null;
-    running = false;
-    totalSeconds = 0;
-    remaining = 0;
-    renderClock(true);
-    setToggleIcon(false);
-    stopBtn.disabled = true;
-    pauseBtn.disabled = true;
-    setActivePill(null);
+  function render(){
+    const m = Math.floor(remaining / 60);
+    const s = remaining % 60;
+    minutesEl.textContent = String(m).padStart(2, '0');
+    secondsEl.textContent = String(s).padStart(2, '0');
   }
 
   function tick(){
-    remaining -= 1;
-    if (remaining <= 0){
-      remaining = 0;
-      renderClock(false);
-      pause();
-      return;
+    if (remaining > 0){
+      remaining--;
+      render();
+    } else {
+      clearInterval(interval);
+      interval = null;
+      pauseBtn.textContent = 'Start';
     }
-    renderClock(false);
   }
 
-  function play(){
-    if (totalSeconds <= 0) return;
-    running = true;
-    setToggleIcon(true);
-    intervalId = setInterval(tick, 1000);
+  function start(){
+    if (interval || remaining <= 0) return;
+    interval = setInterval(tick, 1000);
+    pauseBtn.textContent = 'Pause';
   }
 
-  function pause(){
-    running = false;
-    clearInterval(intervalId);
-    intervalId = null;
-    setToggleIcon(false);
+  function togglePause(){
+    if (interval){
+      clearInterval(interval);
+      interval = null;
+      pauseBtn.textContent = 'Start';
+    } else {
+      start();
+    }
   }
 
-  function startTimer(seconds, sourcePill){
-    if (!seconds || seconds <= 0) return;
-    clearInterval(intervalId);
-    totalSeconds = Math.round(seconds);
+  function stop(){
+    clearInterval(interval);
+    interval = null;
     remaining = totalSeconds;
-    renderClock(true);
-    stopBtn.disabled = false;
-    pauseBtn.disabled = false;
-    setActivePill(sourcePill);
-    play();
+    pauseBtn.textContent = 'Start';
+    render();
   }
 
-  // Preset buttons
-  presetsWrap.querySelectorAll('.pill[data-mins]').forEach(btn => {
+  presetBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      customMinInput.value = "";
-      customSecInput.value = "";
-      startTimer(Number(btn.dataset.mins) * 60, btn);
+      const value = parseInt(btn.textContent, 10);
+      totalSeconds = value * 60;
+      remaining = totalSeconds;
+      clearInterval(interval);
+      interval = null;
+      pauseBtn.textContent = 'Start';
+      presetBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
     });
   });
 
-  // Custom minutes + seconds inputs (numeric-only text fields, avoids native
-  // number-input width quirks)
-  function commitCustom(){
-    const mins = Number(customMinInput.value) || 0;
-    const secs = Number(customSecInput.value) || 0;
-    const total = mins * 60 + secs;
-    if (total > 0){
-      startTimer(total, customPill);
-    }
-  }
-  customMinInput.addEventListener('input', () => {
-    customMinInput.value = customMinInput.value.replace(/[^0-9]/g, '').slice(0, 6);
-  });
-  customSecInput.addEventListener('input', () => {
-    let digits = customSecInput.value.replace(/[^0-9]/g, '').slice(0, 2);
-    if (digits !== '' && Number(digits) > 59) digits = '59';
-    customSecInput.value = digits;
-  });
-  [customMinInput, customSecInput].forEach(input => {
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') commitCustom();
-    });
-    input.addEventListener('change', commitCustom);
+  pauseBtn.addEventListener('click', togglePause);
+  stopBtn.addEventListener('click', stop);
+  fullscreenBtn.addEventListener('click', async () => {
+    try {
+      if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+      else await document.exitFullscreen();
+    } catch (_) {}
   });
 
-  // Pause / Resume button
-  pauseBtn.addEventListener('click', () => {
-    if (totalSeconds <= 0) return;
-    if (running) pause(); else play();
-  });
-
-  // Stop button — returns everything to zero
-  stopBtn.addEventListener('click', resetToZero);
-
-  // Initial state: zero, nothing selected
-  resetToZero();
-
+  render();
+  start();
 })();
 </script>
 </body>
