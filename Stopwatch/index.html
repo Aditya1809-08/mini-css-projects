@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Timer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -188,9 +188,145 @@
     .rocket-decor{ width: 54px; }
     .astronaut-decor{ width: 70px; }
   }
+
+  .presets{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .presets button{ border:none; cursor:pointer; font-family:inherit; font-size:15px; font-weight:600; padding:12px 18px; border-radius:16px; background:var(--pill-idle-bg); color:var(--pill-idle-text); box-shadow:0 6px 16px var(--pill-shadow); transition:background .2s,color .2s,transform .1s; }
+  .presets button.active{ background:var(--pill-active-bg); color:var(--pill-active-text); }
+  .presets button:active{ transform:scale(.97); }
+  .clock-wrap{ display:flex; flex-direction:column; align-items:center; gap:20px; width:min(94vw,480px); }
+  .time-display{ font-family:'Space Grotesk','Inter',sans-serif; font-size:clamp(64px,18vw,110px); font-weight:700; color:#fff; line-height:1; letter-spacing:.02em; font-variant-numeric:tabular-nums; text-shadow:0 10px 28px rgba(0,0,0,.22); }
+  .colon{ opacity:.75; padding:0 4px; }
+  .labels{ display:flex; justify-content:center; gap:60px; color:var(--label-text); font-size:12px; font-weight:700; letter-spacing:.12em; }
+  .controls{ display:flex; gap:10px; width:min(320px,90vw); }
+  .stop-btn,.pause-btn{ flex:1; border:1px solid transparent; padding:12px 16px; border-radius:15px; font:600 15px inherit; cursor:pointer; }
+  .stop-btn{ background:var(--stop-bg); color:var(--stop-text); box-shadow:0 10px 22px var(--stop-shadow); }
+  .pause-btn{ background:var(--pause-bg); color:var(--pause-text); border-color:var(--pause-border); backdrop-filter:blur(6px); }
+  .hint{ color:var(--hint-text); font-size:13px; font-weight:500; text-align:center; }
+  .home-indicator{ width:130px; height:5px; border-radius:999px; background:rgba(255,255,255,.5); }
 </style>
 </head>
 <body>
-<!-- Existing stopwatch content continues unchanged. -->
+  <div class="stars-layer" aria-hidden="true">
+    <div class="stars-a"></div>
+    <div class="stars-b"></div>
+  </div>
+  <div class="moon-decor" aria-hidden="true"></div>
+  <div class="planet-decor" aria-hidden="true"></div>
+  <img class="ufo-decor ufo-1" src="4b05811633ca657e65e685dc0ac353b5.jpg" alt="" aria-hidden="true">
+  <img class="ufo-decor ufo-2" src="4b05811633ca657e65e685dc0ac353b5.jpg" alt="" aria-hidden="true">
+  <img class="rocket-decor" src="download.png" alt="" aria-hidden="true">
+  <img class="astronaut-decor" src="download.png" alt="" aria-hidden="true">
+
+  <button class="fullscreen-btn" id="fullscreenBtn" type="button" aria-label="Toggle fullscreen">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+      <path d="M16 3h3a2 2 0 0 1 2 2v3"></path>
+      <path d="M21 16v3a2 2 0 0 1-2 2h-3"></path>
+      <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+    </svg>
+  </button>
+
+  <div class="presets">
+    <button type="button">15m</button>
+    <button type="button" class="active">30m</button>
+    <button type="button">45m</button>
+    <button type="button">60m</button>
+  </div>
+
+  <main class="clock-wrap" aria-label="Stopwatch timer">
+    <div class="time-display">
+      <span id="minutes">30</span><span class="colon">:</span><span id="seconds">00</span>
+    </div>
+    <div class="labels"><span>MINUTES</span><span>SECONDS</span></div>
+    <div class="controls">
+      <button class="stop-btn" id="stopBtn" type="button">Stop</button>
+      <button class="pause-btn" id="pauseBtn" type="button">Pause</button>
+    </div>
+  </main>
+
+  <div class="hint">Tap Pause to pause the timer</div>
+  <div class="home-indicator" aria-hidden="true"></div>
+
+<script>
+(() => {
+  let totalSeconds = 30 * 60;
+  let remaining = totalSeconds;
+  let interval = null;
+  const minutesEl = document.getElementById('minutes');
+  const secondsEl = document.getElementById('seconds');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const presetBtns = [...document.querySelectorAll('.presets button')];
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+  function render(){
+    const m = Math.floor(remaining / 60);
+    const s = remaining % 60;
+    minutesEl.textContent = String(m).padStart(2, '0');
+    secondsEl.textContent = String(s).padStart(2, '0');
+  }
+
+  function tick(){
+    if (remaining > 0){
+      remaining--;
+      render();
+    } else {
+      clearInterval(interval);
+      interval = null;
+      pauseBtn.textContent = 'Start';
+    }
+  }
+
+  function start(){
+    if (interval || remaining <= 0) return;
+    interval = setInterval(tick, 1000);
+    pauseBtn.textContent = 'Pause';
+  }
+
+  function togglePause(){
+    if (interval){
+      clearInterval(interval);
+      interval = null;
+      pauseBtn.textContent = 'Start';
+    } else {
+      start();
+    }
+  }
+
+  function stop(){
+    clearInterval(interval);
+    interval = null;
+    remaining = totalSeconds;
+    pauseBtn.textContent = 'Start';
+    render();
+  }
+
+  presetBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const value = parseInt(btn.textContent, 10);
+      totalSeconds = value * 60;
+      remaining = totalSeconds;
+      clearInterval(interval);
+      interval = null;
+      pauseBtn.textContent = 'Start';
+      presetBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    });
+  });
+
+  pauseBtn.addEventListener('click', togglePause);
+  stopBtn.addEventListener('click', stop);
+  fullscreenBtn.addEventListener('click', async () => {
+    try {
+      if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+      else await document.exitFullscreen();
+    } catch (_) {}
+  });
+
+  render();
+  start();
+})();
+</script>
 </body>
 </html>
