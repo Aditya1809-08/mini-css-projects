@@ -9,349 +9,348 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
 :root {
-color:#fff;
-background:#182d52;
-font-family:Manrope,sans-serif
+  color:#fff;
+  background:#182d52;
+  font-family:Manrope,sans-serif
 }
 * {
-box-sizing:border-box
+  box-sizing:border-box
 }
 body {
-margin:0;
-min-width:320px;
-background:#182d52
+  margin:0;
+  min-width:320px;
+  background:#182d52
 }
 body:before {
-content:'';
-position:fixed;
-inset:0;
-background:radial-gradient(circle at 50% 35%,#f8b266 0,#c97961 20%,#5d4a76 48%,#182d52 85%);
-opacity:.8
+  content:'';
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at 50% 35%,#f8b266 0,#c97961 20%,#5d4a76 48%,#182d52 85%);
+  opacity:.8
 }
 body:after {
-content:'';
-position:fixed;
-inset:0;
-background:linear-gradient(180deg,rgba(5,18,44,.38),rgba(8,19,45,.25) 45%,rgba(8,20,47,.8));
-pointer-events:none
+  content:'';
+  position:fixed;
+  inset:0;
+  background:linear-gradient(180deg,rgba(5,18,44,.38),rgba(8,19,45,.25) 45%,rgba(8,20,47,.8));
+  pointer-events:none
 }
 .app {
-position:relative;
-z-index:1;
-min-height:100vh
+  position:relative;
+  z-index:1;
+  min-height:100vh
 }
 header,footer,main {
-position:relative;
-z-index:2
+  position:relative;
+  z-index:2
 }
 header {
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:28px 5vw;
-font:10px 'DM Mono',monospace;
-letter-spacing:.15em
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:28px 5vw;
+  font:10px 'DM Mono',monospace;
+  letter-spacing:.15em
 }
 .brand {
-font-size:12px;
-letter-spacing:.2em
+  font-size:12px;
+  letter-spacing:.2em
 }
 .mark {
-display:inline-block;
-width:16px;
-height:16px;
-border:1px solid #ffe0ae;
-border-radius:50%;
-vertical-align:-4px;
-margin-right:9px
+  display:inline-block;
+  width:16px;
+  height:16px;
+  border:1px solid #ffe0ae;
+  border-radius:50%;
+  vertical-align:-4px;
+  margin-right:9px
 }
 header button {
-border:0;
-background:none;
-color:#ffe0ae;
-font:10px 'DM Mono',monospace;
-letter-spacing:.12em;
-cursor:pointer
+  border:0;
+  background:none;
+  color:#ffe0ae;
+  font:10px 'DM Mono',monospace;
+  letter-spacing:.12em;
+  cursor:pointer
 }
 .shell {
-max-width:1100px;
-margin:auto;
-padding:5vh 4vw 70px
+  max-width:1100px;
+  margin:auto;
+  padding:5vh 4vw 70px
 }
 .intro {
-text-align:center
+  text-align:center
 }
 .eyebrow,.label {
-font:500 10px 'DM Mono',monospace;
-letter-spacing:.2em;
-color:#ffe1af
+  font:500 10px 'DM Mono',monospace;
+  letter-spacing:.2em;
+  color:#ffe1af
 }
 .intro h1 {
-font:clamp(58px,8vw,112px) 'DM Serif Display',Georgia,serif;
-line-height:.88;
-font-weight:400;
-letter-spacing:-.05em;
-margin:25px 0
+  font:clamp(58px,8vw,112px) 'DM Serif Display',Georgia,serif;
+  line-height:.88;
+  font-weight:400;
+  letter-spacing:-.05em;
+  margin:25px 0
 }
 .intro h1 em {
-color:#ffd59a
+  color:#ffd59a
 }
 .lede {
-max-width:330px;
-margin:0 auto 30px;
-line-height:1.6;
-color:rgba(255,255,255,.77);
-font-size:14px
+  max-width:330px;
+  margin:0 auto 30px;
+  line-height:1.6;
+  color:rgba(255,255,255,.77);
+  font-size:14px
 }
 .form {
-width:min(440px,100%);
-margin:auto;
-padding:25px;
-border:1px solid rgba(255,255,255,.32);
-border-radius:24px;
-background:rgba(13,28,56,.25);
-backdrop-filter:blur(16px);
-text-align:left
+  width:min(440px,100%);
+  margin:auto;
+  padding:25px;
+  border:1px solid rgba(255,255,255,.32);
+  border-radius:24px;
+  background:rgba(13,28,56,.25);
+  backdrop-filter:blur(16px);
+  text-align:left
 }
 .form label {
-display:block;
-margin:0 0 16px;
-color:#ffe1af;
-font:9px 'DM Mono',monospace;
-letter-spacing:.14em
+  display:block;
+  margin:0 0 16px;
+  color:#ffe1af;
+  font:9px 'DM Mono',monospace;
+  letter-spacing:.14em
 }
 .form input {
-display:block;
-width:100%;
-padding:10px 0;
-background:none;
-border:0;
-border-bottom:1px solid rgba(255,255,255,.45);
-color:#fff;
-font:16px Manrope;
-outline:0
+  display:block;
+  width:100%;
+  padding:10px 0;
+  background:none;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.45);
+  color:#fff;
+  font:16px Manrope;
+  outline:0
 }
 .form input::placeholder {
-color:rgba(255,255,255,.65)
+  color:rgba(255,255,255,.65)
 }
 button.action,.social button {
-border:1px solid rgba(255,230,180,.45);
-border-radius:999px;
-background:#f7ce94;
-color:#1e3153;
-padding:13px 18px;
-font-weight:700;
-cursor:pointer
+  border:1px solid rgba(255,230,180,.45);
+  border-radius:999px;
+  background:#f7ce94;
+  color:#1e3153;
+  padding:13px 18px;
+  font-weight:700;
+  cursor:pointer
 }
 button.action {
-width:100%;
-margin-top:4px
+  width:100%;
+  margin-top:4px
 }
 .error {
-color:#ffd0ba;
-font-size:11px;
-margin-top:10px
+  color:#ffd0ba;
+  font-size:11px;
+  margin-top:10px
 }
 .hidden {
-display:none
+  display:none
 }
 .heading {
-text-align:center;
-padding:26px 22px 22px;
-border:2px solid rgba(255,255,255,.24);
-border-radius:24px;
-background:rgba(16,30,58,.22);
-backdrop-filter:blur(12px)
+  text-align:center;
+  padding:26px 22px 22px;
+  border:2px solid rgba(255,255,255,.24);
+  border-radius:24px;
+  background:rgba(16,30,58,.22);
+  backdrop-filter:blur(12px)
 }
 .heading h2 {
-font:clamp(52px,7vw,92px) 'DM Serif Display',Georgia,serif;
-line-height:.9;
-margin:15px 0 0
+  font:clamp(52px,7vw,92px) 'DM Serif Display',Georgia,serif;
+  line-height:.9;
+  margin:15px 0 0
 }
 .heading p {
-font:11px 'DM Mono',monospace;
-color:rgba(255,255,255,.75)
+  font:11px 'DM Mono',monospace;
+  color:rgba(255,255,255,.75)
 }
 .overview {
-display:grid;
-grid-template-columns:.8fr 1.2fr;
-margin-top:18px;
-border:2px solid rgba(255,255,255,.24);
-border-radius:24px;
-overflow:hidden;
-background:rgba(15,28,55,.23);
-backdrop-filter:blur(12px)
+  display:grid;
+  grid-template-columns:.8fr 1.2fr;
+  margin-top:18px;
+  border:2px solid rgba(255,255,255,.24);
+  border-radius:24px;
+  overflow:hidden;
+  background:rgba(15,28,55,.23);
+  backdrop-filter:blur(12px)
 }
 .age {
-margin:16px;
-padding:34px 30px;
-min-height:280px;
-border:1px solid rgba(255,224,177,.45);
-border-radius:24px;
-background:linear-gradient(145deg,rgba(37,22,54,.72),rgba(172,100,69,.52) 55%,rgba(23,28,62,.82));
-display:flex;
-flex-direction:column;
-justify-content:center
+  margin:16px;
+  padding:34px 30px;
+  min-height:280px;
+  border:1px solid rgba(255,224,177,.45);
+  border-radius:24px;
+  background:linear-gradient(145deg,rgba(37,22,54,.72),rgba(172,100,69,.52) 55%,rgba(23,28,62,.82));
+  display:flex;
+  flex-direction:column;
+  justify-content:center
 }
 .age .number {
-font:clamp(90px,10vw,145px) 'DM Serif Display',Georgia,serif;
-line-height:.85;
-color:#ffe1b5;
-text-shadow:0 8px 28px rgba(23,8,38,.38);
-margin-top:18px
+  font:clamp(90px,10vw,145px) 'DM Serif Display',Georgia,serif;
+  line-height:.85;
+  color:#ffe1b5;
+  text-shadow:0 8px 28px rgba(23,8,38,.38);
+  margin-top:18px
 }
 .age .number span {
-font:22px Manrope;
-color:#fff4dd
+  font:22px Manrope;
+  color:#fff4dd
 }
 .age .sub {
-font:12px 'DM Mono',monospace;
-margin-top:13px;
-color:#fff2d7
+  font:12px 'DM Mono',monospace;
+  margin-top:13px;
+  color:#fff2d7
 }
 .stats {
-display:grid
+  display:grid
 }
 .stat {
-padding:22px 26px;
-min-height:132px;
-border-bottom:2px solid rgba(255,255,255,.19)
+  padding:22px 26px;
+  min-height:132px;
+  border-bottom:2px solid rgba(255,255,255,.19)
 }
 .stat:last-child {
-border:0
+  border:0
 }
 .stat strong {
-display:block;
-font:42px 'DM Serif Display',Georgia,serif;
-color:#fff;
-margin:10px 0 4px
+  display:block;
+  font:42px 'DM Serif Display',Georgia,serif;
+  color:#fff;
+  margin:10px 0 4px
 }
 .stat small {
-font:10px 'DM Mono',monospace;
-color:#ffd59a
+  font:10px 'DM Mono',monospace;
+  color:#ffd59a
 }
 .stat p,.stat span {
-font-size:11px;
-color:rgba(255,255,255,.75);
-margin:0
+  font-size:11px;
+  color:rgba(255,255,255,.75);
+  margin:0
 }
 .stat span {
-display:block;
-margin-top:5px;
-font:10px 'DM Mono',monospace
+  display:block;
+  margin-top:5px;
+  font:10px 'DM Mono',monospace
 }
 .social {
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-justify-content:center;
-margin:16px 0;
-padding:15px;
-border:2px solid rgba(255,255,255,.2);
-border-radius:24px;
-background:rgba(10,23,51,.25);
-backdrop-filter:blur(12px)
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  margin:16px 0;
+  padding:15px;
+  border:2px solid rgba(255,255,255,.2);
+  border-radius:24px;
+  background:rgba(10,23,51,.25);
+  backdrop-filter:blur(12px)
 }
 .social button {
-background:rgba(255,255,255,.09);
-color:#fff;
-font:10px 'DM Mono',monospace;
-padding:11px 15px
+  background:rgba(255,255,255,.09);
+  color:#fff;
+  font:10px 'DM Mono',monospace;
+  padding:11px 15px
 }
 .social button:hover {
-background:#f7ce94;
-color:#1e3153;
-transform:translateY(-2px)
+  background:#f7ce94;
+  color:#1e3153;
+  transform:translateY(-2px)
 }
 .panel {
-margin-top:12px;
-padding:28px 25px;
-border:2px solid rgba(255,255,255,.2);
-border-radius:24px;
-background:rgba(15,28,55,.22);
-backdrop-filter:blur(12px)
+  margin-top:12px;
+  padding:28px 25px;
+  border:2px solid rgba(255,255,255,.2);
+  border-radius:24px;
+  background:rgba(15,28,55,.22);
+  backdrop-filter:blur(12px)
 }
 .panel h3 {
-font:28px 'DM Serif Display',Georgia,serif;
-color:#ffddb0;
-margin:15px 0 20px
+  font:28px 'DM Serif Display',Georgia,serif;
+  color:#ffddb0;
+  margin:15px 0 20px
 }
 .details {
-display:flex;
-border-top:1px solid rgba(255,255,255,.2)
+  display:flex;
+  border-top:1px solid rgba(255,255,255,.2)
 }
 .details div {
-flex:1;
-padding:14px 12px 0 0;
-font-size:12px
+  flex:1;
+  padding:14px 12px 0 0;
+  font-size:12px
 }
 .details div+div {
-border-left:1px solid rgba(255,255,255,.18);
-padding-left:16px
+  border-left:1px solid rgba(255,255,255,.18);
+  padding-left:16px
 }
 .details b {
-display:block;
-color:#ffd59a;
-font:9px 'DM Mono',monospace;
-letter-spacing:.12em;
-text-transform:uppercase;
-margin-bottom:7px
+  display:block;
+  color:#ffd59a;
+  font:9px 'DM Mono',monospace;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:7px
 }
 .again {
-display:block;
-margin:22px auto;
-background:none;
-color:#fff;
-border:0;
-border-bottom:1px solid rgba(255,255,255,.6);
-padding:5px;
-font:11px 'DM Mono',monospace;
-cursor:pointer
+  display:block;
+  margin:22px auto;
+  background:none;
+  color:#fff;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.6);
+  padding:5px;
+  font:11px 'DM Mono',monospace;
+  cursor:pointer
 }
 footer {
-padding:18px 5vw;
-text-align:center;
-color:rgba(255,255,255,.55);
-font:9px 'DM Mono',monospace;
-letter-spacing:.12em
+  padding:18px 5vw;
+  text-align:center;
+  color:rgba(255,255,255,.55);
+  font:9px 'DM Mono',monospace;
+  letter-spacing:.12em
 }
 @media(max-width:700px) {
-header {
-padding:22px 20px
-}
-.shell {
-padding:5vh 20px 45px
-}
-.overview {
-grid-template-columns:1fr
-}
-.age {
-margin:12px;
-min-height:250px;
-text-align:center
-}
-.stats .stat {
-min-height:150px;
-padding:23px 20px
-}
-.details {
-display:grid;
-grid-template-columns:1fr 1fr
-}
-.details div+div {
-border-left:0;
-padding-left:0
-}
-.details div:nth-child(odd) {
-border-right:1px solid rgba(255,255,255,.18)
-}
-.social {
-border-radius:18px
-}
-.heading h2 {
-font-size:16vw
-}}
-
+  header {
+    padding:22px 20px
+  }
+  .shell {
+    padding:5vh 20px 45px
+  }
+  .overview {
+    grid-template-columns:1fr
+  }
+  .age {
+    margin:12px;
+    min-height:250px;
+    text-align:center
+  }
+  .stats .stat {
+    min-height:150px;
+    padding:23px 20px
+  }
+  .details {
+    display:grid;
+    grid-template-columns:1fr 1fr
+  }
+  .details div+div {
+    border-left:0;
+    padding-left:0
+  }
+  .details div:nth-child(odd) {
+    border-right:1px solid rgba(255,255,255,.18)
+  }
+  .social {
+    border-radius:18px
+  }
+  .heading h2 {
+    font-size:16vw
+  }}
 </style>
   </head>
   <body>
